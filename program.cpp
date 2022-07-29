@@ -4,7 +4,7 @@
 int main()
 {
     load_resource_bundle("mario", "mariobundle.txt");
-    open_window("Platform Prototype", 800, 600);
+    open_window("Platform Prototype", 1600, 900);
 
     sprite mario_sprite = create_sprite("MarioSpriteSheet", "MarioAnim");
     point_2d mario_position;
@@ -15,7 +15,7 @@ int main()
 
     while(!key_typed(ESCAPE_KEY))
     {
-        clear_screen(COLOR_LIGHT_BLUE);
+        clear_screen(COLOR_BLACK);
 
         player->update();
         player->get_input();
