@@ -32,6 +32,9 @@ class Player
         sprite player_sprite;
         point_2d initial_position;
         bool facing_left;
+        bool on_floor;
+        float landing_y_value;
+        rectangle hitbox;
 
     public:
         Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left) : state(nullptr)
@@ -39,9 +42,11 @@ class Player
             this->change_state(state, "Initial");
             this->player_sprite = player_sprite;
             this->initial_position = initial_position;
+            this->landing_y_value = initial_position.y;
             this->facing_left = facing_left;
+            this->on_floor = true;
             sprite_set_position(player_sprite, initial_position);
-            sprite_set_scale(player_sprite, 3);
+            //sprite_set_scale(player_sprite, 3);
         };
 
         ~Player()
@@ -65,22 +70,42 @@ class Player
         void get_input()
         {
             this->state->get_input();
-        }
+        };
 
         sprite get_player_sprite()
         {
             return this->player_sprite;
-        }
+        };
 
         bool is_facing_left()
         {
             return this->facing_left;
-        }
+        };
 
         void set_facing_left(bool facing_left)
         {
             this->facing_left = facing_left;
-        }
+        };
+
+        bool is_on_floor()
+        {
+            return this->on_floor;
+        };
+
+        void set_on_floor(bool new_value)
+        {
+            this->on_floor = new_value;
+        };
+
+        void set_landing_y_value(float landing_y_value)
+        {
+            this->landing_y_value = landing_y_value;
+        };
+
+        float get_landing_y_value()
+        {
+            return this->landing_y_value;
+        };
 };
 
 class IdleState : public PlayerState
@@ -145,6 +170,12 @@ class JumpFallState : public PlayerState
         void get_input() override;
 };
 
+void sprite_fall(sprite sprite)
+{
+    if(sprite_dy(sprite) < 9.8)
+            sprite_set_dy(sprite, sprite_dy(sprite)+0.3);
+}
+
 void animation_routine(Player* player, string left_anim, string right_anim)
 {
     if(player->is_facing_left())
@@ -165,12 +196,25 @@ void IdleState::update()
 {
     sprite player_sprite = this->player->get_player_sprite();
     if(!run_once)
-    {
-        sprite_set_dx(player_sprite, 0);
-        sprite_set_dy(player_sprite, 0);
+    {   
+        if(player->is_on_floor())
+        {
+            sprite_set_dx(player_sprite, 0);
+            sprite_set_dy(player_sprite, 0);
+        }
         animation_routine(player, "LeftIdle", "RightIdle");
         run_once = true;
     }
+
+    if(player->is_on_floor())
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player->get_player_sprite(), 0);
+        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
+    }
+    else
+       sprite_fall(player->get_player_sprite());
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
@@ -186,7 +230,7 @@ void IdleState::get_input()
         this->player->set_facing_left(false);
         this->player->change_state(new RunState(0), "RunRight");
     }
-    if(key_typed(UP_KEY))
+    if(key_typed(UP_KEY) && player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -200,9 +244,9 @@ void RunState::update()
         if(dx == 0)
         {
             if(player->is_facing_left())
-                sprite_set_dx(player_sprite, -2);
+                sprite_set_dx(player_sprite, -1);
             else
-                sprite_set_dx(player_sprite, 2);
+                sprite_set_dx(player_sprite, 1);
         }
 
         animation_routine(player, "LeftRun", "RightRun");
@@ -220,6 +264,14 @@ void RunState::update()
             sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
     }
 
+    if(player->is_on_floor())
+    {
+        sprite_set_dy(player->get_player_sprite(), 0);
+        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
+    }
+    else
+       sprite_fall(player->get_player_sprite());
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
@@ -229,7 +281,7 @@ void RunState::get_input()
     {
         this->player->change_state(new IdleState, "Idle");
     }
-    if(key_typed(UP_KEY))
+    if(key_typed(UP_KEY)&& player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -239,6 +291,7 @@ void JumpRiseState::update()
 {
     if(!run_once)
     {
+        //this->player->set_on_floor(false);
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -8);
         animation_routine(player, "LeftJump", "RightJump");
@@ -246,6 +299,8 @@ void JumpRiseState::update()
         this->max_jump_height = 200 + abs((12 * sprite_dx(player->get_player_sprite())));
         write_line(max_jump_height);
     }
+
+    this->player->set_on_floor(false);
 
     //write_line(sprite_dy(player->get_player_sprite()));
     if(sprite_dy(player->get_player_sprite()) < 0)
@@ -259,7 +314,7 @@ void JumpRiseState::update()
     {
         sprite_set_dy(player->get_player_sprite(), 0);
         this->player->change_state(new JumpFallState, "JumpFall");
-    }     
+    }
 }
 
 void JumpRiseState::get_input()
@@ -285,19 +340,17 @@ void JumpFallState::update()
     }
     sprite_update_routine_continuous(this->player->get_player_sprite());
 
-    if(sprite_dy(player->get_player_sprite()) < 9.8)
-        sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite())+0.3);
+    sprite_fall(player->get_player_sprite());
 
     //write_line(sprite_dy(player->get_player_sprite()));
 
-    //Bottom of screen
-    if(sprite_y(player->get_player_sprite()) >= 840)
+    if(player->is_on_floor())
     {
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), 840);
-        if(player->is_facing_left() && key_down(LEFT_KEY))
+        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
+        if(player->is_facing_left() && key_down(LEFT_KEY) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
-        else if(!player->is_facing_left() && key_down(RIGHT_KEY))
+        else if(!player->is_facing_left() && key_down(RIGHT_KEY) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunRight");
         else
             this->player->change_state(new IdleState, "Idle");
@@ -307,14 +360,26 @@ void JumpFallState::update()
 
 void JumpFallState::get_input()
 {
-    if(key_down(LEFT_KEY))
+    if(player->is_on_floor())
     {
-        if(sprite_dx(player->get_player_sprite()) > -6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.08);
+        if(key_down(LEFT_KEY) && player->is_facing_left())
+            this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
+        else if(key_down(RIGHT_KEY) && !player->is_facing_left())
+            this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunRight");
+        else
+            this->player->change_state(new IdleState, "Idle");
     }
-    if(key_down(RIGHT_KEY))
+    else
     {
-        if(sprite_dx(player->get_player_sprite()) < 6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
+        if(key_down(LEFT_KEY))
+        {
+            if(sprite_dx(player->get_player_sprite()) > -6)
+                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.08);
+        }
+        if(key_down(RIGHT_KEY))
+        {
+            if(sprite_dx(player->get_player_sprite()) < 6)
+                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
+        }
     }
 }
