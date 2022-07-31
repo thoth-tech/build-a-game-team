@@ -1,6 +1,7 @@
 #include "splashkit.h"
 #include "player.h"
 #include "block.h"
+#include "playerinput.h"
 #include <vector>
 
 vector<Block> make_level_blocks_horizontal(double first_x, double block_width, double first_y, int number, int space, string type, vector<Block> level_blocks, bitmap blocks)
@@ -16,9 +17,14 @@ vector<Block> make_level_blocks_horizontal(double first_x, double block_width, d
             FloorBlock level_block(blocks, block_position);
             level_blocks.push_back(level_block);
         }
-        if(type == "Brick")
+        else if(type == "Brick")
         {
             BrickBlock level_block(blocks, block_position);
+            level_blocks.push_back(level_block);
+        }
+        else if(type == "Question")
+        {
+            QuestionBlock level_block(blocks, block_position);
             level_blocks.push_back(level_block);
         }
     }
@@ -37,7 +43,8 @@ int main()
     mario_position.y = 520;
 
     bitmap blocks = bitmap_named("MarioBlocks");
-    Player *player = new Player(new IdleState, mario_sprite, mario_position, false);
+    player_input input = make_player1_input();
+    Player *player = new Player(new IdleState, mario_sprite, mario_position, false, input);
 
     vector<Block> level_blocks;
 

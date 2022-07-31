@@ -59,3 +59,13 @@ class BrickBlock : public Block
             this->opts.draw_cell = 0;
         }
 };
+
+class QuestionBlock : public Block
+{
+    public:
+        QuestionBlock(bitmap image, point_2d position) : Block(image, position)
+        {
+            this->type = "Question Block";
+            this->opts.draw_cell = 2;
+        }
+};
