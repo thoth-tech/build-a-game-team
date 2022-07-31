@@ -1,4 +1,5 @@
 #include "splashkit.h"
+#include "playerinput.h"
 
 class Player;
 class PlayerState
@@ -35,9 +36,11 @@ class Player
         bool on_floor;
         float landing_y_value;
         rectangle hitbox;
-
+        
     public:
-        Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left) : state(nullptr)
+        player_input input;
+
+        Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
         {
             this->change_state(state, "Initial");
             this->player_sprite = player_sprite;
@@ -45,6 +48,7 @@ class Player
             this->landing_y_value = initial_position.y;
             this->facing_left = facing_left;
             this->on_floor = true;
+            this->input = input;
             sprite_set_position(player_sprite, initial_position);
             //sprite_set_scale(player_sprite, 3);
         };
@@ -220,17 +224,17 @@ void IdleState::update()
 
 void IdleState::get_input()
 {
-    if(key_down(LEFT_KEY))
+    if(key_down(player->input.left_key))
     {
         this->player->set_facing_left(true);
         this->player->change_state(new RunState(0), "RunLeft");
     }
-    if(key_down(RIGHT_KEY))
+    if(key_down(player->input.right_key))
     {
         this->player->set_facing_left(false);
         this->player->change_state(new RunState(0), "RunRight");
     }
-    if(key_typed(UP_KEY) && player->is_on_floor())
+    if(key_typed(player->input.jump_key) && player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -277,11 +281,11 @@ void RunState::update()
 
 void RunState::get_input()
 {
-    if(key_released(LEFT_KEY) || key_released(RIGHT_KEY))
+    if(key_released(player->input.left_key) || key_released(player->input.right_key))
     {
         this->player->change_state(new IdleState, "Idle");
     }
-    if(key_typed(UP_KEY)&& player->is_on_floor())
+    if(key_typed(player->input.jump_key)&& player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -319,12 +323,12 @@ void JumpRiseState::update()
 
 void JumpRiseState::get_input()
 {
-    if(key_down(LEFT_KEY))
+    if(key_down(player->input.left_key))
     {
         if(sprite_dx(player->get_player_sprite()) > -6)
             sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.08);
     }
-    if(key_down(RIGHT_KEY))
+    if(key_down(player->input.right_key))
     {
         if(sprite_dx(player->get_player_sprite()) < 6)
             sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
@@ -362,21 +366,21 @@ void JumpFallState::get_input()
 {
     if(player->is_on_floor())
     {
-        if(key_down(LEFT_KEY) && player->is_facing_left())
+        if(key_down(player->input.left_key) && player->is_facing_left())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
-        else if(key_down(RIGHT_KEY) && !player->is_facing_left())
+        else if(key_down(player->input.right_key) && !player->is_facing_left())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunRight");
         else
             this->player->change_state(new IdleState, "Idle");
     }
     else
     {
-        if(key_down(LEFT_KEY))
+        if(key_down(player->input.left_key))
         {
             if(sprite_dx(player->get_player_sprite()) > -6)
                 sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.08);
         }
-        if(key_down(RIGHT_KEY))
+        if(key_down(player->input.right_key))
         {
             if(sprite_dx(player->get_player_sprite()) < 6)
                 sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
