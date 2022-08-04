@@ -54,12 +54,9 @@ class Map
          */
         void draw_background()
         {          
-            // draw the background first
-            //for (int i = 0; i < MAP_HEIGHT; i++)
-                for (int j = 0; j < MAP_WIDTH/8; j++)
-                    draw_bitmap(this->background, j*bitmap_width(this->background), -TILESIZE*2);
+            for (int j = 0; j < MAP_WIDTH/8; j++)
+                draw_bitmap(this->background, j*bitmap_width(this->background), -TILESIZE*2);
 
-                
             // draw map objects -- to be used to draw other indicated map objects that are not solid
             //for (int i = 0; i < MAP_HEIGHT; i++)
                 //for (int j = 0; j < MAP_WIDTH; j++)
