@@ -2,36 +2,38 @@
 #include "splashkit.h"
 #include <fstream>
 #include <iostream>
+#include <memory>
+#include "block.h"
 using namespace std;
-// Define screen size and tilesize
-#define SCREEN_WIDTH  1600 // 50 tiles
-#define SCREEN_HEIGHT  896 // 28 tiles
-#define TILESIZE        16 // pixels
-#define MAP_WIDTH       40 // tiles
-#define MAP_HEIGHT      32 // tiles
 
 /**
  * @brief Map class
  * 
  */
-class Map
+class Level_Ojects_Map
 {
-    private:
-        // stores the background image
-        bitmap background;
-        // 2D array of level design from text file
-        vector<vector<int> > map_array;
+    protected:
+        vector<vector<int> > map_array; 
+        int screen_width = 1600;
+        int screen_height = 896;
+        int tile_size = 64;
+        int map_width;
+        int map_height;
+        string type;
 
     public:
         /**
          * @brief Default Constructor
          */
-        Map(){}
+        Level_Ojects_Map(){};
 
         /**
          * @brief Destructor
          */
-        ~Map(){}
+        ~Level_Ojects_Map()
+        {
+            map_array.clear();
+        };
 
         /**
          * @brief First Overloaded Constructor
@@ -39,57 +41,13 @@ class Map
          * @param sprite_sheet The sprite sheet used to build the map
          * 
          */
-        Map(string level, string background)
+        Level_Ojects_Map(string level, int tile_size)
         {
-            // use new_level function to load the map to new_game.map_array
+            this->tile_size = tile_size;
+            this->map_width = (screen_width / tile_size);
+            this->map_height = (screen_height / tile_size);
             this->map_array = new_level(level);
-            // load the background
-            this->background = load_bitmap("bgnd", background);
-        }
-
-        /**
-         * @brief Draw the level to the screen
-         * 
-         * @return ** void 
-         */
-        void draw_background()
-        {          
-            for (int j = 0; j < MAP_WIDTH/8; j++)
-                draw_bitmap(this->background, j*bitmap_width(this->background), -TILESIZE*2);
-
-            // draw map objects -- to be used to draw other indicated map objects that are not solid
-            //for (int i = 0; i < MAP_HEIGHT; i++)
-                //for (int j = 0; j < MAP_WIDTH; j++)
-                    //if (this->map_array[i][j] != 0)
-                        //draw_bitmap(this->map, j*TILESIZE, i*TILESIZE, option_with_bitmap_cell(this->map_array[i][j]));
-        }
-
-
-        /**
-         * @brief Gets coordinates of all objects and if they are solid or not
-         * @return ** void 
-         */
-        vector<Block*> get_solid_objects(vector<Block*> level_blocks)
-        {
-            point_2d position;
-
-            for (int i = 0; i < MAP_HEIGHT; i++)
-                for (int j = 0; j < MAP_WIDTH; j++)
-                {
-                    position.x = j*TILESIZE;
-                    position.y = i*TILESIZE;
-
-                    if(this->map_array[i][j] == 20)
-                        level_blocks.push_back(new FloorBlock(Block::MARIO_BLOCKS, position));
-                    if(this->map_array[i][j] == 30)
-                        level_blocks.push_back(new BrickBlock(Block::MARIO_BLOCKS, position));
-                    if(this->map_array[i][j] == 40)
-                        level_blocks.push_back(new QuestionBlock(Block::MARIO_BLOCKS, position));
-                }
-
-            return level_blocks;
-        }
-
+        };
             
         /**
          * @brief Loads the text file contatining map design and layout
@@ -99,24 +57,29 @@ class Map
          */
         vector<vector<int> > new_level(string file)
         {
+            write_line("In new level");
             // Initialise a 2D matrix of integers to store level design  
             vector<vector<int> > map;
+
             // load in the level layout from file
             ifstream map_level;
             map_level.open(file);
+
             // Check for errors
             if(map_level.fail())
             {
+                write_line("Error");
                 cerr << "Error Opening File" << endl;
                 exit(1);
             }
+
             // initialise a vector of integers to store each line of text
             vector<int> map_line;
             int temp;
 
-            for (int i = 0; i < MAP_HEIGHT; i++)
+            for (int i = 0; i < this->map_height; i++)
             {
-                for (int j = 0; j < MAP_WIDTH; j++)
+                for (int j = 0; j < this->map_width; j++)
                 {
                     map_level >> temp;
                     map_line.push_back(temp);
@@ -128,5 +91,47 @@ class Map
             }
             
             return map;
-        }
+        };
+
+        vector<shared_ptr<Block>> get_solid_objects(vector<shared_ptr<Block>> level_blocks)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    if(this->map_array[i][j] == 20)
+                    {
+                        shared_ptr<Block> block(new FloorBlock(Block::MARIO_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 30)
+                    {
+                        shared_ptr<Block> block(new BrickBlock(Block::MARIO_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 40)
+                    {
+                        shared_ptr<Block> block(new QuestionBlock(Block::MARIO_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 1)
+                    {
+                        shared_ptr<Block> block(new DarkSewerBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 2)
+                    {
+                        shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                }
+
+            return level_blocks;
+        };
+
 };
+
