@@ -26,21 +26,21 @@ int main()
     Player *player = new Player(new IdleState, mario_sprite, mario_position, false, input);
     vector<shared_ptr<Block>> level_blocks;
 
-    Level_Ojects_Map map("level_0_64.txt", 64);
+    LevelOjectsMap map("level1_morg.txt", 64);
     level_blocks = map.get_solid_objects(level_blocks);
 
     while(!key_typed(ESCAPE_KEY))
     {
         clear_screen(COLOR_BLACK);
 
-        player->update();
-        player->get_input();
-        
         for(int i = 0; i < level_blocks.size(); i++)
         {
             level_blocks[i]->draw_block();
         }
 
+        player->update();
+        player->get_input();
+        
         float landing_value = 0;
         bool collision = false;
         for(int i = 0; i < level_blocks.size(); i++)

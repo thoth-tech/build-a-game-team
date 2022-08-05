@@ -10,7 +10,7 @@ using namespace std;
  * @brief Map class
  * 
  */
-class Level_Ojects_Map
+class LevelOjectsMap
 {
     protected:
         vector<vector<int> > map_array; 
@@ -25,12 +25,12 @@ class Level_Ojects_Map
         /**
          * @brief Default Constructor
          */
-        Level_Ojects_Map(){};
+        LevelOjectsMap(){};
 
         /**
          * @brief Destructor
          */
-        ~Level_Ojects_Map()
+        ~LevelOjectsMap()
         {
             map_array.clear();
         };
@@ -41,7 +41,7 @@ class Level_Ojects_Map
          * @param sprite_sheet The sprite sheet used to build the map
          * 
          */
-        Level_Ojects_Map(string level, int tile_size)
+        LevelOjectsMap(string level, int tile_size)
         {
             this->tile_size = tile_size;
             this->map_width = (screen_width / tile_size);
@@ -126,6 +126,21 @@ class Level_Ojects_Map
                     if(this->map_array[i][j] == 2)
                     {
                         shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 3)
+                    {
+                        shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 4 || this->map_array[i][j] == 5)
+                    {
+                        shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 6)
+                    {
+                        shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
                 }

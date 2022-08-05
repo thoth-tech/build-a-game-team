@@ -139,3 +139,30 @@ class LightSewerBlock : public Block
             this->opts.draw_cell = 1;
         }        
 };
+
+class LadderBlock : public Block
+{
+    public:
+        LadderBlock(BlockType type, point_2d position) : Block(type, position)
+        {
+            this->opts.draw_cell = 2;
+        }
+};
+
+class WaterBlock : public Block
+{
+    public:
+        WaterBlock(BlockType type, point_2d position) : Block(type, position)
+        {
+            this->opts.draw_cell = 3;
+        }
+};
+
+class ToxicBlock : public Block
+{
+    public:
+        ToxicBlock(BlockType type, point_2d position) : Block(type, position)
+        {
+            this->opts.draw_cell = 5;
+        }
+};
