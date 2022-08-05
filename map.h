@@ -10,7 +10,7 @@ using namespace std;
  * @brief Map class
  * 
  */
-class Level_Ojects_Map
+class LevelOjectsMap
 {
     protected:
         vector<vector<int> > map_array; 
@@ -126,6 +126,21 @@ class Level_Ojects_Map
                     if(this->map_array[i][j] == 2)
                     {
                         shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 3)
+                    {
+                        shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 4 || this->map_array[i][j] == 5)
+                    {
+                        shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position));
+                        level_blocks.push_back(block);
+                    }
+                    if(this->map_array[i][j] == 6)
+                    {
+                        shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
                 }
