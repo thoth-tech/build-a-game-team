@@ -25,12 +25,12 @@ class LevelOjectsMap
         /**
          * @brief Default Constructor
          */
-        Level_Ojects_Map(){};
+        LevelOjectsMap(){};
 
         /**
          * @brief Destructor
          */
-        ~Level_Ojects_Map()
+        ~LevelOjectsMap()
         {
             map_array.clear();
         };
@@ -41,7 +41,7 @@ class LevelOjectsMap
          * @param sprite_sheet The sprite sheet used to build the map
          * 
          */
-        Level_Ojects_Map(string level, int tile_size)
+        LevelOjectsMap(string level, int tile_size)
         {
             this->tile_size = tile_size;
             this->map_width = (screen_width / tile_size);

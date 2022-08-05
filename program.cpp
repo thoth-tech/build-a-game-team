@@ -26,7 +26,7 @@ int main()
     Player *player = new Player(new IdleState, mario_sprite, mario_position, false, input);
     vector<shared_ptr<Block>> level_blocks;
 
-    Level_Ojects_Map map("level1_morg.txt", 64);
+    LevelOjectsMap map("level1_morg.txt", 64);
     level_blocks = map.get_solid_objects(level_blocks);
 
     while(!key_typed(ESCAPE_KEY))
