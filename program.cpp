@@ -14,6 +14,7 @@ using namespace std;
 int main()
 {
     load_resource_bundle("mario", "mariobundle.txt");
+    // load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -29,21 +30,22 @@ int main()
     LevelOjectsMap map("level1_morg.txt", 64);
     level_blocks = map.get_solid_objects(level_blocks);
 
-    while(!key_typed(ESCAPE_KEY))
+    while (!key_typed(ESCAPE_KEY))
     {
-        clear_screen(COLOR_BLACK);
+        // clear_screen(COLOR_BLACK);
+        draw_bitmap("background", 0, 0, option_to_screen());
 
-        for(int i = 0; i < level_blocks.size(); i++)
+        for (int i = 0; i < level_blocks.size(); i++)
         {
             level_blocks[i]->draw_block();
         }
 
         player->update();
         player->get_input();
-        
+
         float landing_value = 0;
         bool collision = false;
-        for(int i = 0; i < level_blocks.size(); i++)
+        for (int i = 0; i < level_blocks.size(); i++)
         {
             collision = level_blocks[i]->test_top_collision(player->get_player_sprite());
             if (collision)
@@ -55,7 +57,7 @@ int main()
             }
         }
 
-        if(!collision)
+        if (!collision)
             player->set_on_floor(false);
 
         process_events();
