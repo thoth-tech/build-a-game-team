@@ -60,6 +60,9 @@ int main()
         if (!collision)
             player->set_on_floor(false);
 
+        //For testing purposes only
+        //center_camera_on(player->get_player_sprite(), 0, 0);
+
         process_events();
         refresh_screen(60);
     }

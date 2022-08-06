@@ -2,6 +2,7 @@
 #include "splashkit.h"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include "block.h"
 using namespace std;
@@ -13,9 +14,7 @@ using namespace std;
 class LevelOjectsMap
 {
     protected:
-        vector<vector<int> > map_array; 
-        int screen_width = 1600;
-        int screen_height = 896;
+        vector<vector<string> > map_array;
         int tile_size = 64;
         int map_width;
         int map_height;
@@ -35,30 +34,53 @@ class LevelOjectsMap
             map_array.clear();
         };
 
-        /**
-         * @brief First Overloaded Constructor
-         * @param level        The text file used to define the level
-         * @param sprite_sheet The sprite sheet used to build the map
-         * 
-         */
         LevelOjectsMap(string level, int tile_size)
         {
             this->tile_size = tile_size;
-            this->map_width = (screen_width / tile_size);
-            this->map_height = (screen_height / tile_size);
+            check_map_dimensions(level);
             this->map_array = new_level(level);
         };
             
-        /**
-         * @brief Loads the text file contatining map design and layout
-         * 
-         * @param file 
-         * @return vector<vector<int> > 
-         */
-        vector<vector<int> > new_level(string file)
+        void check_map_dimensions(string file)
         {
-            // Initialise a 2D matrix of integers to store level design  
-            vector<vector<int> > map;
+            ifstream map_level;
+            std::string line;
+            int y_count = 0;
+            int x_count = 0;
+
+            map_level.open(file);
+
+            if(map_level.fail())
+            {
+                write_line("Error");
+                cerr << "Error Opening File" << endl;
+                exit(1);
+            }
+
+            while(std::getline(map_level, line))
+            {
+                std::istringstream iss(line);
+
+                string i;
+                x_count = 0;
+                
+                while(iss >> i)
+                {
+                    x_count += 1;
+                }
+                y_count += 1;
+            }
+
+            map_level.close();
+
+            this->map_height = y_count;
+            this->map_width = x_count;
+        };
+
+        vector<vector<string> > new_level(string file)
+        {
+            // Initialise a 2D matrix of strings to store level design  
+            vector<vector<string> > map;
 
             // load in the level layout from file
             ifstream map_level;
@@ -72,9 +94,9 @@ class LevelOjectsMap
                 exit(1);
             }
 
-            // initialise a vector of integers to store each line of text
-            vector<int> map_line;
-            int temp;
+            // initialise a vector of strings to store each line of text
+            vector<string> map_line;
+            string temp;
 
             for (int i = 0; i < this->map_height; i++)
             {
@@ -88,7 +110,7 @@ class LevelOjectsMap
                 map_level.ignore();
                 map_line.clear();
             }
-            
+            map_level.close();
             return map;
         };
 
@@ -102,42 +124,42 @@ class LevelOjectsMap
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
 
-                    if(this->map_array[i][j] == 20)
+                    if(this->map_array[i][j] == "20")
                     {
                         shared_ptr<Block> block(new FloorBlock(Block::MARIO_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 30)
+                    if(this->map_array[i][j] == "30")
                     {
                         shared_ptr<Block> block(new BrickBlock(Block::MARIO_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 40)
+                    if(this->map_array[i][j] == "40")
                     {
                         shared_ptr<Block> block(new QuestionBlock(Block::MARIO_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 1)
+                    if(this->map_array[i][j] == "1")
                     {
                         shared_ptr<Block> block(new DarkSewerBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 2)
+                    if(this->map_array[i][j] == "2")
                     {
                         shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 3)
+                    if(this->map_array[i][j] == "3")
                     {
                         shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 4 || this->map_array[i][j] == 5)
+                    if(this->map_array[i][j] == "4" || this->map_array[i][j] == "5")
                     {
                         shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
                     }
-                    if(this->map_array[i][j] == 6)
+                    if(this->map_array[i][j] == "6")
                     {
                         shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position));
                         level_blocks.push_back(block);
