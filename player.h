@@ -176,8 +176,8 @@ class JumpFallState : public PlayerState
 
 void sprite_fall(sprite sprite)
 {
-    if(sprite_dy(sprite) < 9.8)
-            sprite_set_dy(sprite, sprite_dy(sprite)+0.3);
+    if(sprite_dy(sprite) < 20)
+            sprite_set_dy(sprite, sprite_dy(sprite)+0.6);
 }
 
 void animation_routine(Player* player, string left_anim, string right_anim)
@@ -259,13 +259,13 @@ void RunState::update()
 
     if(player->is_facing_left())
     {
-        if(sprite_dx(player->get_player_sprite()) > -6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.08);
+        if(sprite_dx(player->get_player_sprite()) > -5)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.15);
     }
     else
     {
-        if(sprite_dx(player->get_player_sprite()) < 6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.08);
+        if(sprite_dx(player->get_player_sprite()) < 5)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.15);
     }
 
     if(player->is_on_floor())
@@ -300,7 +300,7 @@ void JumpRiseState::update()
         sprite_set_dy(player->get_player_sprite(), -8);
         animation_routine(player, "LeftJump", "RightJump");
         run_once = true;
-        this->max_jump_height = 200 + abs((12 * sprite_dx(player->get_player_sprite())));
+        this->max_jump_height = 150 + abs((8 * sprite_dx(player->get_player_sprite())));
         write_line(max_jump_height);
     }
 
@@ -308,7 +308,7 @@ void JumpRiseState::update()
 
     //write_line(sprite_dy(player->get_player_sprite()));
     if(sprite_dy(player->get_player_sprite()) < 0)
-        sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite())+0.06);
+        sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite())+0.1);
 
     sprite_update_routine_continuous(this->player->get_player_sprite());
 

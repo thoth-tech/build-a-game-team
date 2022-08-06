@@ -40,7 +40,7 @@ class Block
             this->image = bitmap_named(block_type(type));
             this->position = position;
             this->opts = option_defaults();
-            this->top = position.y - 30;
+            this->top = position.y - bitmap_cell_height(image);
         };
 
         ~Block()
