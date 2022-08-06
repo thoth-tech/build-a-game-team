@@ -1,0 +1,5 @@
+//ANIM, PlayerAnim, player.txt
+
+BITMAP,purpleGuy,PurpleGuy.png
+BITMAP,blueGuy,BlueGuy.png
+BITMAP,pinkGirl,PinkGirl.png

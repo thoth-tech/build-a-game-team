@@ -1,0 +1,50 @@
+SplashKit Animation
+//ID,CELL,DUR,NEXT
+
+//-----Right Movements-----
+
+//Right Idle
+f://100, 0, 4, 
+
+//Right Run
+f://[101-103], [1-3], 4, 104
+f://104, 2, 4,
+
+//Right Jump
+f: //100, 5, 4
+
+//Right Animation Identifiers
+i:RightIdle
+i:RightRun
+i:RightJump
+i:RightAttack
+i:RightFall
+
+
+//-----Left Movements-----
+
+//Left Idle
+f:200, 9, 4,
+
+//Left Run
+f://201, 8, 4, 202
+f://202, 7, 4, 203
+f://[203-204], [6-7], 4,
+
+//Left Jump
+f: //
+
+//Left Animation Identifiers
+i:LeftIdle
+i:LeftRun
+i:LeftJump
+i:LeftAttack
+i:LeftFall
+
+
+//-----Dance Movements-----
+
+//Dance
+i:Dance
+
+f: 
