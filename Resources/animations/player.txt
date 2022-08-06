@@ -4,47 +4,44 @@ SplashKit Animation
 //-----Right Movements-----
 
 //Right Idle
-f://100, 0, 4, 
+f:100, 3, 4, 
 
 //Right Run
-f://[101-103], [1-3], 4, 104
-f://104, 2, 4,
+f:[101-102], [2-3], 4,
 
 //Right Jump
-f: //100, 5, 4
+f: 103, 7, 4,
 
 //Right Animation Identifiers
-i:RightIdle
-i:RightRun
-i:RightJump
-i:RightAttack
-i:RightFall
+i:RightIdle, 100
+i:RightRun, 101
+i:RightJump, 103
+//i:RightAttack
+//i:RightFall
 
 
 //-----Left Movements-----
 
 //Left Idle
-f:200, 9, 4,
+f:200, 15, 4,
 
 //Left Run
-f://201, 8, 4, 202
-f://202, 7, 4, 203
-f://[203-204], [6-7], 4,
+f:[201-202], [14-15], 4,
 
 //Left Jump
-f: //
+f:203, 19, 4, 
 
 //Left Animation Identifiers
-i:LeftIdle
-i:LeftRun
-i:LeftJump
-i:LeftAttack
-i:LeftFall
+i:LeftIdle, 200
+i:LeftRun, 201
+i:LeftJump, 203
+//i:LeftAttack
+//i:LeftFall
 
 
 //-----Dance Movements-----
 
 //Dance
-i:Dance
+//i:Dance
 
-f: 
+//f: 

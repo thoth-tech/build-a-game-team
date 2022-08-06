@@ -14,17 +14,17 @@ using namespace std;
 int main()
 {
     load_resource_bundle("mario", "mariobundle.txt");
-    // load_resource_bundle("player", "playerbundle.txt");
+    load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    sprite mario_sprite = create_sprite("MarioSpriteSheet", "MarioAnim");
-    point_2d mario_position;
-    mario_position.x = 20;
-    mario_position.y = 200;
+    sprite player_sprite = create_sprite("purpleGuy", "PlayerAnim");
+    point_2d player_position;
+    player_position.x = 20;
+    player_position.y = 200;
 
     player_input input = make_player1_input();
-    Player *player = new Player(new IdleState, mario_sprite, mario_position, false, input);
+    Player *player = new Player(new IdleState, player_sprite, player_position, false, input);
     vector<shared_ptr<Block>> level_blocks;
 
     LevelOjectsMap map("level1_morg.txt", 64);
@@ -66,6 +66,7 @@ int main()
 
     delete player;
     free_resource_bundle("mario");
+    free_resource_bundle("player");
     free_resource_bundle("game_resources");
     return 0;
 }

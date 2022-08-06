@@ -57,7 +57,6 @@ class LevelOjectsMap
          */
         vector<vector<int> > new_level(string file)
         {
-            write_line("In new level");
             // Initialise a 2D matrix of integers to store level design  
             vector<vector<int> > map;
 
