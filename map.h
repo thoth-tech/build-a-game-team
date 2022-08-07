@@ -114,7 +114,7 @@ class LevelOjectsMap
             return map;
         };
 
-        vector<shared_ptr<Block>> get_solid_objects(vector<shared_ptr<Block>> level_blocks)
+        vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks)
         {
             point_2d position;
 
@@ -126,42 +126,42 @@ class LevelOjectsMap
 
                     if(this->map_array[i][j] == "20")
                     {
-                        shared_ptr<Block> block(new FloorBlock(Block::MARIO_BLOCKS, position));
+                        shared_ptr<Block> block(new FloorBlock(Block::MARIO_BLOCKS, position, true));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "30")
                     {
-                        shared_ptr<Block> block(new BrickBlock(Block::MARIO_BLOCKS, position));
+                        shared_ptr<Block> block(new BrickBlock(Block::MARIO_BLOCKS, position, true));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "40")
                     {
-                        shared_ptr<Block> block(new QuestionBlock(Block::MARIO_BLOCKS, position));
+                        shared_ptr<Block> block(new QuestionBlock(Block::MARIO_BLOCKS, position, true));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "1")
                     {
-                        shared_ptr<Block> block(new DarkSewerBlock(Block::SEWER_BLOCKS, position));
+                        shared_ptr<Block> block(new DarkSewerBlock(Block::SEWER_BLOCKS, position, true));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "2")
                     {
-                        shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
+                        shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position, true));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "3")
                     {
-                        shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position));
+                        shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position, false));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "4" || this->map_array[i][j] == "5")
                     {
-                        shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position));
+                        shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position, false));
                         level_blocks.push_back(block);
                     }
                     if(this->map_array[i][j] == "6")
                     {
-                        shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position));
+                        shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position, false));
                         level_blocks.push_back(block);
                     }
                 }
