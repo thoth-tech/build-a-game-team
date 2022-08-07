@@ -1,7 +1,6 @@
-#ifndef __camera_h
-#define __camera_h
-
 #include "splashkit.h"
+
+#pragma once
 
 class Camera
 {
@@ -19,13 +18,30 @@ public:
         void set_camera_position(_init_pos);
     };
 
-    ~Camera(){};
+    ~Camera()
+    {
+        delete pos;
+    };
 
     /* if the point is out side the screen, we don't have to move the camera
         return value indicate whether we have move or not
         leave the redraw to the caller thread
     */
-    bool move_for_player(point_2d *_player);
-};
+    bool move_for_player(point_2d *_player)
+    {
+        bool should_move = point_on_screen(*_player);
 
-#endif
+        if (!should_move)
+        {
+            return should_move;
+        }
+        double dif_x = _player.x - pos.x;
+        double dif_y = _player.y - pos.y;
+
+        // update the camera pos
+        *pos = *_pplayer;
+
+        move_camera_by(dif_x, dif_y);
+        return should_move;
+    };
+};
