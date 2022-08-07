@@ -77,6 +77,7 @@ class Block
                 }
                 else
                 {
+                    //Gave a bias to top collision to avoid right edge stopping player during movement
                     if(crossWidth - 100 > -(crossHeight))
                     {
                         collision = "Right";
