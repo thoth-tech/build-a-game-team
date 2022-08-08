@@ -16,6 +16,22 @@ void draw_hitbox(rectangle hitbox)
     draw_rectangle(COLOR_GREEN, hitbox);
 }
 
+vector<shared_ptr<Block>> make_layer(string file, int tile_size)
+{
+    vector<shared_ptr<Block>> level_blocks;
+    LevelOjectsMap map(file, tile_size);
+
+    int offset = 0;
+
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("SolidBlocks"), offset);
+    offset += bitmap_cell_count(bitmap_named("SolidBlocks"));
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("NonSolidBlocks"), offset);
+    offset += bitmap_cell_count(bitmap_named("NonSolidBlocks"));
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("PipeBlocks"), offset);
+
+    return level_blocks;
+}
+
 int main()
 {
     load_resource_bundle("player", "playerbundle.txt");
@@ -29,15 +45,18 @@ int main()
 
     player_input input = make_player1_input();
     Player *player = new Player(new IdleState, player_sprite, player_position, false, input);
-    vector<shared_ptr<Block>> level_blocks;
+    
+    //Change this variable for adding another layer
+    int level_layers = 2;
 
-    LevelOjectsMap map("file.txt", 64);
-    int offset = 0;
-    level_blocks = map.get_tiles(level_blocks, bitmap_named("SolidBlocks"), offset);
-    offset += bitmap_cell_count(bitmap_named("SolidBlocks"));
-    level_blocks = map.get_tiles(level_blocks, bitmap_named("NonSolidBlocks"), offset);
-    offset += bitmap_cell_count(bitmap_named("NonSolidBlocks"));
-    level_blocks = map.get_tiles(level_blocks, bitmap_named("PipeBlocks"), offset);
+    vector<shared_ptr<Block>> level_blocks;
+    vector<shared_ptr<Block>> level_blocks_layer2;
+    level_blocks = make_layer("file.txt", 64);
+
+    if(level_layers == 2)
+    {
+        level_blocks_layer2 = make_layer("file2.txt", 64);
+    }
 
     while (!key_typed(ESCAPE_KEY))
     {
@@ -54,6 +73,16 @@ int main()
         player->get_input();
         player->update_hitbox();
         //draw_hitbox(player->get_player_hitbox());
+
+
+        if(level_layers == 2)
+        {
+            for (int i = 0; i < level_blocks_layer2.size(); i++)
+            {
+                level_blocks_layer2[i]->draw_block();
+                //draw_hitbox(level_blocks[i]->get_block_hitbox());
+            }
+        }
 
         float landing_value = 0;
         string collision = "None";
