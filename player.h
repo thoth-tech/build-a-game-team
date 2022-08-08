@@ -31,7 +31,7 @@ class Player
     private:
         PlayerState *state;
         sprite player_sprite;
-        point_2d initial_position;
+        point_2d position;
         bool facing_left;
         bool on_floor;
         float landing_y_value;
@@ -44,13 +44,13 @@ class Player
         {
             this->change_state(state, "Initial");
             this->player_sprite = player_sprite;
-            this->initial_position = initial_position;
+            this->position = initial_position;
             this->landing_y_value = initial_position.y;
             this->facing_left = facing_left;
             this->on_floor = true;
             this->input = input;
-            sprite_set_position(player_sprite, initial_position);
-            //sprite_set_scale(player_sprite, 3);
+            sprite_set_position(player_sprite, this->position);
+            make_hitbox();
         };
 
         ~Player()
@@ -76,9 +76,31 @@ class Player
             this->state->get_input();
         };
 
+        void make_hitbox()
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x;
+            hitbox.y = this->position.y;
+            hitbox.height = sprite_height(this->player_sprite);
+            hitbox.width = sprite_width(this->player_sprite);
+            this->hitbox = hitbox;
+        };
+
+        void update_hitbox()
+        {
+            point_2d current_position = sprite_position(this->player_sprite);
+            this->hitbox.x = current_position.x;
+            this->hitbox.y = current_position.y;
+        };
+
         sprite get_player_sprite()
         {
             return this->player_sprite;
+        };
+
+        rectangle get_player_hitbox()
+        {
+            return this->hitbox;
         };
 
         bool is_facing_left()
@@ -109,6 +131,16 @@ class Player
         float get_landing_y_value()
         {
             return this->landing_y_value;
+        };
+
+        void set_player_dy(float value)
+        {
+            sprite_set_dy(this->player_sprite, value);
+        };
+
+        void set_player_dx(float value)
+        {
+            sprite_set_dx(this->player_sprite, value);
         };
 };
 

@@ -114,7 +114,7 @@ class LevelOjectsMap
             return map;
         };
 
-        vector<shared_ptr<Block>> get_solid_objects(vector<shared_ptr<Block>> level_blocks)
+        vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks, bitmap cell_sheet, int offset)
         {
             point_2d position;
 
@@ -123,46 +123,37 @@ class LevelOjectsMap
                 {
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
+                    int cell = (std::stoi(this->map_array[i][j]) - 1) - offset;
 
-                    if(this->map_array[i][j] == "20")
+                    if(std::stoi(this->map_array[i][j]) > offset)
                     {
-                        shared_ptr<Block> block(new FloorBlock(Block::MARIO_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "30")
-                    {
-                        shared_ptr<Block> block(new BrickBlock(Block::MARIO_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "40")
-                    {
-                        shared_ptr<Block> block(new QuestionBlock(Block::MARIO_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "1")
-                    {
-                        shared_ptr<Block> block(new DarkSewerBlock(Block::SEWER_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "2")
-                    {
-                        shared_ptr<Block> block(new LightSewerBlock(Block::SEWER_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "3")
-                    {
-                        shared_ptr<Block> block(new LadderBlock(Block::SEWER_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "4" || this->map_array[i][j] == "5")
-                    {
-                        shared_ptr<Block> block(new WaterBlock(Block::SEWER_BLOCKS, position));
-                        level_blocks.push_back(block);
-                    }
-                    if(this->map_array[i][j] == "6")
-                    {
-                        shared_ptr<Block> block(new ToxicBlock(Block::SEWER_BLOCKS, position));
-                        level_blocks.push_back(block);
+
+                        if(bitmap_name(cell_sheet) == "SolidBlocks")
+                        {
+                            if(std::stoi(this->map_array[i][j]) < bitmap_cell_count(cell_sheet) + 1)
+                            {
+                                shared_ptr<Block> block(new SolidBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "NonSolidBlocks")
+                        {
+                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new NonSolidBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "PipeBlocks")
+                        {
+                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new PipeBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
                     }
                 }
 
