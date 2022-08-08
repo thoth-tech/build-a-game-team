@@ -128,7 +128,7 @@ class LevelOjectsMap
                     if(std::stoi(this->map_array[i][j]) > offset)
                     {
 
-                        if(bitmap_name(cell_sheet) == "SolidBlocks")
+                        if(bitmap_name(cell_sheet) == "Solid")
                         {
                             if(std::stoi(this->map_array[i][j]) < bitmap_cell_count(cell_sheet) + 1)
                             {
@@ -137,7 +137,7 @@ class LevelOjectsMap
                             }
                         }
 
-                        if(bitmap_name(cell_sheet) == "NonSolidBlocks")
+                        if(bitmap_name(cell_sheet) == "NonSolid")
                         {
                             if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
@@ -146,11 +146,29 @@ class LevelOjectsMap
                             }
                         }
 
-                        if(bitmap_name(cell_sheet) == "PipeBlocks")
+                        if(bitmap_name(cell_sheet) == "Pipe")
                         {
                             if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new PipeBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "Water")
+                        {
+                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new WaterBlock(cell_sheet, position));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "Toxic")
+                        {
+                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new ToxicBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
                             }
                         }
