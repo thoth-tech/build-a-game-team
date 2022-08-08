@@ -143,12 +143,12 @@ class SolidBlock : public Block
                     if(crossWidth > (-crossHeight))
                     {
                         collision = "Bottom";
-                        draw_text("Bottom",COLOR_WHITE,0,480);
+                        //draw_text("Bottom",COLOR_WHITE,0,480);
                     }
                     else
                     {
                         collision = "Left";
-                        draw_text("Left",COLOR_WHITE,0,480);
+                        //draw_text("Left",COLOR_WHITE,0,480);
                     }
                 }
                 else
@@ -157,12 +157,12 @@ class SolidBlock : public Block
                     if(crossWidth - 100 > -(crossHeight))
                     {
                         collision = "Right";
-                        draw_text("Right",COLOR_WHITE,0,480);
+                        //draw_text("Right",COLOR_WHITE,0,480);
                     }
                     else
                     {
                         collision = "Top";
-                        draw_text("Top",COLOR_WHITE,0,480);
+                        //draw_text("Top",COLOR_WHITE,0,480);
                     }
                 }
             }
@@ -173,6 +173,9 @@ class SolidBlock : public Block
 
 class NonSolidBlock : public Block
 {
+    private:
+        animation anim;
+
     public:
         NonSolidBlock(BlockType type, point_2d position, int cell) : Block(type, position)
         {
@@ -186,9 +189,37 @@ class NonSolidBlock : public Block
             this->is_solid = false;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
+
+            if(this->cell == 1 || this->cell == 2)
+            {
+                this->cell = 1;
+                animation_script water_script = animation_script_named("CellAnim");
+                animation anim2 = create_animation(water_script, "Water");
+                drawing_options opts = option_defaults();
+                this->opts = opts;
+                this->anim = anim2;
+                this->opts.anim = anim2;
+            }
         };
 
         string test_collision(rectangle one, rectangle two) override {return "None";};
+
+        void draw_block() override
+        {
+            if(this->cell == 1)
+            {
+                draw_bitmap("NonSolidBlocks", position.x, position.y, opts);
+                update_animation(this->anim);
+                if(animation_ended(this->anim))
+                {
+                    restart_animation(this->anim);
+                }
+            }
+            else
+            {
+                draw_bitmap(image, position.x, position.y, opts);
+            }
+        };
 };
 
 class PipeBlock : public Block
