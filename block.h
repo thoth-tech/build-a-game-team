@@ -11,6 +11,7 @@ class Block
         string type;
         rectangle hitbox;
         bool is_solid;
+        int cell;
         
     public:
         /**
@@ -23,10 +24,18 @@ class Block
             SEWER_BLOCKS
         };
 
-        Block(BlockType type, point_2d position, bool is_solid)
+        Block(BlockType type, point_2d position)
         {
             this->image = bitmap_named(block_type(type));
-            this->is_solid = is_solid;
+            this->position = position;
+            this->opts = option_defaults();
+            this->top = position.y - bitmap_cell_height(image);
+            make_hitbox();
+        };
+
+        Block(bitmap cell_sheet, point_2d position)
+        {
+            this->image = cell_sheet;
             this->position = position;
             this->opts = option_defaults();
             this->top = position.y - bitmap_cell_height(image);
@@ -43,14 +52,81 @@ class Block
             draw_bitmap(image, position.x, position.y, opts);
         };
 
-        bool test_top_collision(sprite player)
+        float get_top()
         {
-            bool collision = false;
-            collision = sprite_bitmap_collision(player, this->image, this->position.x, this->top);
-            return collision;
+            return this->top;
         };
 
-        string test_collision(rectangle one, rectangle two)
+        point_2d get_pos()
+        {
+            return this->position;
+        };
+
+        void make_hitbox()
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x;
+            hitbox.y = this->position.y;
+            hitbox.height = bitmap_cell_height(this->image);
+            hitbox.width = bitmap_cell_width(this->image);
+            this->hitbox = hitbox;
+        };
+
+        virtual string test_collision(rectangle one, rectangle two) = 0;
+
+        rectangle get_block_hitbox()
+        {
+            return this->hitbox;
+        };
+
+        bool is_block_solid()
+        {
+            return this->is_solid;
+        };
+
+        /**
+         * @brief Add sprite sheets to this switch
+         * 
+         * Sprite sheets can be passed to the constructor by enum type
+         * 
+         * @param selection 
+         * @return string 
+         */
+        string block_type(BlockType selection)
+        {
+            switch(selection)
+            {
+                case MARIO_BLOCKS:
+                    return "MarioBlocks";
+                    break;
+                case SEWER_BLOCKS:
+                    return "SewerBlocks";
+                    break;
+                default:
+                    return "MarioBlocks";
+                    break;
+            }
+        };
+};
+
+class SolidBlock : public Block
+{
+    public:
+        SolidBlock(BlockType type, point_2d position, int cell) : Block(type, position)
+        {
+            this->is_solid = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        };
+
+        SolidBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        };
+
+        string test_collision(rectangle one, rectangle two) override
         {
             string collision = "None";
             double dx = (one.x + one.width/2) - (two.x + two.width/2);
@@ -93,130 +169,109 @@ class Block
 
             return collision;
         };
-
-        float get_top()
-        {
-            return this->top;
-        };
-
-        point_2d get_pos()
-        {
-            return this->position;
-        };
-
-        void make_hitbox()
-        {
-            rectangle hitbox;
-            hitbox.x = this->position.x;
-            hitbox.y = this->position.y;
-            hitbox.height = bitmap_cell_height(this->image);
-            hitbox.width = bitmap_cell_width(this->image);
-            this->hitbox = hitbox;
-        };
-
-        rectangle get_block_hitbox()
-        {
-            return this->hitbox;
-        };
-
-        bool is_block_solid()
-        {
-            return this->is_solid;
-        };
-
-        /**
-         * @brief Add sprite sheets to this switch
-         * 
-         * Sprite sheets can be passed to the constructor by enum type
-         * 
-         * @param selection 
-         * @return string 
-         */
-        string block_type(BlockType selection)
-        {
-            switch(selection)
-            {
-                case MARIO_BLOCKS:
-                    return "MarioBlocks";
-                    break;
-                case SEWER_BLOCKS:
-                    return "SewerBlocks";
-                    break;
-                default:
-                    return "MarioBlocks";
-                    break;
-            }
-        };
 };
 
-class FloorBlock : public Block
+class NonSolidBlock : public Block
 {
     public:
-        FloorBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+        NonSolidBlock(BlockType type, point_2d position, int cell) : Block(type, position)
         {
-            this->opts.draw_cell = 1;
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        };
+
+        NonSolidBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        };
+
+        string test_collision(rectangle one, rectangle two) override {return "None";};
+};
+
+class PipeBlock : public Block
+{
+    public:
+        PipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
         }
+
+    string test_collision(rectangle one, rectangle two) override {return "None";};
 };
 
-class BrickBlock : public Block
-{
-    public:
-        BrickBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 0;
-        }
-};
+// class FloorBlock : public Block
+// {
+//     public:
+//         FloorBlock(BlockType type, point_2d position) : Block(type, position)
+//         {
+//             this->opts.draw_cell = 1;
+//         }
+// };
 
-class QuestionBlock : public Block
-{
-    public:
-        QuestionBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 2;
-        }        
-};
+// class BrickBlock : public Block
+// {
+//     public:
+//         BrickBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 0;
+//         }
+// };
 
-class DarkSewerBlock : public Block
-{
-    public:
-        DarkSewerBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 0;
-        }        
-};
+// class QuestionBlock : public Block
+// {
+//     public:
+//         QuestionBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 2;
+//         }        
+// };
 
-class LightSewerBlock : public Block
-{
-    public:
-        LightSewerBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 1;
-        }        
-};
+// class DarkSewerBlock : public Block
+// {
+//     public:
+//         DarkSewerBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 0;
+//         }        
+// };
 
-class LadderBlock : public Block
-{
-    public:
-        LadderBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 2;
-        }
-};
+// class LightSewerBlock : public Block
+// {
+//     public:
+//         LightSewerBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 1;
+//         }        
+// };
 
-class WaterBlock : public Block
-{
-    public:
-        WaterBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 3;
-        }
-};
+// class LadderBlock : public Block
+// {
+//     public:
+//         LadderBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 2;
+//         }
+// };
 
-class ToxicBlock : public Block
-{
-    public:
-        ToxicBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
-        {
-            this->opts.draw_cell = 5;
-        }
-};
+// class WaterBlock : public Block
+// {
+//     public:
+//         WaterBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 3;
+//         }
+// };
+
+// class ToxicBlock : public Block
+// {
+//     public:
+//         ToxicBlock(BlockType type, point_2d position, bool is_solid) : Block(type, position, is_solid)
+//         {
+//             this->opts.draw_cell = 5;
+//         }
+// }

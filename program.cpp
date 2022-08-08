@@ -31,8 +31,13 @@ int main()
     Player *player = new Player(new IdleState, player_sprite, player_position, false, input);
     vector<shared_ptr<Block>> level_blocks;
 
-    LevelOjectsMap map("level1_morg.txt", 64);
-    level_blocks = map.get_tiles(level_blocks);
+    LevelOjectsMap map("file.txt", 64);
+    int offset = 0;
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("SolidBlocks"), offset);
+    offset += bitmap_cell_count(bitmap_named("SolidBlocks"));
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("NonSolidBlocks"), offset);
+    offset += bitmap_cell_count(bitmap_named("NonSolidBlocks"));
+    level_blocks = map.get_tiles(level_blocks, bitmap_named("PipeBlocks"), offset);
 
     while (!key_typed(ESCAPE_KEY))
     {
