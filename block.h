@@ -123,52 +123,65 @@ class SolidBlock : public Block
 
 class NonSolidBlock : public Block
 {
-    private:
-        animation anim;
-
     public:
         NonSolidBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
-
-            if(this->cell == 1 || this->cell == 2)
-            {
-                this->cell = 1;
-                animation_script water_script = animation_script_named("CellAnim");
-                animation anim2 = create_animation(water_script, "Water");
-                drawing_options opts = option_defaults();
-                this->opts = opts;
-                this->anim = anim2;
-                this->opts.anim = anim2;
-            }
         };
 
         string test_collision(rectangle one, rectangle two) override {return "None";};
-
-        void draw_block() override
-        {
-            if(this->cell == 1)
-            {
-                draw_bitmap("NonSolidBlocks", position.x, position.y, opts);
-                update_animation(this->anim);
-                if(animation_ended(this->anim))
-                {
-                    restart_animation(this->anim);
-                }
-            }
-            else
-            {
-                draw_bitmap(image, position.x, position.y, opts);
-            }
-        };
 };
 
 class PipeBlock : public Block
 {
     public:
         PipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+    string test_collision(rectangle one, rectangle two) override {return "None";};
+};
+
+class WaterBlock : public Block
+{
+    private:
+        animation anim;
+
+    public:
+        WaterBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->position = position;
+
+
+            animation_script water_script = animation_script_named("CellAnim");
+            animation anim2 = create_animation(water_script, "Water");
+            drawing_options opts = option_defaults();
+            this->opts = opts;
+            this->anim = anim2;
+            this->opts.anim = anim2;
+        }
+
+    string test_collision(rectangle one, rectangle two) override {return "None";};
+
+    void draw_block() override
+    {
+        draw_bitmap("Water", position.x, position.y, opts);
+        update_animation(this->anim);
+        if(animation_ended(this->anim))
+            restart_animation(this->anim);
+    }
+};
+
+class ToxicBlock : public Block
+{
+    public:
+        ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->cell = cell;

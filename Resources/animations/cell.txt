@@ -1,7 +1,7 @@
 SplashKit Animation
 //ID,CELL,DUR,NEXT
 
-f: 100, 1, 7, 101
-f: 101, 2, 7,
+f: 100, 0, 7, 101
+f: 101, 1, 7,
 
 i:Water, 100

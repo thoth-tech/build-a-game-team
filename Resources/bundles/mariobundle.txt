@@ -1,3 +1,0 @@
-ANIM, MarioAnim, mario.txt
-BITMAP, MarioSpriteSheet, mariosprites.png, 30, 30, 5, 2, 10
-BITMAP, MarioBlocks, marioblocks.png, 16, 16, 5, 1, 5
