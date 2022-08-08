@@ -80,8 +80,8 @@ class Player
         {
             rectangle hitbox;
             hitbox.x = this->position.x;
-            hitbox.y = this->position.y;
-            hitbox.height = sprite_height(this->player_sprite);
+            hitbox.y = this->position.y + 10;
+            hitbox.height = sprite_height(this->player_sprite) - 10;
             hitbox.width = sprite_width(this->player_sprite);
             this->hitbox = hitbox;
         };
@@ -90,7 +90,7 @@ class Player
         {
             point_2d current_position = sprite_position(this->player_sprite);
             this->hitbox.x = current_position.x;
-            this->hitbox.y = current_position.y;
+            this->hitbox.y = current_position.y + 10;
         };
 
         sprite get_player_sprite()
@@ -102,6 +102,11 @@ class Player
         {
             return this->hitbox;
         };
+
+        string get_player_state_type()
+        {
+            return this->state->get_type();
+        }
 
         bool is_facing_left()
         {

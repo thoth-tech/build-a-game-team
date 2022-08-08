@@ -90,7 +90,7 @@ class SolidBlock : public Block
             {
                 if(crossWidth>=crossHeight)
                 {
-                    if(crossWidth > (-crossHeight))
+                    if(crossWidth + 100 > (-crossHeight))
                     {
                         collision = "Bottom";
                         //draw_text("Bottom",COLOR_WHITE,0,480);
@@ -104,7 +104,7 @@ class SolidBlock : public Block
                 else
                 {
                     //Gave a bias to top collision to avoid right edge stopping player during movement
-                    if(crossWidth - 100 > -(crossHeight))
+                    if(crossWidth - 200 > -(crossHeight))
                     {
                         collision = "Right";
                         //draw_text("Right",COLOR_WHITE,0,480);
