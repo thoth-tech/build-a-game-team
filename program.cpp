@@ -66,13 +66,13 @@ int main()
         for (int i = 0; i < level_blocks.size(); i++)
         {
             level_blocks[i]->draw_block();
-            draw_hitbox(level_blocks[i]->get_block_hitbox());
+            //draw_hitbox(level_blocks[i]->get_block_hitbox());
         }
 
         player->update();
         player->get_input();
         player->update_hitbox();
-        draw_hitbox(player->get_player_hitbox());
+        //draw_hitbox(player->get_player_hitbox());
 
 
         if(level_layers == 2)
