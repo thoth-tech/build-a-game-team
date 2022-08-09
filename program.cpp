@@ -47,6 +47,16 @@ vector<shared_ptr<Block>> make_layer(string file, int tile_size, vector<CellShee
     return level_blocks;
 }
 
+shared_ptr<Player> make_player(string file, int tile_size, int player_number)
+{
+    shared_ptr<Player> player;
+
+    LevelOjectsMap map(file, tile_size);
+    player = map.get_player_position(player_number);
+
+    return player;
+}
+
 int main()
 {
     load_resource_bundle("player", "playerbundle.txt");
@@ -55,6 +65,8 @@ int main()
 
     bool hitbox = false;
     bool test_camera = false;
+
+    int players = 1;
 
     vector<string> cell_sheet_names;
 
@@ -67,14 +79,6 @@ int main()
 
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
 
-    sprite player_sprite = create_sprite("purpleGuy", "PlayerAnim");
-    point_2d player_position;
-    player_position.x = 20;
-    player_position.y = 200;
-
-    player_input input = make_player1_input();
-    Player *player = new Player(new IdleState, player_sprite, player_position, false, input);
-    
     //Change this variable for adding another layer
     int level_layers = 2;
     vector<vector<shared_ptr<Block>>> layers;
@@ -86,6 +90,22 @@ int main()
         level_blocks = make_layer(file, TILE_SIZE, cell_sheets);
         layers.push_back(level_blocks);
     }
+
+    vector<shared_ptr<Player>> level_players;
+    if(players == 2)
+    {
+        for(int i = 1; i < players + 1; i++)
+        {
+            shared_ptr<Player> player = make_player("file0.txt", TILE_SIZE, i);
+            level_players.push_back(player);
+        }
+    }
+    else
+    {
+        shared_ptr<Player> player = make_player("file0.txt", TILE_SIZE, 3);
+        level_players.push_back(player);
+    }
+    
 
     while (!key_typed(ESCAPE_KEY))
     {
@@ -101,12 +121,15 @@ int main()
                 draw_hitbox(layers[0][j]->get_block_hitbox());
         }
 
-        player->update();
-        player->get_input();
-        player->update_hitbox();
-        //For testing hitboxes
-        if(hitbox)
-            draw_hitbox(player->get_player_hitbox());
+        for(int i = 0; i < level_players.size(); i++)
+        {
+            level_players[i]->update();
+            level_players[i]->get_input();
+            level_players[i]->update_hitbox();
+            //For testing hitboxes
+            if(hitbox)
+                draw_hitbox(level_players[i]->get_player_hitbox());
+        }
 
         //Draw foreground Layers
         for(int i = 1; i < layers.size(); i++)
@@ -119,59 +142,62 @@ int main()
             }
         }
 
-        float landing_value = 0;
-        string collision = "None";
-        for(int j = 0; j < layers.size(); j++)
+        for(int k = 0; k < level_players.size(); k++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            float landing_value = 0;
+            string collision = "None";
+            for(int j = 0; j < layers.size(); j++)
             {
-                if(layers[j][i]->is_block_solid())
-                    collision = layers[j][i]->test_collision(player->get_player_hitbox(), layers[j][i]->get_block_hitbox());
-                else
-                    break;
-                
-                
-                if (collision == "Top")
+                for (int i = 0; i < layers[j].size(); i++)
                 {
-                    landing_value = layers[j][i]->get_top();
-                    player->set_on_floor(true);
-                    player->set_landing_y_value(landing_value);
-                    break;
-                }
-                else if (collision == "Bottom")
-                {
-                    bool test = player->is_on_floor();
-
-                    if(test)
+                    if(layers[j][i]->is_block_solid())
+                        collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                    else
                         break;
+                    
+                    
+                    if (collision == "Top")
+                    {
+                        landing_value = layers[j][i]->get_top();
+                        level_players[k]->set_on_floor(true);
+                        level_players[k]->set_landing_y_value(landing_value);
+                        break;
+                    }
+                    else if (collision == "Bottom")
+                    {
+                        bool test = level_players[k]->is_on_floor();
 
-                    player->set_player_dy(0);
-                    player->set_on_floor(false);
-                    sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) + 1);
-                    player->change_state(new JumpFallState, "JumpFall");
-                    break;
-                }
-                else if (collision == "Left")
-                {
-                    player->set_player_dx(0);
-                    sprite_set_x(player->get_player_sprite(), sprite_x(player->get_player_sprite()) - 5);
-                    break;
-                }
-                else if (collision == "Right")
-                {
-                    player->set_player_dx(0);
-                    sprite_set_x(player->get_player_sprite(), sprite_x(player->get_player_sprite()) + 5);
-                    break;
+                        if(test)
+                            break;
+
+                        level_players[k]->set_player_dy(0);
+                        level_players[k]->set_on_floor(false);
+                        sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
+                        level_players[k]->change_state(new JumpFallState, "JumpFall");
+                        break;
+                    }
+                    else if (collision == "Left")
+                    {
+                        level_players[k]->set_player_dx(0);
+                        sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 5);
+                        break;
+                    }
+                    else if (collision == "Right")
+                    {
+                        level_players[k]->set_player_dx(0);
+                        sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 5);
+                        break;
+                    }
                 }
             }
-        }
 
-        if (collision == "None")
-            player->set_on_floor(false);
+            if (collision == "None")
+                level_players[k]->set_on_floor(false);
+        }
         
         //For testing purposes only
         if(test_camera)
-            center_camera_on(player->get_player_sprite(), 0, 0);
+            center_camera_on(level_players[0]->get_player_sprite(), 0, 0);
 
 
         //Turn on hitboxes
@@ -196,7 +222,7 @@ int main()
         refresh_screen(60);
     }
 
-    delete player;
+    //delete player;
     free_resource_bundle("player");
     free_resource_bundle("game_resources");
     return 0;

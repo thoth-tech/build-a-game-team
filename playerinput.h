@@ -17,3 +17,13 @@ player_input make_player1_input()
 
     return input;
 }
+
+player_input make_player2_input()
+{
+    player_input input;
+    input.jump_key = W_KEY;
+    input.right_key = D_KEY;
+    input.left_key = A_KEY;
+
+    return input;
+}
