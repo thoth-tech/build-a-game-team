@@ -56,7 +56,7 @@ class Level
 
         ~Level()
         {
-            write_line("Level Delete");
+            //write_line("Level Delete");
         };
 
         void make_level()
@@ -171,6 +171,18 @@ class Level2 : public Level
             this->level_layers = 2;
             this->files.push_back("levels/level2_1.txt");
             this->files.push_back("levels/level2_2.txt");
+            make_level();
+        };
+};
+
+class BlankLevel : public Level
+{
+    public: 
+        BlankLevel(vector<CellSheet> cell_sheets, int tile_size, int players, int layers, vector<string> file_names) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = layers;
+            for(int i = 0; i < layers; i++)
+                this->files.push_back(file_names[i]);
             make_level();
         };
 };
