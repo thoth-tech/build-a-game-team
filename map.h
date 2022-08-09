@@ -7,6 +7,8 @@
 #include "block.h"
 using namespace std;
 
+#pragma once
+
 /**
  * @brief Map class
  * 
@@ -31,6 +33,7 @@ class LevelOjectsMap
          */
         ~LevelOjectsMap()
         {
+            //write_line("Deleting Map");
             map_array.clear();
         };
 

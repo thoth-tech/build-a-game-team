@@ -1,5 +1,6 @@
 #include "splashkit.h"
 #include "playerinput.h"
+#pragma once
 
 class Player;
 class PlayerState
@@ -9,7 +10,10 @@ class PlayerState
     string player_state;
     
     public:
-        virtual ~PlayerState(){};
+        virtual ~PlayerState()
+        {
+            //write_line("Deleting Player");
+        };
 
         void set_state(Player *player, string player_state)
         {

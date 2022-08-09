@@ -1,4 +1,5 @@
 #include "splashkit.h"
+#pragma once
 
 class CellSheet
 {
