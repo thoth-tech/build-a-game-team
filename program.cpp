@@ -47,13 +47,14 @@ shared_ptr<Level> change_level(shared_ptr<Level> current_level, vector<CellSheet
     return current_level;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     bool testing = true;
+    bool custom_level = false;
     int players = 2;
 
     vector<string> cell_sheet_names;
@@ -66,10 +67,45 @@ int main()
     cell_sheet_names.push_back("Toxic");
 
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
-    shared_ptr<Level> level1(new Level1(cell_sheets, TILE_SIZE, players));
-    shared_ptr<Level> current_level = level1;
+    shared_ptr<Level> current_level;
 
+    std::vector<std::string> args(argv, argv+argc);
+    try
+    {
+        for (size_t i = 1; i < args.size(); ++i) 
+        {
+            if (args[i] == "-p") 
+            {
+                players = std::stoi(args[i + 1]);
+            }
+            if (args[i] == "-l") 
+            {
+                vector<string> files;
 
+                for(int j = 1; j < std::stoi(args[i + 1]) + 1; j++)
+                {
+                    files.push_back(args[i + 1 + j]);
+                }
+
+                shared_ptr<Level> load(new BlankLevel(cell_sheets, TILE_SIZE, players, std::stoi(args[i + 1]), files));
+                current_level = load;
+                custom_level = true;
+            }
+        }
+    }
+    catch(const std::exception& e)
+    {
+        write_line(e.what());
+        write_line("Closing program");
+        exit(1);
+    }
+
+    if(!custom_level)
+    {
+        shared_ptr<Level> level1(new Level1(cell_sheets, TILE_SIZE, players));
+        current_level = level1;
+    }
+    
     while (!key_typed(ESCAPE_KEY))
     {
         current_level->update();
