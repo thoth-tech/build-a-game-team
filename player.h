@@ -464,7 +464,7 @@ void JumpFallState::update()
 
     if(player->is_on_floor())
     {
-        sprite_set_dy(player->get_player_sprite(), 0);
+        sprite_set_dy(player->get_player_sprite(), 0); 
         sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
         if(player->is_facing_left() && key_down(LEFT_KEY) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
