@@ -2,6 +2,18 @@
 #include "playerinput.h"
 #pragma once
 
+
+//Player Physics variables
+#define MAX_JUMP_HEIGHT 127
+#define JUMP_MOMENTUM_RATE 8
+#define MAX_FALL_SPEED 9
+#define FALL_RATE 0.8
+#define MAX_RUN_SPEED 5
+#define RUN_ACCEL 0.0981
+#define JUMP_START_SPEED 9.81
+#define JUMP_RISE_LOSS 0.1
+
+
 class Player;
 class PlayerState
 {
@@ -217,8 +229,8 @@ class JumpFallState : public PlayerState
 
 void sprite_fall(sprite sprite)
 {
-    if(sprite_dy(sprite) < 9)
-            sprite_set_dy(sprite, sprite_dy(sprite)+0.75);
+    if(sprite_dy(sprite) < MAX_FALL_SPEED)
+            sprite_set_dy(sprite, sprite_dy(sprite) + FALL_RATE);
 }
 
 void animation_routine(Player* player, string left_anim, string right_anim)
@@ -300,13 +312,13 @@ void RunState::update()
 
     if(player->is_facing_left())
     {
-        if(sprite_dx(player->get_player_sprite()) > -5)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.15);
+        if(sprite_dx(player->get_player_sprite()) > -MAX_RUN_SPEED)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) - RUN_ACCEL);
     }
     else
     {
-        if(sprite_dx(player->get_player_sprite()) < 5)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.15);
+        if(sprite_dx(player->get_player_sprite()) < MAX_RUN_SPEED)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) + RUN_ACCEL);
     }
 
     if(player->is_on_floor())
@@ -338,18 +350,18 @@ void JumpRiseState::update()
     {
         //this->player->set_on_floor(false);
         initial_y = sprite_y(player->get_player_sprite());
-        sprite_set_dy(player->get_player_sprite(), -9.81);
+        sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
         animation_routine(player, "LeftJump", "RightJump");
         run_once = true;
-        this->max_jump_height = 127 + abs((8 * sprite_dx(player->get_player_sprite())));
-        write_line(max_jump_height);
+        this->max_jump_height = MAX_JUMP_HEIGHT + abs((JUMP_MOMENTUM_RATE * sprite_dx(player->get_player_sprite())));
+        //write_line(max_jump_height);
     }
 
     this->player->set_on_floor(false);
 
     //write_line(sprite_dy(player->get_player_sprite()));
     if(sprite_dy(player->get_player_sprite()) < 0)
-        sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite())+0.1);
+        sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite()) + JUMP_RISE_LOSS);
 
     sprite_update_routine_continuous(this->player->get_player_sprite());
 
@@ -366,13 +378,13 @@ void JumpRiseState::get_input()
 {
     if(key_down(player->input.left_key))
     {
-        if(sprite_dx(player->get_player_sprite()) > -6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.0981);
+        if(sprite_dx(player->get_player_sprite()) > -MAX_RUN_SPEED)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) - RUN_ACCEL);
     }
     if(key_down(player->input.right_key))
     {
-        if(sprite_dx(player->get_player_sprite()) < 6)
-            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.0981);
+        if(sprite_dx(player->get_player_sprite()) < MAX_RUN_SPEED)
+            sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) + RUN_ACCEL);
     }
 }
 
