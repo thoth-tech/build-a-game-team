@@ -14,7 +14,7 @@ using namespace std;
 class LevelOjectsMap
 {
     protected:
-        vector<vector<string> > map_array;
+        vector<vector<int> > map_array;
         int tile_size = 64;
         int map_width;
         int map_height;
@@ -61,7 +61,7 @@ class LevelOjectsMap
             {
                 std::istringstream iss(line);
 
-                string i;
+                int i;
                 x_count = 0;
                 
                 while(iss >> i)
@@ -77,10 +77,10 @@ class LevelOjectsMap
             this->map_width = x_count;
         };
 
-        vector<vector<string> > new_level(string file)
+        vector<vector<int> > new_level(string file)
         {
-            // Initialise a 2D matrix of strings to store level design  
-            vector<vector<string> > map;
+            // Initialise a 2D matrix of int to store level design  
+            vector<vector<int> > map;
 
             // load in the level layout from file
             ifstream map_level;
@@ -95,8 +95,8 @@ class LevelOjectsMap
             }
 
             // initialise a vector of strings to store each line of text
-            vector<string> map_line;
-            string temp;
+            vector<int> map_line;
+            int temp;
 
             for (int i = 0; i < this->map_height; i++)
             {
@@ -114,6 +114,49 @@ class LevelOjectsMap
             return map;
         };
 
+        shared_ptr<Player> get_player_position(int player_number)
+        {
+            point_2d position;
+            shared_ptr<Player> player;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    if(this->map_array[i][j] == 909)
+                    {
+                        if(player_number == 1)
+                        {
+                            sprite player_sprite = create_sprite("blueGuy", "PlayerAnim");
+                            player_input input = make_player1_input();
+                            shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            return player;
+                        }
+                        if(player_number == 3)
+                        {
+                            sprite player_sprite = create_sprite("purpleGuy", "PlayerAnim");
+                            player_input input = make_player1_input();
+                            shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            return player;
+                        }
+                    }
+                    if(this->map_array[i][j] == 910)
+                    {
+                        if(player_number == 2)
+                        {
+                            sprite player_sprite = create_sprite("pinkGirl", "PlayerAnim");
+                            player_input input = make_player2_input();
+                            shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            return player;
+                        }
+                    }
+                }
+
+            return player;
+        };
+
         vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks, bitmap cell_sheet, int offset)
         {
             point_2d position;
@@ -123,14 +166,14 @@ class LevelOjectsMap
                 {
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
-                    int cell = (std::stoi(this->map_array[i][j]) - 1) - offset;
 
-                    if(std::stoi(this->map_array[i][j]) > offset)
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
                     {
-
                         if(bitmap_name(cell_sheet) == "Solid")
                         {
-                            if(std::stoi(this->map_array[i][j]) < bitmap_cell_count(cell_sheet) + 1)
+                            if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1)
                             {
                                 shared_ptr<Block> block(new SolidBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
@@ -139,7 +182,7 @@ class LevelOjectsMap
 
                         if(bitmap_name(cell_sheet) == "NonSolid")
                         {
-                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new NonSolidBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
@@ -148,7 +191,7 @@ class LevelOjectsMap
 
                         if(bitmap_name(cell_sheet) == "Pipe")
                         {
-                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new PipeBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
@@ -157,7 +200,7 @@ class LevelOjectsMap
 
                         if(bitmap_name(cell_sheet) == "Water")
                         {
-                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new WaterBlock(cell_sheet, position));
                                 level_blocks.push_back(block);
@@ -166,7 +209,7 @@ class LevelOjectsMap
 
                         if(bitmap_name(cell_sheet) == "Toxic")
                         {
-                            if(std::stoi(this->map_array[i][j]) < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new ToxicBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
