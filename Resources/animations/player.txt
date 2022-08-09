@@ -38,6 +38,13 @@ i:LeftJump, 203
 //i:LeftAttack
 //i:LeftFall
 
+//----Climb Movements-----
+
+//Climbing (Somehow this doesn't work?)
+f:[300-303], [24-27], 4, 
+
+//----Climb Animation Identifiers-----
+i:Climbing, 300
 
 //-----Dance Movements-----
 
