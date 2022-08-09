@@ -12,6 +12,7 @@
 #define RUN_ACCEL 0.0981
 #define JUMP_START_SPEED 9.81
 #define JUMP_RISE_LOSS 0.1
+#define FALL_SIDE_MOMENTUM 0.072
 
 
 class Player;
@@ -430,13 +431,13 @@ void JumpFallState::get_input()
     {
         if(key_down(player->input.left_key))
         {
-            if(sprite_dx(player->get_player_sprite()) > -6)
-                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-0.072);
+            if(sprite_dx(player->get_player_sprite()) > -MAX_RUN_SPEED)
+                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())-FALL_SIDE_MOMENTUM);
         }
         if(key_down(player->input.right_key))
         {
-            if(sprite_dx(player->get_player_sprite()) < 6)
-                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+0.072);
+            if(sprite_dx(player->get_player_sprite()) < MAX_RUN_SPEED)
+                sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+FALL_SIDE_MOMENTUM);
         }
     }
 }
