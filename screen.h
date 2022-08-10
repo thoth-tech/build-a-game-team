@@ -136,6 +136,8 @@ class LevelScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        bool pause = false;
+        bool pause_run_once;
         shared_ptr<Level> current_level;
 
     public:
@@ -153,16 +155,30 @@ class LevelScreen : public ScreenState
                 this->screen->change_state(new MenuScreen, "Menu");
             }
 
-            if(key_typed(NUM_1_KEY))
+            if(!pause)
             {
-                shared_ptr<Level> level1(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                this->current_level = level1;
+                if(key_typed(NUM_1_KEY))
+                {
+                    shared_ptr<Level> level1(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
+                    this->current_level = level1;
+                }
+
+                if(key_typed(NUM_2_KEY))
+                {
+                    shared_ptr<Level> level2(new Level2(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
+                    this->current_level = level2;
+                }
             }
 
-            if(key_typed(NUM_2_KEY))
+            if(key_typed(RETURN_KEY))
             {
-                shared_ptr<Level> level2(new Level2(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                this->current_level = level2;
+                if(pause)
+                    pause = false;
+                else
+                {
+                    pause_run_once = false;
+                    pause = true;
+                }
             }
         };
 };
@@ -243,11 +259,23 @@ void LevelScreen::update()
         run_once = true;
     }
 
-    this->current_level->update();
-
-    if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+    if(!pause)
     {
-        this->screen->change_state(new GameOverScreen, "GameOver");
+        this->current_level->update();
+
+        if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+        {
+            this->screen->change_state(new GameOverScreen, "GameOver");
+        }
+    }
+    else
+    {
+        if(!pause_run_once)
+        {
+            fill_rectangle(rgba_color(0,0,0,50), screen_rectangle());
+            pause_run_once = true;
+        }
+        draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
     }
 
     testing_input();
