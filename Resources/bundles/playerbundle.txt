@@ -1,4 +1,4 @@
 ANIM, PlayerAnim, player.txt
-BITMAP,purpleGuy,PurpleGuy.png, 32, 64, 4, 8, 24 
-BITMAP,blueGuy,BlueGuy.png, 32, 64, 4, 8, 24
-BITMAP,pinkGirl,PinkGirl.png, 32, 64, 4, 8, 24
+BITMAP,purpleGuy,PurpleGuy.png, 32, 64, 4, 8, 32 
+BITMAP,blueGuy,BlueGuy.png, 32, 64, 4, 8, 32
+BITMAP,pinkGirl,PinkGirl.png, 32, 64, 4, 8, 32

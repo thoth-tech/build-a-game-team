@@ -40,8 +40,9 @@ i:LeftJump, 203
 
 
 //-----Dance Movements-----
+f: [300-303], [28-31], 6, 304
+f: 304, 30, 6, 305
+f: 305, 29, 6,
 
 //Dance
-//i:Dance
-
-//f: 
+i:Dance, 300

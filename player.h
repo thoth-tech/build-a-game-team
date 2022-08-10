@@ -240,6 +240,21 @@ class JumpFallState : public PlayerState
         void get_input() override;
 };
 
+class DanceState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        DanceState(){};
+
+        ~DanceState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
+
 void sprite_fall(sprite sprite)
 {
     if(sprite_dy(sprite) < MAX_FALL_SPEED)
@@ -303,6 +318,11 @@ void IdleState::get_input()
     if(key_typed(player->input.jump_key) && player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
+    }
+
+    if(key_typed(Z_KEY))
+    {
+        this->player->change_state(new DanceState, "Dance");
     }
 }
 
@@ -451,5 +471,27 @@ void JumpFallState::get_input()
             if(sprite_dx(player->get_player_sprite()) < MAX_RUN_SPEED)
                 sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+FALL_SIDE_MOMENTUM);
         }
+    }
+}
+
+void DanceState::update()
+{
+    sprite player_sprite = this->player->get_player_sprite();
+    if(!run_once)
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        sprite_start_animation(player->get_player_sprite(), "Dance");
+        run_once = true;
+    }
+
+    sprite_update_routine_continuous(this->player->get_player_sprite());
+}
+
+void DanceState::get_input()
+{
+    if(key_typed(Z_KEY))
+    {
+        this->player->change_state(new IdleState, "Idle");
     }
 }
