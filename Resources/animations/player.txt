@@ -10,14 +10,20 @@ f:100, 3, 4,
 f:[101-102], [2-3], 4,
 
 //Right Jump
-f: 103, 7, 4,
+f:103, 7, 4,
+
+//Right Attack
+f:104, 1, 7,
+
+//Right Fall 
+f:[105-106], [5-6], 7,
 
 //Right Animation Identifiers
 i:RightIdle, 100
 i:RightRun, 101
 i:RightJump, 103
-//i:RightAttack
-//i:RightFall
+i:RightAttack, 104
+i:RightFall, 105
 
 
 //-----Left Movements-----
@@ -31,12 +37,18 @@ f:[201-202], [14-15], 4,
 //Left Jump
 f:203, 19, 4, 
 
+//Left Attack
+f:204, 13, 7,
+
+//Left Fall
+f:[205-206], [17-18], 4,
+
 //Left Animation Identifiers
 i:LeftIdle, 200
 i:LeftRun, 201
 i:LeftJump, 203
-//i:LeftAttack
-//i:LeftFall
+i:LeftAttack, 204
+i:LeftFall, 205
 
 
 //-----Dance Movements-----
