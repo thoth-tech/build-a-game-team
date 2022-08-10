@@ -58,3 +58,9 @@ f: 305, 29, 6,
 
 //Dance
 i:Dance, 300
+
+//----Climb Movements----
+f:[306-309], [24-27], 4,
+
+//Climb
+i:Climb, 306

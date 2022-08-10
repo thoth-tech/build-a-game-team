@@ -283,7 +283,7 @@ void LevelScreen::update()
         {
             if(!timer_started("DanceTime"))
                 start_timer("DanceTime");
-            u_int time = timer_ticks("DanceTime")/1000;
+            int time = timer_ticks("DanceTime")/1000; // Was u_int
             if(time > 2)
             {
                 stop_timer("DanceTime");
