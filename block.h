@@ -158,13 +158,12 @@ class WaterBlock : public Block
             this->is_solid = false;
             this->position = position;
 
-
             animation_script water_script = animation_script_named("CellAnim");
-            animation anim2 = create_animation(water_script, "Water");
+            animation anim = create_animation(water_script, "Water");
             drawing_options opts = option_defaults();
             this->opts = opts;
-            this->anim = anim2;
-            this->opts.anim = anim2;
+            this->anim = anim;
+            this->opts.anim = anim;
         }
 
     string test_collision(rectangle one, rectangle two) override {return "None";};
@@ -189,4 +188,33 @@ class ToxicBlock : public Block
         }
 
     string test_collision(rectangle one, rectangle two) override {return "None";};
+};
+
+class DoorBlock : public Block
+{
+    private:
+        animation anim;
+    public:
+        DoorBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->opts.draw_cell = this->cell;
+
+            animation_script door_script = animation_script_named("CellAnim");
+            animation anim = create_animation(door_script, "Door_Open");
+            drawing_options opts = option_defaults();
+            this->opts = opts;
+            this->anim = anim;
+            this->opts.anim = anim;
+        }
+
+    string test_collision(rectangle one, rectangle two) override {return "None";};
+
+    void draw_block() override
+    {
+        draw_bitmap("Door", position.x, position.y, opts);
+        update_animation(this->anim);
+        if(animation_ended(this->anim))
+            restart_animation(this->anim);
+    }
 };

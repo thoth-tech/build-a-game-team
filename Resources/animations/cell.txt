@@ -1,7 +1,16 @@
 SplashKit Animation
 //ID,CELL,DUR,NEXT
 
+//Water Animation
 f: 100, 0, 7, 101
 f: 101, 1, 7,
 
+//Door Animation1
+f: [200-202], [0-2], 10,
+
+//Door Animation2
+f: [203-205], [3-5], 10,
+
 i:Water, 100
+i:Door_Open, 200
+i:Door_Portal, 203

@@ -33,6 +33,18 @@ shared_ptr<Player> make_level_player(string file, int tile_size, int player_numb
     return player;
 }
 
+shared_ptr<DoorBlock> make_level_door(string file, int tile_size, bitmap cell_sheet)
+{
+    shared_ptr<DoorBlock> door;
+
+    LevelOjectsMap map(file, tile_size);
+    door = map.get_door(cell_sheet);
+
+    write_line("Returning Door");
+    return door;
+}
+
+
 class Level
 {
     protected:
@@ -40,6 +52,7 @@ class Level
         vector<CellSheet> cell_sheets;
         vector<string> files;
         vector<shared_ptr<Player>> level_players;
+        shared_ptr<DoorBlock> door;
         int tile_size;
         int level_layers;
         int players;
@@ -69,6 +82,8 @@ class Level
 
         void make_level()
         {
+            this->door = make_level_door(files[0], this->tile_size, cell_sheets[5].cells);
+
             for(int i = 0; i < level_layers; i++)
             {
                 vector<shared_ptr<Block>> level_blocks;
@@ -106,6 +121,8 @@ class Level
                 if(hitbox)
                     draw_hitbox(layers[0][j]->get_block_hitbox());
             }
+            
+            door->draw_block();
 
             //Player functions
             for(int i = 0; i < level_players.size(); i++)

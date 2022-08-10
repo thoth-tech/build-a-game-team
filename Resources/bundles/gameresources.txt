@@ -6,5 +6,6 @@ BITMAP, NonSolid, non_solid_blocks.png, 64, 64, 1, 1, 1
 BITMAP, Pipe, pipes_64.png, 64, 64, 4, 11, 43
 BITMAP, Water, water_blocks.png, 64, 64, 2, 1, 2
 BITMAP, Toxic, toxic_blocks.png, 64, 64, 1, 1, 1
+BITMAP, Door, Door.png, 64, 64, 3, 2, 6
 
 BITMAP,background,Background.png

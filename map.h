@@ -160,6 +160,31 @@ class LevelOjectsMap
             return player;
         };
 
+        shared_ptr<DoorBlock> get_door(bitmap cell_sheet)
+        {
+            point_2d position;
+            shared_ptr<DoorBlock> door;
+
+            for (int i = 0; i < this->map_height; i++)
+            {
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    if(this->map_array[i][j] == 808)
+                    {
+                        write_line("found door");
+                        write_line("Door at: " + std::to_string(position.x) + " " + std::to_string(position.y));
+                        shared_ptr<DoorBlock> level_door(new DoorBlock(cell_sheet, position));
+                        door = level_door;
+                    }
+                }
+            }
+
+            return door;
+        };
+
         vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks, bitmap cell_sheet, int offset)
         {
             point_2d position;
