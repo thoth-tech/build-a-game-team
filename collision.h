@@ -10,30 +10,28 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
 {
     for(int k = 0; k < level_players.size(); k++)
     {
-        float landing_value = 0;
         string collision = "None";
         for(int j = 0; j < layers.size(); j++)
         {
             for (int i = 0; i < layers[j].size(); i++)
             {
+                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    continue;
+
                 if(layers[j][i]->is_block_solid())
                     collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
                 else
-                    break;
-                
-                
+                    continue;
+
                 if (collision == "Top")
                 {
-                    landing_value = layers[j][i]->get_top();
                     level_players[k]->set_on_floor(true);
-                    level_players[k]->set_landing_y_value(landing_value);
+                    level_players[k]->set_landing_y_value(layers[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
                 {
-                    bool test = level_players[k]->is_on_floor();
-
-                    if(test)
+                    if(level_players[k]->is_on_floor())
                         break;
 
                     level_players[k]->set_player_dy(0);
@@ -45,16 +43,19 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 else if (collision == "Left")
                 {
                     level_players[k]->set_player_dx(0);
-                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 5);
+                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
                     break;
                 }
                 else if (collision == "Right")
                 {
                     level_players[k]->set_player_dx(0);
-                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 5);
+                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);
                     break;
                 }
             }
+
+            if(collision != "None")
+                break;
         }
 
         if (collision == "None")

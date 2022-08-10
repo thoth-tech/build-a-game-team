@@ -100,7 +100,8 @@ class Level
             //Draw Initial Layer
             for(int j = 0; j < layers[0].size(); j++)
             {
-                layers[0][j]->draw_block();
+                if(rect_on_screen(layers[0][j]->get_block_hitbox()))
+                    layers[0][j]->draw_block();
                 //For testing hitboxes
                 if(hitbox)
                     draw_hitbox(layers[0][j]->get_block_hitbox());
@@ -130,8 +131,6 @@ class Level
                         else
                             is_player2_out_of_lives = true;
                     }
-                        
-                    draw_text("On Screen", COLOR_WHITE, 0, 40, option_to_screen());
                 }
 
             }
@@ -141,7 +140,8 @@ class Level
             {
                 for(int j = 0; j < layers[i].size(); j++)
                 {
-                    layers[i][j]->draw_block();
+                    if(rect_on_screen(layers[i][j]->get_block_hitbox()))
+                        layers[i][j]->draw_block();
                     if(hitbox)
                         draw_hitbox(layers[i][j]->get_block_hitbox());
                 }
