@@ -97,7 +97,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
                 else
                     continue;
 
-                if(collision != "None" && key_typed(UP_KEY))
+                if(collision != "None" && key_typed(level_players[k]->input.jump_key))
                 {
                     if(!level_players[k]->is_on_ladder())
                     {
