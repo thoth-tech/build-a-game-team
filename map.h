@@ -174,8 +174,6 @@ class LevelOjectsMap
 
                     if(this->map_array[i][j] == 808)
                     {
-                        write_line("found door");
-                        write_line("Door at: " + std::to_string(position.x) + " " + std::to_string(position.y));
                         shared_ptr<DoorBlock> level_door(new DoorBlock(cell_sheet, position));
                         door = level_door;
                     }

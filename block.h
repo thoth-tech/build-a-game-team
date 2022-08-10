@@ -10,7 +10,8 @@ class Block
         double top;
         string type;
         rectangle hitbox;
-        bool is_solid;
+        bool is_solid = false;
+        bool is_door = false;
         int cell;
         
     public:
@@ -43,7 +44,7 @@ class Block
             return this->position;
         };
 
-        void make_hitbox()
+        virtual void make_hitbox()
         {
             rectangle hitbox;
             hitbox.x = this->position.x;
@@ -63,6 +64,11 @@ class Block
         bool is_block_solid()
         {
             return this->is_solid;
+        };
+
+        bool is_block_door()
+        {
+            return this->is_door;
         };
 };
 
@@ -198,6 +204,7 @@ class DoorBlock : public Block
         DoorBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_door = true;
             this->opts.draw_cell = this->cell;
 
             animation_script door_script = animation_script_named("CellAnim");
@@ -206,9 +213,20 @@ class DoorBlock : public Block
             this->opts = opts;
             this->anim = anim;
             this->opts.anim = anim;
+            make_hitbox();
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+    string test_collision(rectangle one, rectangle two) override 
+    {
+        bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+        bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+        bool collision = x_overlaps && y_overlaps;
+        
+        if(collision)
+            return "Collision";
+        else
+            return "None";
+    };
 
     void draw_block() override
     {
@@ -216,5 +234,25 @@ class DoorBlock : public Block
         update_animation(this->anim);
         if(animation_ended(this->anim))
             restart_animation(this->anim);
+    }
+
+    void make_hitbox() override
+    {
+        rectangle hitbox;
+        hitbox.x = this->position.x + 10;
+        hitbox.y = this->position.y + 20;
+        hitbox.height = bitmap_cell_height(this->image) - 20;
+        hitbox.width = bitmap_cell_width(this->image) - 30;
+        this->hitbox = hitbox;
+    };
+
+    void open_portal()
+    {
+        animation_script door_script = animation_script_named("CellAnim");
+        animation anim = create_animation(door_script, "Door_Portal");
+        drawing_options opts = option_defaults();
+        this->opts = opts;
+        this->anim = anim;
+        this->opts.anim = anim;
     }
 };

@@ -245,6 +245,7 @@ void LevelScreen::update()
 {
     if(!run_once)
     {
+        create_timer("DanceTime");
         if(this->screen->get_files().size() != 0)
         {
             shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
@@ -266,6 +267,18 @@ void LevelScreen::update()
         if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
         {
             this->screen->change_state(new GameOverScreen, "GameOver");
+        }
+        if(this->current_level->player1_complete && this->current_level->player2_complete)
+        {
+            if(!timer_started("DanceTime"))
+                start_timer("DanceTime");
+            u_int time = timer_ticks("DanceTime")/1000;
+            if(time > 2)
+            {
+                stop_timer("DanceTime");
+                free_timer(timer_named("DanceTime"));
+                this->screen->change_state(new GameOverScreen, "GameOver");
+            }
         }
     }
     else

@@ -40,7 +40,6 @@ shared_ptr<DoorBlock> make_level_door(string file, int tile_size, bitmap cell_sh
     LevelOjectsMap map(file, tile_size);
     door = map.get_door(cell_sheet);
 
-    write_line("Returning Door");
     return door;
 }
 
@@ -60,9 +59,11 @@ class Level
         bool test_camera = false;
 
     public:
-        bool is_player1_out_of_lives;
+        bool is_player1_out_of_lives = false;
+        bool player1_complete = false;
         //set true for 1 player game
         bool is_player2_out_of_lives = true;
+        bool player2_complete = true;
 
         Level(vector<CellSheet> cell_sheets, int tile_size, int players)
         {
@@ -71,6 +72,7 @@ class Level
             this->players = players;
             if(this->players == 2)
             {
+                this->player2_complete = false;
                 this->is_player2_out_of_lives = false;
             }
         };
@@ -123,6 +125,8 @@ class Level
             }
             
             door->draw_block();
+            if(hitbox)
+                draw_hitbox(door->get_block_hitbox());
 
             //Player functions
             for(int i = 0; i < level_players.size(); i++)
@@ -133,6 +137,14 @@ class Level
                 //For testing hitboxes
                 if(hitbox)
                     draw_hitbox(level_players[i]->get_player_hitbox());
+                
+                if(level_players[i]->has_player_won())
+                {
+                    if(i == 0)
+                        player1_complete = true;
+                    else
+                        player2_complete = true;                    
+                }
 
                 point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
                 //Player Will lose a life when they fall off the bottom of the screen
@@ -165,6 +177,7 @@ class Level
             }
 
             check_solid_block_collisions(layers, level_players);
+            check_door_block_collisions(door, level_players);
 
             if(test_camera)
                 test_camera_on(level_players[0]);

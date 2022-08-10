@@ -62,3 +62,20 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
             level_players[k]->set_on_floor(false);
     }
 }
+
+void check_door_block_collisions(shared_ptr<DoorBlock> door, vector<shared_ptr<Player>> level_players)
+{
+    for(int i = 0; i < level_players.size(); i++)
+    {
+        string collision = "None";
+        collision = door->test_collision(level_players[i]->get_player_hitbox(), door->get_block_hitbox());
+
+        if(collision != "None" && level_players[i]->is_on_floor())
+            if(level_players[i]->get_state_type() != "Dance")
+            {
+                level_players[i]->set_player_won(true);
+                door->open_portal();
+                level_players[i]->change_state(new DanceState, "Dance");
+            }
+    }
+}

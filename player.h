@@ -54,6 +54,7 @@ class Player
         float landing_y_value;
         rectangle hitbox;
         bool is_dead = false;
+        bool has_won = false;
         
     public:
         player_input input;
@@ -174,7 +175,22 @@ class Player
 
         void set_dead(bool is_dead)
         {
-            this->is_dead = true;
+            this->is_dead = is_dead;
+        };
+
+        bool has_player_won()
+        {
+            return this->has_won;
+        };
+
+        void set_player_won(bool status)
+        {
+            this->has_won = status;
+        };
+
+        string get_state_type()
+        {
+            return this->state->get_type();
         };
 };
 
