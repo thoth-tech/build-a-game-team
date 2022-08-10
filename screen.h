@@ -1,6 +1,7 @@
 #include "splashkit.h"
 #include "level.h"
 #include "cellsheet.h"
+#include "get_level.h"
 #include <memory>
 #include <vector>
 
@@ -11,7 +12,6 @@ class ScreenState
     protected:
         Screen *screen;
         string screen_state;
-
     
     public:
         virtual ~ScreenState()
@@ -139,11 +139,16 @@ class LevelScreen : public ScreenState
         bool pause = false;
         bool pause_run_once;
         shared_ptr<Level> current_level;
+        int level_number = 1;
+        int max_levels = 2;
 
     public:
         LevelScreen(){};
 
-        ~LevelScreen(){};
+        ~LevelScreen()
+        {
+            free_timer(timer_named("DanceTime"));
+        };
 
         void update() override;
 
@@ -159,14 +164,20 @@ class LevelScreen : public ScreenState
             {
                 if(key_typed(NUM_1_KEY))
                 {
-                    shared_ptr<Level> level1(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                    this->current_level = level1;
+                    if(level_number < max_levels)
+                    {
+                        level_number += 1;
+                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                    }
                 }
 
                 if(key_typed(NUM_2_KEY))
                 {
-                    shared_ptr<Level> level2(new Level2(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                    this->current_level = level2;
+                    if(level_number > 1)
+                    {
+                        level_number -= 1;
+                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                    }
                 }
             }
 
@@ -250,11 +261,11 @@ void LevelScreen::update()
         {
             shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
             current_level = custom_level;
+            this->max_levels = 1;
         }
         else
         {
-            shared_ptr<Level> normal_level(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-            this->current_level = normal_level;
+            this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
         }
 
         run_once = true;
@@ -276,8 +287,13 @@ void LevelScreen::update()
             if(time > 2)
             {
                 stop_timer("DanceTime");
-                free_timer(timer_named("DanceTime"));
-                this->screen->change_state(new GameOverScreen, "GameOver");
+                if(this->level_number < max_levels)
+                {
+                    this->level_number += 1;
+                    this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                }
+                else
+                    this->screen->change_state(new GameOverScreen, "GameOver");
             }
         }
     }
