@@ -149,12 +149,9 @@ class Ladder : public Block
             bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
             bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
             bool collision = x_overlaps && y_overlaps;
-            
+
             if(collision)
-            {
-                draw_text("Ladder", COLOR_WHITE, 0, 0, option_to_screen());
                 return "Collision";
-            }
             else
                 return "None";
         };

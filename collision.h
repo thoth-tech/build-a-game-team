@@ -97,9 +97,26 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
                 else
                     continue;
 
-                if(collision != "None")
+                if(collision != "None" && key_typed(UP_KEY))
+                {
+                    if(!level_players[k]->is_on_ladder())
+                    {
+                        level_players[k]->set_on_ladder(true);
+                        level_players[k]->change_state(new ClimbState, "Climb");
+                    }
                     break;
-            }    
+                }
+                else if(collision != "None" && level_players[k]->get_state_type() == "Climb")
+                {
+                    level_players[k]->set_on_ladder(true);
+                    break;
+                }
+            }
+
+            if(collision == "None")
+            {
+                level_players[k]->set_on_ladder(false);
+            }
         }
     }
 }
