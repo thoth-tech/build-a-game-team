@@ -1,0 +1,19 @@
+SplashKit Animation
+//ID,CELL,DUR,NEXT
+
+//-----Right Movements-----
+
+//Right Observe
+f:[0-3], [0-3], 4
+//Right Bite
+f:[4-7], [4-7], 4
+//Right Crawl
+f:[8-11], [8-11], 4
+//Right Run
+f:[12-15], [12-15], 4 
+
+//Right Animation Identifiers
+i:RightObserve,0 
+i:RightBite,4
+i:RightCrawl,8
+i:RightRun,12
