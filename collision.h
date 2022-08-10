@@ -1,5 +1,6 @@
 #include "splashkit.h"
 #include "player.h"
+#include "playerinput.h"
 #include "block.h"
 #include <memory>
 #include <vector>
@@ -97,7 +98,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
                 else
                     continue;
 
-                if(collision != "None" && key_typed(level_players[k]->input.jump_key))
+                if(collision != "None" && (key_typed(level_players[k]->input.jump_key) || key_typed(level_players[k]->input.crouch_key)))
                 {
                     if(!level_players[k]->is_on_ladder())
                     {
