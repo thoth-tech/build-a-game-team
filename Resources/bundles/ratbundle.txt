@@ -1,0 +1,3 @@
+ANIM, RatAnim, rat.txt
+
+BITMAP,rat,Rat.png, 64, 32, 4, 4, 16 
