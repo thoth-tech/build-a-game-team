@@ -32,6 +32,7 @@ int main(int argc, char *argv[])
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
     int players = 2;
+    bool test_screen = false;
 
     vector<string> cell_sheet_names;
 
@@ -59,6 +60,10 @@ int main(int argc, char *argv[])
                 for(int j = 1; j < std::stoi(args[i + 1]) + 1; j++)
                     files.push_back(args[i + 1 + j]);
             }
+            if (args[i] == "-t") 
+            {
+                test_screen = true;
+            }
         }
     }
     catch(const std::exception& e)
@@ -69,15 +74,25 @@ int main(int argc, char *argv[])
     }
 
     shared_ptr<Screen> screen;
-    if(files.size() != 0)
+    if(test_screen)
     {
-        shared_ptr<Screen> custom_level(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets, files));
-        screen = custom_level;
+        //use this variable to test different screens
+        shared_ptr<Screen> test_screen(new Screen(new CompanyIntroScreen, TILE_SIZE, players, cell_sheets));
+        screen = test_screen;
     }
     else
     {
-        shared_ptr<Screen> normal_game(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets));
-        screen = normal_game;
+        
+        if(files.size() != 0)
+        {
+            shared_ptr<Screen> custom_level(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets, files));
+            screen = custom_level;
+        }
+        else
+        {
+            shared_ptr<Screen> normal_game(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets));
+            screen = normal_game;
+        }
     }
     
     while (!key_typed(ESCAPE_KEY))

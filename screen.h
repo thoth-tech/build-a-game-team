@@ -15,9 +15,7 @@ class ScreenState
     
     public:
         virtual ~ScreenState()
-        {
-            //write_line("Deleting Player");
-        };
+        {};
 
         void set_state(Screen *screen, string screen_state)
         {
