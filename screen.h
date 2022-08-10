@@ -1,6 +1,7 @@
 #include "splashkit.h"
 #include "level.h"
 #include "cellsheet.h"
+#include "get_level.h"
 #include <memory>
 #include <vector>
 
@@ -11,7 +12,6 @@ class ScreenState
     protected:
         Screen *screen;
         string screen_state;
-
     
     public:
         virtual ~ScreenState()
@@ -36,26 +36,15 @@ class Screen
     private:
         ScreenState *state;
         int tile_size;
-        int players;
+        int players = 1;
         vector<CellSheet> cell_sheets;
-        bool custom_level = false;
         vector<string> files;
         
     public:
-        Screen(ScreenState *state, int tile_size, int players, vector<CellSheet> cell_sheets) : state(nullptr)
+        Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
         {
             this->cell_sheets = cell_sheets;
-            this->players = players;
             this->tile_size = tile_size;
-            this->change_state(state, "Initial");
-        };
-
-        Screen(ScreenState *state, int tile_size, int players, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
-        {
-            this->cell_sheets = cell_sheets;
-            this->players = players;
-            this->tile_size = tile_size;
-            this->custom_level = true;
             this->files = files;
             this->change_state(state, "Initial");
         };
@@ -88,14 +77,14 @@ class Screen
             return this->players;
         };
 
+        void set_players(int num)
+        {
+            this->players = num;
+        };
+
         vector<CellSheet> get_cell_sheets()
         {
             return this->cell_sheets;
-        };
-
-        bool is_custom_level()
-        {
-            return this->custom_level;
         };
 
         vector<string> get_files()
@@ -147,29 +136,61 @@ class LevelScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        bool pause = false;
+        bool pause_run_once;
         shared_ptr<Level> current_level;
+        int level_number = 1;
+        int max_levels = 2;
 
     public:
         LevelScreen(){};
 
-        ~LevelScreen(){};
+        ~LevelScreen()
+        {
+            free_timer(timer_named("DanceTime"));
+        };
 
         void update() override;
 
+        //Inputs for testing functions
         void testing_input()
         {
-            if(key_typed(NUM_1_KEY))
+            if(key_typed(M_KEY))
             {
-                shared_ptr<Level> level1(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                this->current_level = level1;
+                this->screen->change_state(new MenuScreen, "Menu");
             }
 
-            if(key_typed(NUM_2_KEY))
+            if(!pause)
             {
-                shared_ptr<Level> level2(new Level2(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-                this->current_level = level2;
+                if(key_typed(NUM_1_KEY))
+                {
+                    if(level_number < max_levels)
+                    {
+                        level_number += 1;
+                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                    }
+                }
+
+                if(key_typed(NUM_2_KEY))
+                {
+                    if(level_number > 1)
+                    {
+                        level_number -= 1;
+                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                    }
+                }
             }
 
+            if(key_typed(RETURN_KEY))
+            {
+                if(pause)
+                    pause = false;
+                else
+                {
+                    pause_run_once = false;
+                    pause = true;
+                }
+            }
         };
 };
 
@@ -215,10 +236,18 @@ void MenuScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Menu Screen", COLOR_WHITE, pt.x, pt.y);
+    draw_text("Menu Screen", COLOR_WHITE, pt.x - 20, pt.y);
+    draw_text("Press 1 for 1P Game", COLOR_WHITE, pt.x - 20, pt.y + 10);
+    draw_text("Press 2 for 2P Game", COLOR_WHITE, pt.x - 20, pt.y + 20);
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(NUM_1_KEY))
     {
+        this->screen->set_players(1);
+        this->screen->change_state(new LevelScreen, "Level");
+    }
+    if(key_typed(NUM_2_KEY))
+    {
+        this->screen->set_players(2);
         this->screen->change_state(new LevelScreen, "Level");
     }
 }
@@ -227,20 +256,56 @@ void LevelScreen::update()
 {
     if(!run_once)
     {
-        if(!this->screen->is_custom_level())
+        create_timer("DanceTime");
+        if(this->screen->get_files().size() != 0)
         {
-            shared_ptr<Level> level1(new Level1(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players()));
-            this->current_level = level1;
+            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
+            current_level = custom_level;
+            this->max_levels = 1;
         }
         else
         {
-            shared_ptr<Level> load(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
-            current_level = load;
+            this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
         }
+
         run_once = true;
     }
 
-    this->current_level->update();
+    if(!pause)
+    {
+        this->current_level->update();
+
+        if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+        {
+            this->screen->change_state(new GameOverScreen, "GameOver");
+        }
+        if(this->current_level->player1_complete && this->current_level->player2_complete)
+        {
+            if(!timer_started("DanceTime"))
+                start_timer("DanceTime");
+            u_int time = timer_ticks("DanceTime")/1000;
+            if(time > 2)
+            {
+                stop_timer("DanceTime");
+                if(this->level_number < max_levels)
+                {
+                    this->level_number += 1;
+                    this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                }
+                else
+                    this->screen->change_state(new GameOverScreen, "GameOver");
+            }
+        }
+    }
+    else
+    {
+        if(!pause_run_once)
+        {
+            fill_rectangle(rgba_color(0,0,0,50), screen_rectangle());
+            pause_run_once = true;
+        }
+        draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
+    }
 
     testing_input();
 }
@@ -248,5 +313,11 @@ void LevelScreen::update()
 void GameOverScreen::update()
 {
     clear_screen(COLOR_BLACK);
-    draw_text("Test Screen", COLOR_WHITE, 0, 0);
+    draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
+    draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 410, option_to_screen());
+
+    if(key_typed(RETURN_KEY))
+    {
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
 }

@@ -53,9 +53,12 @@ class Player
         bool on_floor;
         float landing_y_value;
         rectangle hitbox;
+        bool is_dead = false;
+        bool has_won = false;
         
     public:
         player_input input;
+        int player_lives = 1;
 
         Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
         {
@@ -164,6 +167,31 @@ class Player
         {
             sprite_set_dx(this->player_sprite, value);
         };
+
+        bool is_player_dead()
+        {
+            return this->is_dead;
+        };
+
+        void set_dead(bool is_dead)
+        {
+            this->is_dead = is_dead;
+        };
+
+        bool has_player_won()
+        {
+            return this->has_won;
+        };
+
+        void set_player_won(bool status)
+        {
+            this->has_won = status;
+        };
+
+        string get_state_type()
+        {
+            return this->state->get_type();
+        };
 };
 
 class IdleState : public PlayerState
@@ -227,6 +255,49 @@ class JumpFallState : public PlayerState
         void update() override;
         void get_input() override;
 };
+
+class DanceState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        DanceState(){};
+
+        ~DanceState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
+class AttackState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        AttackState(){};
+
+        ~AttackState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
+class HurtState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        HurtState(){};
+
+        ~HurtState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
 
 void sprite_fall(sprite sprite)
 {
@@ -292,6 +363,20 @@ void IdleState::get_input()
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
+
+    if(key_typed(Z_KEY))
+    {
+        this->player->change_state(new DanceState, "Dance");
+    }
+
+    if(key_typed(V_KEY))
+    {
+        this->player->change_state(new HurtState, "Hurt");
+    }
+    if(key_typed(B_KEY))
+    {
+        this->player->change_state(new AttackState, "Attack");
+    }
 }
 
 void RunState::update()
@@ -353,8 +438,8 @@ void JumpRiseState::update()
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
         animation_routine(player, "LeftJump", "RightJump");
-        run_once = true;
         this->max_jump_height = MAX_JUMP_HEIGHT + abs((JUMP_MOMENTUM_RATE * sprite_dx(player->get_player_sprite())));
+        run_once = true;
         //write_line(max_jump_height);
     }
 
@@ -440,4 +525,67 @@ void JumpFallState::get_input()
                 sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite())+FALL_SIDE_MOMENTUM);
         }
     }
+}
+
+void DanceState::update()
+{
+    sprite player_sprite = this->player->get_player_sprite();
+    if(!run_once)
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        sprite_start_animation(player->get_player_sprite(), "Dance");
+        run_once = true;
+    }
+
+    sprite_update_routine_continuous(this->player->get_player_sprite());
+}
+
+void DanceState::get_input()
+{
+    if(key_typed(Z_KEY))
+    {
+        this->player->change_state(new IdleState, "Idle");
+    }
+}
+
+void AttackState::update()
+{
+    sprite player_sprite = this->player->get_player_sprite();
+    if(!run_once)
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        animation_routine(player, "LeftAttack", "RightAttack");
+        run_once = true;
+    }
+    draw_sprite(player_sprite);
+    if(sprite_animation_has_ended(player_sprite))
+        this->player->change_state(new IdleState, "Idle");
+    update_sprite(player_sprite);
+}
+
+void AttackState::get_input()
+{
+}
+
+void HurtState::update()
+{
+    sprite player_sprite = this->player->get_player_sprite();
+    if(!run_once)
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        animation_routine(player, "LeftFall", "RightFall");
+        run_once = true;
+    }
+
+    draw_sprite(player_sprite);
+    if(sprite_animation_has_ended(player_sprite))
+        this->player->change_state(new IdleState, "Idle");
+    update_sprite(player_sprite);
+}
+
+void HurtState::get_input()
+{
 }

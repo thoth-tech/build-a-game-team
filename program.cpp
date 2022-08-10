@@ -31,7 +31,6 @@ int main(int argc, char *argv[])
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
-    int players = 2;
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
@@ -42,6 +41,7 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("Pipe");
     cell_sheet_names.push_back("Water");
     cell_sheet_names.push_back("Toxic");
+    cell_sheet_names.push_back("Door");
 
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
     std::vector<std::string> args(argv, argv+argc);
@@ -51,10 +51,6 @@ int main(int argc, char *argv[])
     {
         for (size_t i = 1; i < args.size(); ++i) 
         {
-            if (args[i] == "-p") 
-            {
-                players = std::stoi(args[i + 1]);
-            }
             if (args[i] == "-l") 
             {
                 for(int j = 1; j < std::stoi(args[i + 1]) + 1; j++)
@@ -77,22 +73,13 @@ int main(int argc, char *argv[])
     if(test_screen)
     {
         //use this variable to test different screens
-        shared_ptr<Screen> test_screen(new Screen(new CompanyIntroScreen, TILE_SIZE, players, cell_sheets));
+        shared_ptr<Screen> test_screen(new Screen(new CompanyIntroScreen, TILE_SIZE, cell_sheets, files));
         screen = test_screen;
     }
     else
     {
-        
-        if(files.size() != 0)
-        {
-            shared_ptr<Screen> custom_level(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets, files));
-            screen = custom_level;
-        }
-        else
-        {
-            shared_ptr<Screen> normal_game(new Screen(new LevelScreen, TILE_SIZE, players, cell_sheets));
-            screen = normal_game;
-        }
+        shared_ptr<Screen> normal_screen(new Screen(new MenuScreen, TILE_SIZE, cell_sheets, files));
+        screen = normal_screen;
     }
     
     while (!key_typed(ESCAPE_KEY))
