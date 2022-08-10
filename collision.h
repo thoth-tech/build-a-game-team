@@ -79,3 +79,27 @@ void check_door_block_collisions(shared_ptr<DoorBlock> door, vector<shared_ptr<P
             }
     }
 }
+
+void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+{
+    for(int k = 0; k < level_players.size(); k++)
+    {
+        string collision = "None";
+        for(int j = 0; j < layers.size(); j++)
+        {
+            for (int i = 0; i < layers[j].size(); i++)
+            {
+                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    continue;
+
+                if(layers[j][i]->is_block_ladder())
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                else
+                    continue;
+
+                if(collision != "None")
+                    break;
+            }    
+        }
+    }
+}

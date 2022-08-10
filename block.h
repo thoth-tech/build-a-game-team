@@ -13,6 +13,7 @@ class Block
         bool is_solid = false;
         bool is_door = false;
         int cell;
+        bool is_ladder = false;
         
     public:
         Block(bitmap cell_sheet, point_2d position)
@@ -69,6 +70,11 @@ class Block
         bool is_block_door()
         {
             return this->is_door;
+        };
+
+        bool is_block_ladder()
+        {
+            return this->is_ladder;
         };
 };
 
@@ -127,17 +133,31 @@ class SolidBlock : public Block
         };
 };
 
-class NonSolidBlock : public Block
+class Ladder : public Block
 {
     public:
-        NonSolidBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        Ladder(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_ladder = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         };
 
-        string test_collision(rectangle one, rectangle two) override {return "None";};
+        string test_collision(rectangle one, rectangle two) override 
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+            bool collision = x_overlaps && y_overlaps;
+            
+            if(collision)
+            {
+                draw_text("Ladder", COLOR_WHITE, 0, 0, option_to_screen());
+                return "Collision";
+            }
+            else
+                return "None";
+        };
 };
 
 class PipeBlock : public Block

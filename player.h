@@ -509,7 +509,7 @@ void JumpRiseState::get_input()
             sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) + RUN_ACCEL);
     }
     // Added this code to test out climbing.
-    if(key_typed(key_code(B_KEY)))
+    if(key_typed(key_code(P_KEY)))
     {
         this->player->change_state(new ClimbState, "Climbing");
     }
