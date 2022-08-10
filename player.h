@@ -551,10 +551,6 @@ void AttackState::update()
 
 void AttackState::get_input()
 {
-    if(key_typed(Z_KEY))
-    {
-        this->player->change_state(new IdleState, "Idle");
-    }
 }
 
 void HurtState::update()
@@ -576,8 +572,4 @@ void HurtState::update()
 
 void HurtState::get_input()
 {
-    if(key_typed(Z_KEY))
-    {
-        this->player->change_state(new IdleState, "Idle");
-    }
 }
