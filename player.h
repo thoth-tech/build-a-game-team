@@ -53,9 +53,11 @@ class Player
         bool on_floor;
         float landing_y_value;
         rectangle hitbox;
+        bool is_dead = false;
         
     public:
         player_input input;
+        int player_lives = 1;
 
         Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
         {
@@ -163,6 +165,16 @@ class Player
         void set_player_dx(float value)
         {
             sprite_set_dx(this->player_sprite, value);
+        };
+
+        bool is_player_dead()
+        {
+            return this->is_dead;
+        };
+
+        void set_dead(bool is_dead)
+        {
+            this->is_dead = true;
         };
 };
 

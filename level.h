@@ -47,11 +47,19 @@ class Level
         bool test_camera = false;
 
     public:
+        bool is_player1_out_of_lives;
+        //set true for 1 player game
+        bool is_player2_out_of_lives = true;
+
         Level(vector<CellSheet> cell_sheets, int tile_size, int players)
         {
             this->tile_size = tile_size;
             this->cell_sheets = cell_sheets;
             this->players = players;
+            if(this->players == 2)
+            {
+                this->is_player2_out_of_lives = false;
+            }
         };
 
         ~Level()
@@ -107,6 +115,25 @@ class Level
                 //For testing hitboxes
                 if(hitbox)
                     draw_hitbox(level_players[i]->get_player_hitbox());
+
+                point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
+                //Player Will lose a life when they fall off the bottom of the screen
+                if(!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
+                {
+                    this->level_players[i]->set_dead(true);
+                    this->level_players[i]->player_lives -= 1;
+
+                    if(level_players[i]->player_lives == 0)
+                    {
+                        if(i == 0)
+                            is_player1_out_of_lives = true;
+                        else
+                            is_player2_out_of_lives = true;
+                    }
+                        
+                    draw_text("On Screen", COLOR_WHITE, 0, 40, option_to_screen());
+                }
+
             }
 
             //Draw foreground Layers

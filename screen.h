@@ -245,11 +245,22 @@ void LevelScreen::update()
 
     this->current_level->update();
 
+    if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+    {
+        this->screen->change_state(new GameOverScreen, "GameOver");
+    }
+
     testing_input();
 }
 
 void GameOverScreen::update()
 {
     clear_screen(COLOR_BLACK);
-    draw_text("Test Screen", COLOR_WHITE, 0, 0);
+    draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
+    draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 410, option_to_screen());
+
+    if(key_typed(RETURN_KEY))
+    {
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
 }
