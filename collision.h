@@ -175,3 +175,57 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
             level_enemies[k]->get_ai()->set_on_floor(false);
     }
 }
+
+string test_hitbox_collision(rectangle one, rectangle two)
+{
+    bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+    bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+    bool collision = x_overlaps && y_overlaps;
+    
+    if(collision)
+        return "Collision";
+    else
+        return "None";
+};
+
+void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vector<shared_ptr<Player>> level_players)
+{
+    for(int i = 0; i < level_enemies.size(); i++)
+    {
+        if(!rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
+            continue;
+
+        if(level_enemies[i]->get_dead())
+            continue;
+
+        string collision = "None";
+        for(int j = 0; j < level_players.size(); j++)
+        {
+            collision = test_hitbox_collision(level_enemies[i]->get_enemy_hitbox(), level_players[j]->get_player_hitbox());
+
+            if(collision != "None" && level_players[i]->get_state_type() != "JumpFall")
+            {
+                if(!timer_started(timer_named("DamageTimer")))
+                {
+                    level_players[j]->player_health -= 1;
+                    write_line("Player Health: " + std::to_string(level_players[j]->player_health));
+                    start_timer("DamageTimer");
+                }
+
+                int time = timer_ticks("DamageTimer")/1000;
+
+                //Invincibility frames
+                if(!(time < 2))
+                    stop_timer("DamageTimer");
+            }
+            else if(collision != "None" && level_players[i]->get_state_type() == "JumpFall")
+            {
+                //Jumped on enemy
+                level_enemies[i]->set_dead(true);
+            }
+            else
+                break;
+        }
+    }
+
+}

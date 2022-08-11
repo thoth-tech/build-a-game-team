@@ -198,7 +198,6 @@ class LevelOjectsMap
                     {
                         if(!has_resource_bundle("roach"))
                             load_resource_bundle("roach", "roachbundle.txt");
-                        write_line("Found Roach");
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
                         level_enemies.push_back(cockroach);
