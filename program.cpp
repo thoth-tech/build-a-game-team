@@ -1,6 +1,8 @@
 #include "splashkit.h"
 #include "cellsheet.h"
 #include "screen.h"
+#include "enemy.h"
+#include "testing.h"
 #include <memory>
 #include <vector>
 
@@ -29,11 +31,23 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
 int main(int argc, char *argv[])
 {
     load_resource_bundle("player", "playerbundle.txt");
+    //
+    load_resource_bundle("roach", "roachbundle.txt");
+    //
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
+
+    // point_2d pos;
+    // pos.x = 0;
+    // pos.y = 0;
+
+    // sprite roach = create_sprite("Roach", "RoachAnim");
+
+    // shared_ptr<Roach> cockroach(new Roach(roach, pos));
+    
 
     //Push the cell sheets used in the same order as the level editor
     cell_sheet_names.push_back("Solid");
@@ -85,11 +99,18 @@ int main(int argc, char *argv[])
     while (!key_typed(ESCAPE_KEY))
     {
         screen->update();
+
+        //cockroach->update();
+        //draw_hitbox(cockroach.get_enemy_hitbox());
+
         process_events();
         refresh_screen(60);
     }
 
     free_resource_bundle("player");
     free_resource_bundle("game_resources");
+
+    //
+    free_resource_bundle("roach");
     return 0;
 }

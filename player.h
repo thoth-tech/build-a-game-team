@@ -64,6 +64,9 @@ class Player
 
         Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
         {
+            if(!has_resource_bundle("player"))
+                load_resource_bundle("player", "playerbundle.txt");
+
             this->change_state(state, "Initial");
             this->player_sprite = player_sprite;
             this->position = initial_position;

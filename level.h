@@ -1,5 +1,7 @@
 #include "splashkit.h"
 #include "block.h"
+#include "behaviour.h"
+#include "enemy.h"
 #include "cellsheet.h"
 #include "player.h"
 #include "map.h"
@@ -21,6 +23,16 @@ vector<shared_ptr<Block>> make_layer_level(string file, int tile_size, vector<Ce
     }
 
     return level_blocks;
+}
+
+vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size)
+{
+    //vector<shared_ptr<Enemy>> level_enemy;
+    LevelOjectsMap map(file, tile_size);
+
+    level_enemy = map.get_enemies(level_enemy);
+
+    return level_enemy;
 }
 
 shared_ptr<Player> make_level_player(string file, int tile_size, int player_number)
@@ -52,6 +64,7 @@ class Level
         vector<string> files;
         vector<shared_ptr<Player>> level_players;
         shared_ptr<DoorBlock> door;
+        vector<shared_ptr<Enemy>> level_enemies;
         int tile_size;
         int level_layers;
         int players;
@@ -92,6 +105,8 @@ class Level
                 string file = files[i];
                 level_blocks = make_layer_level(file, this->tile_size, this->cell_sheets);
                 this->layers.push_back(level_blocks);
+                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
+                write_line(std::to_string(level_enemies.size()));
             }
 
             if(players == 2)
@@ -162,6 +177,11 @@ class Level
                     }
                 }
 
+            }
+
+            for(int i = 0; i < level_enemies.size(); i++)
+            {
+                level_enemies[i]->update();
             }
 
             //Draw foreground Layers
