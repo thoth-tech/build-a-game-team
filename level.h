@@ -181,7 +181,8 @@ class Level
 
             for(int i = 0; i < level_enemies.size(); i++)
             {
-                level_enemies[i]->update();
+                if(rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
+                    level_enemies[i]->update();
             }
 
             //Draw foreground Layers
