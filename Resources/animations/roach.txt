@@ -5,8 +5,8 @@ SplashKit Animation
 f:100, 0, 4, 
 
 //Right Run
-f:[101-103], [0-3], 4, 104
-f:104, 2, 4,
+f:[101-103], [0-2], 10, 104
+f:104, 1, 10,
 
 //Right Animation Identifiers
 i:RightIdle, 100
@@ -16,8 +16,8 @@ i:RightRun, 101
 f:200, 4, 4, 
 
 //Left Run
-f:[201-203], [4-6], 4, 204
-f:204, 5, 4,
+f:[201-203], [4-6], 10, 204
+f:204, 5, 10,
 
 //Left Animation Identifiers
 i:LeftIdle, 200

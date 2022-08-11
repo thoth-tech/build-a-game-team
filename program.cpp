@@ -1,6 +1,8 @@
 #include "splashkit.h"
 #include "cellsheet.h"
 #include "screen.h"
+#include "enemy.h"
+#include "testing.h"
 #include <memory>
 #include <vector>
 
@@ -28,10 +30,6 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
 
 int main(int argc, char *argv[])
 {
-    load_resource_bundle("Rat", "ratbundle.txt");
-    load_resource_bundle("Snake", "snakebundle.txt");
-    load_resource_bundle("Roach", "roachbundle.txt");
-
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -95,5 +93,8 @@ int main(int argc, char *argv[])
 
     free_resource_bundle("player");
     free_resource_bundle("game_resources");
+
+    //
+    free_resource_bundle("roach");
     return 0;
 }

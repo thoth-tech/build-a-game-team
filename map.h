@@ -1,5 +1,6 @@
 // Map Class
 #include "splashkit.h"
+#include "enemy.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -181,6 +182,30 @@ class LevelOjectsMap
             }
 
             return door;
+        };
+
+        vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies)
+        {
+            point_2d position;
+
+             for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    if(this->map_array[i][j] == 707)
+                    {
+                        if(!has_resource_bundle("roach"))
+                            load_resource_bundle("roach", "roachbundle.txt");
+                        write_line("Found Roach");
+                        sprite roach = create_sprite("Roach", "RoachAnim");
+                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        level_enemies.push_back(cockroach);
+                    }
+                }
+
+            return level_enemies;
         };
 
         vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks, bitmap cell_sheet, int offset)
