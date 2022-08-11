@@ -87,10 +87,6 @@ int main(int argc, char *argv[])
     while (!key_typed(ESCAPE_KEY))
     {
         screen->update();
-
-        //cockroach->update();
-        //draw_hitbox(cockroach.get_enemy_hitbox());
-
         process_events();
         refresh_screen(60);
     }
