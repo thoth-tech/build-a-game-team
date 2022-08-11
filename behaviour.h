@@ -36,8 +36,6 @@ class RoachBehaviour : public Behaviour
         };
         ~RoachBehaviour()
         {
-            if(!has_resource_bundle("roach"))
-                load_resource_bundle("roach", "roachbundle.txt");
         };
         void update() override
         {
