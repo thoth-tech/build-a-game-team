@@ -14,6 +14,7 @@ class Block
         bool is_door = false;
         bool is_water = false;
         bool is_ladder = false;
+        bool is_toxic = false;
         int cell;
         
     public:
@@ -81,6 +82,11 @@ class Block
         bool is_block_water()
         {
             return this->is_water;
+        };
+
+        bool is_block_toxic()
+        {
+            return this->is_toxic;
         };
 };
 
@@ -234,6 +240,7 @@ class ToxicBlock : public Block
         ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_toxic = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
 

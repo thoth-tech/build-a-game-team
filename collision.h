@@ -286,3 +286,46 @@ void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
         }
     }
 }
+
+void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+{
+    for(int k = 0; k < level_players.size(); k++)
+    {
+        string collision = "None";
+        for(int j = 0; j < layers.size(); j++)
+        {
+            for (int i = 0; i < layers[j].size(); i++)
+            {
+                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    continue;
+
+                if(layers[j][i]->is_block_toxic())
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                else
+                    continue;
+
+               if(collision != "None")
+               {
+                    if(!timer_started(timer_named("DamageTimer")))
+                    {
+                        level_players[j]->player_health -= 1;
+                        write_line("Player Health: " + std::to_string(level_players[j]->player_health));
+                        start_timer("DamageTimer");
+                    }
+
+                    int time = timer_ticks("DamageTimer")/1000;
+
+                    //Invincibility frames
+                    if(!(time < 2))
+                    {
+                        stop_timer("DamageTimer");
+                        break;
+                    }
+               }
+            }
+
+            if(collision != "None")
+                break;
+        }
+    }
+}
