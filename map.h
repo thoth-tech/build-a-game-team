@@ -198,8 +198,20 @@ class LevelOjectsMap
                     {
                         if(!has_resource_bundle("roach"))
                             load_resource_bundle("roach", "roachbundle.txt");
+
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        cockroach->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(cockroach);
+                    }
+                    if(this->map_array[i][j] == 708)
+                    {
+                        if(!has_resource_bundle("roach"))
+                            load_resource_bundle("roach", "roachbundle.txt");
+
+                        sprite roach = create_sprite("Roach", "RoachAnim");
+                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        cockroach->get_ai()->set_facing_left(left);
                         level_enemies.push_back(cockroach);
                     }
                 }
