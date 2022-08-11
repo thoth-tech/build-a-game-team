@@ -29,12 +29,15 @@ class Enemy
         {
             if(!is_dead)
             {
-                ai->update();
-                draw_sprite(enemy_sprite);
-                if(sprite_animation_has_ended(enemy_sprite))
-                    sprite_replay_animation(enemy_sprite);
-                update_sprite(enemy_sprite);
-                update_hitbox();
+                if(rect_on_screen(hitbox))
+                {
+                    ai->update();
+                    draw_sprite(enemy_sprite);
+                    if(sprite_animation_has_ended(enemy_sprite))
+                        sprite_replay_animation(enemy_sprite);
+                    update_sprite(enemy_sprite);
+                    update_hitbox();
+                }
             }
         };
 

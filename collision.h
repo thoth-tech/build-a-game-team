@@ -213,8 +213,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
 {
     for(int i = 0; i < level_enemies.size(); i++)
     {
-        if(!rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
-            continue;
+        // if(!rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
+        //     continue;
 
         if(level_enemies[i]->get_dead())
             continue;
@@ -224,7 +224,7 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
         {
             collision = test_hitbox_collision(level_enemies[i]->get_enemy_hitbox(), level_players[j]->get_player_hitbox());
 
-            if(collision != "None" && level_players[i]->get_state_type() != "JumpFall")
+            if(collision != "None" && level_players[j]->get_state_type() != "JumpFall")
             {
                 if(!timer_started(timer_named("DamageTimer")))
                 {
@@ -239,11 +239,11 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 if(!(time < 2))
                     stop_timer("DamageTimer");
             }
-            else if(collision != "None" && level_players[i]->get_state_type() == "JumpFall")
+            else if(collision != "None" && level_players[j]->get_state_type() == "JumpFall")
             {
                 //Jumped on enemy
-                level_players[i]->change_state(new JumpRiseState, "JumpRise");
-                level_players[i]->set_player_dx(0);
+                level_players[j]->change_state(new JumpRiseState, "JumpRise");
+                level_players[j]->set_player_dx(0);
                 level_enemies[i]->set_dead(true);
             }
             else
