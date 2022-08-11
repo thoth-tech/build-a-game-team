@@ -1,0 +1,24 @@
+SplashKit Animation
+//ID,CELL,DUR,NEXT
+
+//Right Idle
+f:200, 0, 4, 
+
+//Right Run
+f:[201-203], [4-6], 4, 204
+f:204, 2, 4,
+
+//Right Animation Identifiers
+i:RightIdle, 200
+i:RightRun, 201
+
+//Left Idle
+f:100, 4, 4, 
+
+//Left Run
+f:[101-103], [0-3], 4, 104
+f:104, 5, 4,
+
+//Left Animation Identifiers
+i:LeftIdle, 100
+i:LeftRun, 101
