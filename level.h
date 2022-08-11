@@ -92,6 +92,8 @@ class Level
 
         ~Level()
         {
+            if(has_resource_bundle("roach"))
+                free_resource_bundle("roach");
             //write_line("Level Delete");
         };
 

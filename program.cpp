@@ -30,34 +30,14 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
 
 int main(int argc, char *argv[])
 {
-    load_resource_bundle("Rat", "ratbundle.txt");
-    load_resource_bundle("Snake", "snakebundle.txt");
-    load_resource_bundle("Roach", "roachbundle.txt");
-
     load_resource_bundle("player", "playerbundle.txt");
-    //
-    load_resource_bundle("roach", "roachbundle.txt");
-    //
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
 
-<<<<<<< HEAD
-    // point_2d pos;
-    // pos.x = 0;
-    // pos.y = 0;
-
-    // sprite roach = create_sprite("Roach", "RoachAnim");
-
-    // shared_ptr<Roach> cockroach(new Roach(roach, pos));
-    
-
-    //Push the cell sheets used in the same order as the level editor
-=======
     // Push the cell sheets used in the same order as the level editor
->>>>>>> a00a37e2ba0e20608702893e278ee65d3dda0d26
     cell_sheet_names.push_back("Solid");
     cell_sheet_names.push_back("Ladder");
     cell_sheet_names.push_back("Pipe");

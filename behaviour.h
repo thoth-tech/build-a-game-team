@@ -32,6 +32,7 @@ class RoachBehaviour : public Behaviour
                 sprite_start_animation(enemy_sprite, "LeftRun");
             else
                 sprite_start_animation(enemy_sprite, "RightRun");
+            
         };
         ~RoachBehaviour()
         {

@@ -43,45 +43,6 @@ public:
 
 class Player
 {
-<<<<<<< HEAD
-    private:
-        PlayerState *state;
-        sprite player_sprite;
-        point_2d position;
-        bool facing_left;
-        bool on_floor;
-        bool on_ladder;
-        float landing_y_value;
-        rectangle hitbox;
-        bool is_dead = false;
-        bool has_won = false;
-        
-    public:
-        player_input input;
-        int player_lives = 1;
-
-        Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
-        {
-            if(!has_resource_bundle("player"))
-                load_resource_bundle("player", "playerbundle.txt");
-
-            this->change_state(state, "Initial");
-            this->player_sprite = player_sprite;
-            this->position = initial_position;
-            this->landing_y_value = initial_position.y;
-            this->facing_left = facing_left;
-            this->on_floor = true;
-            this->on_ladder = false;
-            this->input = input;
-            sprite_set_position(player_sprite, this->position);
-            make_hitbox();
-        };
-
-        ~Player()
-        {
-            delete state;
-        };
-=======
 private:
     PlayerState *state;
     sprite player_sprite;
@@ -93,7 +54,6 @@ private:
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
->>>>>>> 3ec25be9b037bf1c778727367aec4858a85c808a
 
 public:
     player_input input;

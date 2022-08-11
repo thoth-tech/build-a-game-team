@@ -1,5 +1,6 @@
 // Map Class
 #include "splashkit.h"
+#include "enemy.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -195,6 +196,8 @@ class LevelOjectsMap
 
                     if(this->map_array[i][j] == 707)
                     {
+                        if(!has_resource_bundle("roach"))
+                            load_resource_bundle("roach", "roachbundle.txt");
                         write_line("Found Roach");
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
