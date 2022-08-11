@@ -227,5 +227,41 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 break;
         }
     }
+}
 
+void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+{
+    for(int k = 0; k < level_players.size(); k++)
+    {
+        string collision = "None";
+        for(int j = 0; j < layers.size(); j++)
+        {
+            for (int i = 0; i < layers[j].size(); i++)
+            {
+                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    continue;
+
+                if(layers[j][i]->is_block_water())
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                else
+                    continue;
+
+                if (collision == "Left")
+                {
+                    level_players[k]->set_player_dx(0);
+                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
+                    break;
+                }
+                else if (collision == "Right")
+                {
+                    level_players[k]->set_player_dx(0);
+                    sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);
+                    break;
+                }
+            }
+
+            if(collision != "None")
+                break;
+        }
+    }
 }

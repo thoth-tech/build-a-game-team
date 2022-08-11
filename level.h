@@ -204,6 +204,7 @@ class Level
             check_door_block_collisions(door, level_players);
             check_enemy_solid_block_collisions(layers, level_enemies);
             check_enemy_player_collisions(level_enemies, level_players);
+            check_water_block_collisions(layers, level_players);
 
             if(test_camera)
                 test_camera_on(level_players[0]);

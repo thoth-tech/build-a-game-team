@@ -12,8 +12,9 @@ class Block
         rectangle hitbox;
         bool is_solid = false;
         bool is_door = false;
-        int cell;
+        bool is_water = false;
         bool is_ladder = false;
+        int cell;
         
     public:
         Block(bitmap cell_sheet, point_2d position)
@@ -75,6 +76,11 @@ class Block
         bool is_block_ladder()
         {
             return this->is_ladder;
+        };
+
+        bool is_block_water()
+        {
+            return this->is_water;
         };
 };
 
@@ -179,6 +185,7 @@ class WaterBlock : public Block
         WaterBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_water = true;
             this->position = position;
 
             animation_script water_script = animation_script_named("CellAnim");
@@ -189,7 +196,26 @@ class WaterBlock : public Block
             this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+    string test_collision(rectangle one, rectangle two) override
+    {
+        string collision = "None";
+        double dx = (one.x + one.width/2) - (two.x + two.width/2);
+        double dy = (one.y + one.height/2) - (two.y + two.height/2);
+        double width = (one.width + two.width)/2;
+        double height = (one.height + two.height)/2;
+        double crossWidth = width * dy;
+        double crossHeight = height * dx;
+
+        if(abs(dx) <= width && abs(dy) <= height)
+        {
+            if(crossWidth>=crossHeight)
+                collision = "Left";
+            else
+                collision = "Right";
+        }
+
+        return collision;
+    };
 
     void draw_block() override
     {
