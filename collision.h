@@ -213,8 +213,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
 {
     for(int i = 0; i < level_enemies.size(); i++)
     {
-        // if(!rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
-        //     continue;
+        if(!rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
+            continue;
 
         if(level_enemies[i]->get_dead())
             continue;
