@@ -82,6 +82,15 @@ class RoachBehaviour : public Behaviour
                 }
                 sprite_set_dx(enemy_sprite, -3);
             }
+
+            if(on_floor)
+            {
+                sprite_set_dy(enemy_sprite, 0);
+            }
+            else
+            {
+                sprite_set_dy(enemy_sprite, 10);
+            }
         };
 
 };
