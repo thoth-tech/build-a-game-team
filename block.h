@@ -228,15 +228,42 @@ class WaterBlock : public Block
 
 class ToxicBlock : public Block
 {
+    private:
+        animation anim;
     public:
         ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
+
+            animation_script toxic_script = animation_script_named("CellAnim");
+            animation anim = create_animation(toxic_script, "ToxicFlow");
+            drawing_options opts = option_defaults();
+            this->opts = opts;
+            this->anim = anim;
+            this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+        void draw_block() override
+        {
+            draw_bitmap("Toxic", position.x, position.y, opts);
+            update_animation(this->anim);
+            if(animation_ended(this->anim))
+                restart_animation(this->anim);
+        }
+
+        string test_collision(rectangle one, rectangle two) override 
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+            bool collision = x_overlaps && y_overlaps;
+            
+            if(collision)
+                return "Collision";
+            else
+                return "None";
+        };
 };
 
 class DoorBlock : public Block
