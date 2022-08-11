@@ -6,6 +6,10 @@ class Behaviour
     protected:
         sprite enemy_sprite;
         bool facing_left = true;
+        bool on_floor = true;
+        bool is_flying = false;
+        bool once = false;
+
     public:
         Behaviour(sprite enemy_sprite)
         {
@@ -20,6 +24,27 @@ class Behaviour
             else
                 sprite_start_animation(enemy_sprite, right_anim);
         }
+
+        void set_on_floor(bool new_value)
+        {
+            this->on_floor = new_value;
+        };
+
+        void set_facing_left(bool new_value)
+        {
+            this->once = false;
+            this->facing_left = new_value;
+        };
+
+        bool is_on_floor()
+        {
+            return this->on_floor;
+        };
+
+        void set_y_value(float val)
+        {
+            sprite_set_y(enemy_sprite, val + 32);
+        };
 
 };
 
@@ -41,25 +66,30 @@ class RoachBehaviour : public Behaviour
         {
             if(facing_left)
             {
-                if(sprite_position(enemy_sprite).x < rectangle_right(screen_rectangle()) - 100)
-                    sprite_set_dx(enemy_sprite, 3);
-                else
+                if(!once)
                 {
-                    facing_left = false;
-                    sprite_set_dx(enemy_sprite, 0);
                     update_animation("LeftRun", "RightRun");
+                    once = true;
                 }
+                sprite_set_dx(enemy_sprite, 3);
             }
             else
             {
-                if(sprite_position(enemy_sprite).x > rectangle_left(screen_rectangle()) + 100)
-                    sprite_set_dx(enemy_sprite, -3);
-                else
+                if(!once)
                 {
-                    facing_left = true;
                     update_animation("LeftRun", "RightRun");
-                    sprite_set_dx(enemy_sprite, 0);
+                    once = true;
                 }
+                sprite_set_dx(enemy_sprite, -3);
+            }
+
+            if(on_floor)
+            {
+                sprite_set_dy(enemy_sprite, 0);
+            }
+            else
+            {
+                sprite_set_dy(enemy_sprite, 10);
             }
         };
 

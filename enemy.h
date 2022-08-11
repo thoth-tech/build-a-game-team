@@ -56,6 +56,15 @@ class Enemy
             return this->hitbox;
         };
 
+        std::shared_ptr<Behaviour> get_ai()
+        {
+            return this->ai;
+        };
+
+        sprite get_enemy_sprite()
+        {
+            return this->enemy_sprite;
+        };
 };
 
 class Roach : public Enemy
