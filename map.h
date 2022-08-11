@@ -211,7 +211,7 @@ class LevelOjectsMap
 
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
-                        cockroach->get_ai()->set_facing_left(left);
+                        cockroach->get_ai()->set_facing_left(true);
                         level_enemies.push_back(cockroach);
                     }
                 }
