@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
     //Push the cell sheets used in the same order as the level editor
     cell_sheet_names.push_back("Solid");
-    cell_sheet_names.push_back("NonSolid");
+    cell_sheet_names.push_back("Ladder");
     cell_sheet_names.push_back("Pipe");
     cell_sheet_names.push_back("Water");
     cell_sheet_names.push_back("Toxic");

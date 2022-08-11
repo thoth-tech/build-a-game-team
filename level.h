@@ -177,6 +177,7 @@ class Level
             }
 
             check_solid_block_collisions(layers, level_players);
+            check_ladder_collisions(layers, level_players);
             check_door_block_collisions(door, level_players);
 
             if(test_camera)

@@ -61,6 +61,8 @@ i:Dance, 300
 
 //----Climb Movements----
 f: [306-309], [24-27], 5,
+f: 310, 26, 5,
 
 //Climb
 i:Climb, 306
+i:ClimbIdle, 310

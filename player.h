@@ -13,7 +13,7 @@
 #define JUMP_START_SPEED 9.81
 #define JUMP_RISE_LOSS 0.1
 #define FALL_SIDE_MOMENTUM 0.072
-#define CLIMB_SPEED 0.2
+#define CLIMB_SPEED 3
 
 
 class Player;
@@ -316,6 +316,7 @@ class ClimbState : public PlayerState
 {
     private:
         bool run_once = false;
+        bool is_moving = false;
 
     public:
         ClimbState(){};
@@ -327,18 +328,10 @@ class ClimbState : public PlayerState
 
 };
 
-
 void sprite_fall(sprite sprite)
 {
     if(sprite_dy(sprite) < MAX_FALL_SPEED)
             sprite_set_dy(sprite, sprite_dy(sprite) + FALL_RATE);
-}
-
-// Created this because climbing speed kept increasing. However, it doesn't work rip.
-void sprite_climb(sprite sprite)
-{
-    if(sprite_dy(sprite) > CLIMB_SPEED)
-            sprite_set_dy(sprite, sprite_dy(sprite) - FALL_RATE);
 }
 
 void animation_routine(Player* player, string left_anim, string right_anim)
@@ -362,6 +355,7 @@ void IdleState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if(!run_once)
     {   
+        player->set_on_ladder(false);
         if(player->is_on_floor())
         {
             sprite_set_dx(player_sprite, 0);
@@ -508,11 +502,6 @@ void JumpRiseState::get_input()
         if(sprite_dx(player->get_player_sprite()) < MAX_RUN_SPEED)
             sprite_set_dx(player->get_player_sprite(), sprite_dx(player->get_player_sprite()) + RUN_ACCEL);
     }
-    // Added this code to test out climbing.
-    if(key_typed(key_code(B_KEY)))
-    {
-        this->player->change_state(new ClimbState, "Climbing");
-    }
 }
 
 void JumpFallState::update()
@@ -634,27 +623,58 @@ void HurtState::get_input()
 // ClimbState Update
 void ClimbState::update() 
 {
-    if (!run_once) {
+    if (!run_once) 
+    {
+        is_moving = true;
         sprite_set_dx(player->get_player_sprite(), 0);
         sprite_set_dy(player->get_player_sprite(), 0);
+        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
         sprite_start_animation(this->player->get_player_sprite(), "Climb");
-        this->player->set_on_ladder(true);
         run_once = true;
     }
-    sprite_climb(this->player->get_player_sprite());
+
+    if(player->is_on_floor())
+    {
+        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
+    }
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
 // ClimbState Get Input
 void ClimbState::get_input()
 {
-    if(player->is_on_ladder())
+    if(!player->is_on_ladder())
     {
-        if(key_down(player->input.jump_key))
-            sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite()) - CLIMB_SPEED);
-        else
-            this->player->change_state(new IdleState, "Idle");
+        this->player->change_state(new IdleState, "Idle");
+    }
+    else if(key_typed(player->input.left_key) || key_typed(player->input.right_key))
+    {
+        player->set_on_floor(true);
+        this->player->change_state(new IdleState, "Idle");
+    }
+    else if(key_down(player->input.jump_key))
+    {
+        if(!is_moving)
+        {
+            sprite_start_animation(this->player->get_player_sprite(), "Climb");
+            is_moving = true;
+        }
+        sprite_set_dy(player->get_player_sprite(), -CLIMB_SPEED);
+    }
+    else if(key_down(player->input.crouch_key))
+    {
+        if(!is_moving)
+        {
+            sprite_start_animation(this->player->get_player_sprite(), "Climb");
+            is_moving = true;
+        }
+        sprite_set_dy(player->get_player_sprite(), CLIMB_SPEED);
+    }
+    else if(key_released(player->input.jump_key) || key_released(player->input.crouch_key))
+    {
+        is_moving = false;
+        sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
+        sprite_set_dy(player->get_player_sprite(), 0);
     }
 }
-
-// Bloody hard af ngl ;-; plz help

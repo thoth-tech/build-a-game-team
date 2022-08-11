@@ -206,11 +206,11 @@ class LevelOjectsMap
                             }
                         }
 
-                        if(bitmap_name(cell_sheet) == "NonSolid")
+                        if(bitmap_name(cell_sheet) == "Ladder")
                         {
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
-                                shared_ptr<Block> block(new NonSolidBlock(cell_sheet, position, cell));
+                                shared_ptr<Block> block(new Ladder(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
                             }
                         }

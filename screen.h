@@ -207,6 +207,19 @@ class GameOverScreen : public ScreenState
         void update() override;
 };
 
+class WinScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        WinScreen(){};
+
+        ~WinScreen(){};
+
+        void update() override;
+};
+
 
 void CompanyIntroScreen::update()
 {
@@ -293,7 +306,7 @@ void LevelScreen::update()
                     this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                 }
                 else
-                    this->screen->change_state(new GameOverScreen, "GameOver");
+                    this->screen->change_state(new WinScreen, "Win");
             }
         }
     }
@@ -315,6 +328,19 @@ void GameOverScreen::update()
     clear_screen(COLOR_BLACK);
     draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
     draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 410, option_to_screen());
+
+    if(key_typed(RETURN_KEY))
+    {
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
+}
+
+void WinScreen::update()
+{
+    clear_screen(COLOR_BLACK);
+    draw_text("You Won", COLOR_WHITE, 800, 400, option_to_screen());
+    draw_text("Good Job", COLOR_WHITE, 800, 410, option_to_screen());
+    draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 420, option_to_screen());
 
     if(key_typed(RETURN_KEY))
     {
