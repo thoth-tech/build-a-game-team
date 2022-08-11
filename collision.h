@@ -35,6 +35,15 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     if(level_players[k]->is_on_floor())
                         break;
 
+                    // Checks if the player is on ladder, if yes then it will go to ClimbIdle
+                    if(level_players[k]->is_on_ladder()) {
+                        sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
+                        level_players[k]->set_player_dy(0);
+                        level_players[k]->set_on_floor(false);
+                        sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
+                        break;
+                    }
+
                     level_players[k]->set_player_dy(0);
                     level_players[k]->set_on_floor(false);
                     sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
@@ -43,13 +52,25 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 }
                 else if (collision == "Left")
                 {
+                    // Checks if the player is on ladder, if yes then it will go to ClimbIdle
+                    if (level_players[k]->is_on_ladder())
+                    {
+                        sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
+                    }
                     level_players[k]->set_player_dx(0);
+                    level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
                     break;
                 }
                 else if (collision == "Right")
                 {
+                    // Checks if the player is on ladder, if yes then it will go to ClimbIdle
+                    if (level_players[k]->is_on_ladder())
+                    {
+                        sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
+                    }
                     level_players[k]->set_player_dx(0);
+                    level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);
                     break;
                 }
