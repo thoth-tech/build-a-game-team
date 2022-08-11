@@ -88,11 +88,13 @@ class Level
                 this->player2_complete = false;
                 this->is_player2_out_of_lives = false;
             }
+
+            if(!has_timer("DamageTimer"))
+                create_timer("DamageTimer");
         };
 
         ~Level()
         {
-
         };
 
         void make_level()
@@ -106,7 +108,6 @@ class Level
                 level_blocks = make_layer_level(file, this->tile_size, this->cell_sheets);
                 this->layers.push_back(level_blocks);
                 this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
-                write_line(std::to_string(level_enemies.size()));
             }
 
             if(players == 2)
@@ -149,6 +150,7 @@ class Level
                 level_players[i]->update();
                 level_players[i]->get_input();
                 level_players[i]->update_hitbox();
+                level_players[i]->update_lives();
                 //For testing hitboxes
                 if(hitbox)
                     draw_hitbox(level_players[i]->get_player_hitbox());
@@ -167,21 +169,22 @@ class Level
                 {
                     this->level_players[i]->set_dead(true);
                     this->level_players[i]->player_lives -= 1;
+                }
 
-                    if(level_players[i]->player_lives == 0)
-                    {
-                        if(i == 0)
-                            is_player1_out_of_lives = true;
-                        else
-                            is_player2_out_of_lives = true;
-                    }
+                if(level_players[i]->player_lives == 0)
+                {
+                    if(i == 0)
+                        is_player1_out_of_lives = true;
+                    else
+                        is_player2_out_of_lives = true;
                 }
 
             }
 
             for(int i = 0; i < level_enemies.size(); i++)
             {
-                level_enemies[i]->update();
+                if(rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
+                        level_enemies[i]->update();
             }
 
             //Draw foreground Layers
@@ -200,6 +203,9 @@ class Level
             check_ladder_collisions(layers, level_players);
             check_door_block_collisions(door, level_players);
             check_enemy_solid_block_collisions(layers, level_enemies);
+            check_enemy_player_collisions(level_enemies, level_players);
+            check_water_block_collisions(layers, level_players);
+            check_toxic_block_collisions(layers, level_players);
 
             if(test_camera)
                 test_camera_on(level_players[0]);
@@ -248,8 +254,8 @@ class Level2 : public Level
         Level2(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 2;
-            this->files.push_back("levels/level2_1.txt");
-            this->files.push_back("levels/level2_2.txt");
+            this->files.push_back("levels/level1_1.txt");
+            this->files.push_back("levels/level1_2.txt");
             make_level();
         };
 };

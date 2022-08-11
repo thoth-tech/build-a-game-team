@@ -10,12 +10,13 @@ class Enemy
         sprite enemy_sprite;
         point_2d position;
         rectangle hitbox;
-        bool is_dead = false;
+        bool is_dead;
         std::shared_ptr<Behaviour> ai;
 
     public:
         Enemy(sprite enemy_sprite, point_2d position)
         {
+            this->is_dead = false;
             this->enemy_sprite = enemy_sprite;
             this->position = position;
             sprite_set_position(enemy_sprite, this->position);
@@ -26,12 +27,18 @@ class Enemy
 
         virtual void update()
         {
-            ai->update();
-            draw_sprite(enemy_sprite);
-            if(sprite_animation_has_ended(enemy_sprite))
-                sprite_replay_animation(enemy_sprite);
-            update_sprite(enemy_sprite);
-            update_hitbox();
+            if(!is_dead)
+            {
+                if(rect_on_screen(hitbox))
+                {
+                    ai->update();
+                    draw_sprite(enemy_sprite);
+                    if(sprite_animation_has_ended(enemy_sprite))
+                        sprite_replay_animation(enemy_sprite);
+                    update_sprite(enemy_sprite);
+                    update_hitbox();
+                }
+            }
         };
 
         void make_hitbox()
@@ -64,6 +71,16 @@ class Enemy
         sprite get_enemy_sprite()
         {
             return this->enemy_sprite;
+        };
+
+        void set_dead(bool new_value)
+        {
+            this->is_dead = new_value;
+        };
+
+        bool get_dead()
+        {
+            return this->is_dead;
         };
 };
 

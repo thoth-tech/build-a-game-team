@@ -12,8 +12,10 @@ class Block
         rectangle hitbox;
         bool is_solid = false;
         bool is_door = false;
-        int cell;
+        bool is_water = false;
         bool is_ladder = false;
+        bool is_toxic = false;
+        int cell;
         
     public:
         Block(bitmap cell_sheet, point_2d position)
@@ -75,6 +77,16 @@ class Block
         bool is_block_ladder()
         {
             return this->is_ladder;
+        };
+
+        bool is_block_water()
+        {
+            return this->is_water;
+        };
+
+        bool is_block_toxic()
+        {
+            return this->is_toxic;
         };
 };
 
@@ -179,6 +191,7 @@ class WaterBlock : public Block
         WaterBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_water = true;
             this->position = position;
 
             animation_script water_script = animation_script_named("CellAnim");
@@ -189,7 +202,26 @@ class WaterBlock : public Block
             this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+    string test_collision(rectangle one, rectangle two) override
+    {
+        string collision = "None";
+        double dx = (one.x + one.width/2) - (two.x + two.width/2);
+        double dy = (one.y + one.height/2) - (two.y + two.height/2);
+        double width = (one.width + two.width)/2;
+        double height = (one.height + two.height)/2;
+        double crossWidth = width * dy;
+        double crossHeight = height * dx;
+
+        if(abs(dx) <= width && abs(dy) <= height)
+        {
+            if(crossWidth>=crossHeight)
+                collision = "Left";
+            else
+                collision = "Right";
+        }
+
+        return collision;
+    };
 
     void draw_block() override
     {
@@ -202,15 +234,43 @@ class WaterBlock : public Block
 
 class ToxicBlock : public Block
 {
+    private:
+        animation anim;
     public:
         ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
+            this->is_toxic = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
+
+            animation_script toxic_script = animation_script_named("CellAnim");
+            animation anim = create_animation(toxic_script, "ToxicFlow");
+            drawing_options opts = option_defaults();
+            this->opts = opts;
+            this->anim = anim;
+            this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+        void draw_block() override
+        {
+            draw_bitmap("Toxic", position.x, position.y, opts);
+            update_animation(this->anim);
+            if(animation_ended(this->anim))
+                restart_animation(this->anim);
+        }
+
+        string test_collision(rectangle one, rectangle two) override 
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+            bool collision = x_overlaps && y_overlaps;
+            
+            if(collision)
+                return "Collision";
+            else
+                return "None";
+        };
 };
 
 class DoorBlock : public Block

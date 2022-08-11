@@ -57,7 +57,8 @@ private:
 
 public:
     player_input input;
-    int player_lives = 1;
+    int player_lives = 3;
+    int player_health = 3;
 
     Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
     {
@@ -201,6 +202,16 @@ public:
     string get_state_type()
     {
         return this->state->get_type();
+    };
+
+    void update_lives()
+    {
+        if(player_health == 0)
+        {
+            write_line("Removing Life");
+            player_lives -= 1;
+            player_health = 3;
+        }
     };
 };
 
