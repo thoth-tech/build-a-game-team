@@ -121,3 +121,57 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
         }
     }
 }
+
+void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Enemy>> level_enemies)
+{
+    for(int k = 0; k < level_enemies.size(); k++)
+    {
+        if(!rect_on_screen(level_enemies[k]->get_enemy_hitbox()))
+            continue;
+
+        string collision = "None";
+        for(int j = 0; j < layers.size(); j++)
+        {
+            for (int i = 0; i < layers[j].size(); i++)
+            {
+                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    continue;
+
+                if(layers[j][i]->is_block_solid())
+                    collision = layers[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox(), layers[j][i]->get_block_hitbox());
+                else
+                    continue;
+
+                if (collision == "Top")
+                {
+                    level_enemies[k]->get_ai()->set_on_floor(true);
+                    level_enemies[k]->get_ai()->set_y_value(layers[j][i]->get_top());
+                    //sprite_set_y(level_enemies[k]->get_enemy_sprite(), layers[j][i]->get_top());
+                    break;
+                }
+                else if (collision == "Bottom")
+                {
+                    if(level_enemies[k]->get_ai()->is_on_floor())
+                        break;
+                    
+                }
+                else if (collision == "Left")
+                {
+                    level_enemies[k]->get_ai()->set_facing_left(false);
+                    break;
+                }
+                else if (collision == "Right")
+                {
+                    level_enemies[k]->get_ai()->set_facing_left(true);
+                    break;
+                }
+            }
+
+            if(collision != "None")
+                break;
+        }
+
+        if (collision == "None")
+            level_enemies[k]->get_ai()->set_on_floor(false);
+    }
+}
