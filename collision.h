@@ -242,6 +242,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
             else if(collision != "None" && level_players[i]->get_state_type() == "JumpFall")
             {
                 //Jumped on enemy
+                level_players[i]->change_state(new JumpRiseState, "JumpRise");
+                level_players[i]->set_player_dx(0);
                 level_enemies[i]->set_dead(true);
             }
             else
