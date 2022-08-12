@@ -471,7 +471,8 @@ void JumpRiseState::update()
 {
     if (!run_once)
     {
-        play_sound_effect("Jump");
+        if(!sound_effect_playing("Jump"))
+            play_sound_effect("Jump");
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
         animation_routine(player, "LeftJump", "RightJump");

@@ -73,7 +73,8 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if(level_players[k]->is_on_ladder())
                     {
-                        play_sound_effect("HeadHit");
+                        if(!sound_effect_playing("HeadHit"))
+                            play_sound_effect("HeadHit");
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
                         level_players[k]->set_player_dy(0);
                         level_players[k]->set_on_floor(false);
@@ -81,7 +82,8 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                         break;
                     }
 
-                    play_sound_effect("HeadHit");
+                    if(!sound_effect_playing("HeadHit"))
+                            play_sound_effect("HeadHit");
                     level_players[k]->set_player_dy(0);
                     sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                     level_players[k]->set_on_floor(false);
