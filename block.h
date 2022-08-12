@@ -377,15 +377,7 @@ class EmptyPipeBlock : public Block
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
-
-
+        
     //Collision to test distance from how far a player is and if holding pipe to place
     string test_collision(rectangle one) override {return "None";};
-
-    void draw_block() override
-    {
-        //This is to see where empty blocks are
-        //Only for testing
-        fill_rectangle(COLOR_YELLOW, this->hitbox);
-    }
 };
