@@ -8,4 +8,6 @@ BITMAP, Water, water_blocks.png, 64, 64, 2, 1, 2
 BITMAP, Toxic, toxic_blocks.png, 64, 64, 5, 1, 5
 BITMAP, Door, Door.png, 64, 64, 3, 2, 6
 
+SOUND, Select, Select.wav
+
 BITMAP,background,Background.png

@@ -255,11 +255,13 @@ void MenuScreen::update()
 
     if(key_typed(NUM_1_KEY))
     {
+        play_sound_effect("Select");
         this->screen->set_players(1);
         this->screen->change_state(new LevelScreen, "Level");
     }
     if(key_typed(NUM_2_KEY))
     {
+        play_sound_effect("Select");
         this->screen->set_players(2);
         this->screen->change_state(new LevelScreen, "Level");
     }
