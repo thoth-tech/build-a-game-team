@@ -19,10 +19,6 @@ class Camera
 
             this->x_border_right = tile_size * map_width;
             this->y_border_bottom = -(tile_size * map_height);
-
-            write_line(map_width);
-            write_line(map_height);
-            write_line(y_border_bottom);
         };
 
         ~Camera(){};
@@ -30,9 +26,6 @@ class Camera
 
         void update()
         {
-            draw_text("Cam Y Position: " + std::to_string(camera_y()), COLOR_ANTIQUE_WHITE, 0, 0, option_to_screen());
-            draw_text("Cam Y Bottom Limit: " + std::to_string(y_border_bottom), COLOR_ANTIQUE_WHITE, 0, 10, option_to_screen());
-
             center_camera_on(this->player->get_player_sprite(), 0, 0);
 
             if(camera_x() < x_border_left)

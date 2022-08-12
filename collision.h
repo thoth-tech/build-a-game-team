@@ -53,6 +53,14 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
 
                 if (collision == "Top")
                 {
+                    if(level_players[k]->is_on_ladder())
+                    {
+                        level_players[k]->set_player_dy(0);
+                        level_players[k]->set_on_floor(true);
+                        sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
+                        level_players[k]->change_state(new IdleState, "Idle");
+                        break;
+                    }
                     level_players[k]->set_on_floor(true);
                     level_players[k]->set_landing_y_value(layers[j][i]->get_top());
                     break;
@@ -73,6 +81,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     }
 
                     level_players[k]->set_player_dy(0);
+                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                     level_players[k]->set_on_floor(false);
                     sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                     level_players[k]->change_state(new JumpFallState, "JumpFall");
@@ -82,9 +91,8 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 {
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
-                    {
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
-                    }
+
                     level_players[k]->set_player_dx(0);
                     level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
@@ -95,6 +103,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
+                        
                     level_players[k]->set_player_dx(0);
                     level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);

@@ -101,8 +101,8 @@ public:
     {
         rectangle hitbox;
         hitbox.x = this->position.x;
-        hitbox.y = this->position.y + 10;
-        hitbox.height = sprite_height(this->player_sprite) - 10;
+        hitbox.y = this->position.y + 5;
+        hitbox.height = sprite_height(this->player_sprite) - 5;
         hitbox.width = sprite_width(this->player_sprite);
         this->hitbox = hitbox;
     };
@@ -111,7 +111,7 @@ public:
     {
         point_2d current_position = sprite_position(this->player_sprite);
         this->hitbox.x = current_position.x;
-        this->hitbox.y = current_position.y + 10;
+        this->hitbox.y = current_position.y + 5;
     };
 
     sprite get_player_sprite()
@@ -691,9 +691,6 @@ void ClimbState::get_input()
     }
     else if (key_down(player->input.crouch_key))
     {
-        // Fixes onfloor glitch player would constantly collide with the floor without this.
-        if (player->is_on_floor()) this->player->change_state(new IdleState, "Idle");
-
         if (!is_moving)
         {
             sprite_start_animation(this->player->get_player_sprite(), "Climb");

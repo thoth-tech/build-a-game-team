@@ -190,10 +190,10 @@ class Level
 
                 if(level_players[i]->player_lives == 0)
                 {
-                    // if(i == 0)
-                    //     is_player1_out_of_lives = true;
-                    // else
-                    //     is_player2_out_of_lives = true;
+                    if(i == 0)
+                        is_player1_out_of_lives = true;
+                    else
+                        is_player2_out_of_lives = true;
                 }
 
             }
