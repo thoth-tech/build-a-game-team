@@ -57,7 +57,7 @@ class Block
             this->hitbox = hitbox;
         };
 
-        virtual string test_collision(rectangle one, rectangle two) = 0;
+        virtual string test_collision(rectangle one) = 0;
 
         rectangle get_block_hitbox()
         {
@@ -100,13 +100,13 @@ class SolidBlock : public Block
             this->opts.draw_cell = this->cell;
         };
 
-        string test_collision(rectangle one, rectangle two) override
+        string test_collision(rectangle one) override
         {
             string collision = "None";
-            double dx = (one.x + one.width/2) - (two.x + two.width/2);
-            double dy = (one.y + one.height/2) - (two.y + two.height/2);
-            double width = (one.width + two.width)/2;
-            double height = (one.height + two.height)/2;
+            double dx = (one.x + one.width/2) - (this->hitbox.x + this->hitbox.width/2);
+            double dy = (one.y + one.height/2) - (this->hitbox.y + this->hitbox.height/2);
+            double width = (one.width + this->hitbox.width)/2;
+            double height = (one.height + this->hitbox.height)/2;
             double crossWidth = width * dy;
             double crossHeight = height * dx;
 
@@ -115,29 +115,17 @@ class SolidBlock : public Block
                 if(crossWidth>=crossHeight)
                 {
                     if(crossWidth + 100 > (-crossHeight))
-                    {
                         collision = "Bottom";
-                        //draw_text("Bottom",COLOR_WHITE,0,480);
-                    }
                     else
-                    {
                         collision = "Left";
-                        //draw_text("Left",COLOR_WHITE,0,480);
-                    }
                 }
                 else
                 {
                     //Gave a bias to top collision to avoid right edge stopping player during movement
                     if(crossWidth - 200 > -(crossHeight))
-                    {
                         collision = "Right";
-                        //draw_text("Right",COLOR_WHITE,0,480);
-                    }
                     else
-                    {
                         collision = "Top";
-                        //draw_text("Top",COLOR_WHITE,0,480);
-                    }
                 }
             }
 
@@ -156,10 +144,10 @@ class Ladder : public Block
             this->opts.draw_cell = this->cell;
         };
 
-        string test_collision(rectangle one, rectangle two) override 
+        string test_collision(rectangle one) override 
         {
-            bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
-            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
 
             if(collision)
@@ -179,7 +167,7 @@ class PipeBlock : public Block
             this->opts.draw_cell = this->cell;
         }
 
-    string test_collision(rectangle one, rectangle two) override {return "None";};
+    string test_collision(rectangle one) override {return "None";};
 };
 
 class WaterBlock : public Block
@@ -202,13 +190,13 @@ class WaterBlock : public Block
             this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one, rectangle two) override
+    string test_collision(rectangle one) override
     {
         string collision = "None";
-        double dx = (one.x + one.width/2) - (two.x + two.width/2);
-        double dy = (one.y + one.height/2) - (two.y + two.height/2);
-        double width = (one.width + two.width)/2;
-        double height = (one.height + two.height)/2;
+        double dx = (one.x + one.width/2) - (this->hitbox.x + this->hitbox.width/2);
+        double dy = (one.y + one.height/2) - (this->hitbox.y + this->hitbox.height/2);
+        double width = (one.width + this->hitbox.width)/2;
+        double height = (one.height + this->hitbox.height)/2;
         double crossWidth = width * dy;
         double crossHeight = height * dx;
 
@@ -260,10 +248,10 @@ class ToxicBlock : public Block
                 restart_animation(this->anim);
         }
 
-        string test_collision(rectangle one, rectangle two) override 
+        string test_collision(rectangle one) override 
         {
-            bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
-            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
             
             if(collision)
@@ -293,10 +281,10 @@ class DoorBlock : public Block
             make_hitbox();
         }
 
-    string test_collision(rectangle one, rectangle two) override 
+    string test_collision(rectangle one) override 
     {
-        bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
-        bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+        bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+        bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
         bool collision = x_overlaps && y_overlaps;
         
         if(collision)

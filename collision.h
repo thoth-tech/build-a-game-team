@@ -47,7 +47,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 //     continue;
 
                 if(layers[j][i]->is_block_solid())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
@@ -125,7 +125,7 @@ void check_door_block_collisions(shared_ptr<DoorBlock> door, vector<shared_ptr<P
     for(int i = 0; i < level_players.size(); i++)
     {
         string collision = "None";
-        collision = door->test_collision(level_players[i]->get_player_hitbox(), door->get_block_hitbox());
+        collision = door->test_collision(level_players[i]->get_player_hitbox());
 
         if(collision != "None" && level_players[i]->is_on_floor())
             if(level_players[i]->get_state_type() != "Dance")
@@ -150,7 +150,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
                     continue;
 
                 if(layers[j][i]->is_block_ladder())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
@@ -197,7 +197,7 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
                 //     continue;
 
                 if(layers[j][i]->is_block_solid())
-                    collision = layers[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox(), layers[j][i]->get_block_hitbox());
+                    collision = layers[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox());
                 else
                     continue;
 
@@ -247,9 +247,9 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
         string collision = "None";
         for(int j = 0; j < level_players.size(); j++)
         {
-            collision = test_hitbox_collision(level_enemies[i]->get_enemy_hitbox(), level_players[j]->get_player_hitbox());
+            collision = level_enemies[i]->test_collision(level_players[j]->get_player_hitbox());
 
-            if(collision != "None" && level_players[j]->get_state_type() != "JumpFall")
+            if(collision != "Top" && collision !="None")
             {
                 if(!timer_started(timer_named("DamageTimer")))
                 {
@@ -264,7 +264,7 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 if(!(time < 2))
                     stop_timer("DamageTimer");
             }
-            else if(collision != "None" && level_players[j]->get_state_type() == "JumpFall")
+            else if(collision != "None" && !level_players[j]->is_on_floor())
             {
                 //Jumped on enemy
                 level_players[j]->change_state(new JumpRiseState, "JumpRise");
@@ -274,6 +274,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
             else
                 break;
         }
+        if(collision != "None")
+                break;
     }
 }
 
@@ -290,7 +292,7 @@ void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     continue;
 
                 if(layers[j][i]->is_block_water())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
@@ -327,7 +329,7 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     continue;
 
                 if(layers[j][i]->is_block_toxic())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
+                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 

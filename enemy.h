@@ -82,6 +82,38 @@ class Enemy
         {
             return this->is_dead;
         };
+
+        string test_collision(rectangle one)
+        {
+            string collision = "None";
+            double dx = (one.x + one.width/2) - (this->hitbox.x + this->hitbox.width/2);
+            double dy = (one.y + one.height/2) - (this->hitbox.y + this->hitbox.height/2);
+            double width = (one.width + this->hitbox.width)/2;
+            double height = (one.height + this->hitbox.height)/2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if(abs(dx) <= width && abs(dy) <= height)
+            {
+                if(crossWidth>=crossHeight)
+                {
+                    if(crossWidth > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
+                else
+                {
+                    //Bias so player has a better chance of hitting them while above
+                    if(crossWidth - 200 > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
+            }
+
+            return collision;
+        };
 };
 
 class Roach : public Enemy
