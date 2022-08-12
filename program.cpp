@@ -43,7 +43,9 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("Pipe");
     cell_sheet_names.push_back("Water");
     cell_sheet_names.push_back("Toxic");
-    cell_sheet_names.push_back("Door");
+    cell_sheet_names.push_back("HoldPipes");
+    cell_sheet_names.push_back("TurnPipes");
+    cell_sheet_names.push_back("Empty");
 
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
     std::vector<std::string> args(argv, argv + argc);

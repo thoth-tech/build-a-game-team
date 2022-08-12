@@ -287,6 +287,33 @@ class LevelOjectsMap
                                 level_blocks.push_back(block);
                             }
                         }
+
+                        if(bitmap_name(cell_sheet) == "HoldPipes")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new HoldablePipeBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "TurnPipes")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new TurnablePipeBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
+
+                        if(bitmap_name(cell_sheet) == "Empty")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new TurnablePipeBlock(cell_sheet, position, cell));
+                                level_blocks.push_back(block);
+                            }
+                        }
                     }
                 }
 
