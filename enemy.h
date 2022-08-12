@@ -132,3 +132,54 @@ class Roach : public Enemy
 
         ~Roach(){};
 };
+
+class Blob : public Enemy
+{
+    public:
+        Blob(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        {
+            std::shared_ptr<Behaviour> ai(new BlobBehaviour(enemy_sprite));
+            this->ai = ai;
+            point_2d pos = this->position;
+            pos.y = pos.y + 32;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~Blob(){};
+};
+
+class Snake : public Enemy
+{
+    public:
+        Snake(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        {
+            std::shared_ptr<Behaviour> ai(new SnakeBehaviour(enemy_sprite));
+            this->ai = ai;
+            point_2d pos = this->position;
+            pos.y = pos.y + 32;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~Snake(){};
+};
+
+class WaterRat : public Enemy
+{
+    public:
+        WaterRat(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        {
+            std::shared_ptr<Behaviour> ai(new WaterRatBehaviour(enemy_sprite));
+            this->ai = ai;
+            point_2d pos = this->position;
+            pos.y = pos.y + 32;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~WaterRat(){};
+};
