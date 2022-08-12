@@ -1,6 +1,7 @@
 #include "splashkit.h"
 #include "block.h"
 #include "behaviour.h"
+#include "camera.h"
 #include "enemy.h"
 #include "cellsheet.h"
 #include "player.h"
@@ -55,6 +56,17 @@ shared_ptr<DoorBlock> make_level_door(string file, int tile_size, bitmap cell_sh
     return door;
 }
 
+shared_ptr<Camera> make_level_camera(shared_ptr<Player> player, string file, int tile_size)
+{
+    LevelOjectsMap map(file, tile_size);
+    int map_width = map.get_map_width();
+    int map_height = map.get_map_height();
+
+    shared_ptr<Camera> camera(new Camera(player, tile_size, map_height, map_width));
+
+    return camera;
+}
+
 
 class Level
 {
@@ -65,6 +77,7 @@ class Level
         vector<shared_ptr<Player>> level_players;
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
+        shared_ptr<Camera> camera;
         int tile_size;
         int level_layers;
         int players;
@@ -80,6 +93,8 @@ class Level
 
         Level(vector<CellSheet> cell_sheets, int tile_size, int players)
         {
+            set_camera_x(0);
+            set_camera_y(0);
             this->tile_size = tile_size;
             this->cell_sheets = cell_sheets;
             this->players = players;
@@ -123,6 +138,8 @@ class Level
                 shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
                 this->level_players.push_back(player);
             }
+
+            this->camera = make_level_camera(level_players[0], files[0], tile_size);
         }
 
         void update()
@@ -199,10 +216,14 @@ class Level
                 }
             }
 
-            check_solid_block_collisions(layers, level_players);
+            this->camera->update();
+            //rectangle current_window = screen_rectangle();
+
+
+            check_solid_block_collisions(layers, level_players, to_screen(get_collision_test_area()));
             check_ladder_collisions(layers, level_players);
             check_door_block_collisions(door, level_players);
-            check_enemy_solid_block_collisions(layers, level_enemies);
+            check_enemy_solid_block_collisions(layers, level_enemies, to_screen(get_collision_test_area()));
             check_enemy_player_collisions(level_enemies, level_players);
             check_water_block_collisions(layers, level_players);
             check_toxic_block_collisions(layers, level_players);
@@ -232,6 +253,17 @@ class Level
                 else
                     test_camera = true;
             }
+        }
+
+        rectangle get_collision_test_area()
+        {
+            rectangle test_area = to_screen(screen_rectangle());
+            test_area.x -= (6 * tile_size);
+            test_area.y -= (6 * tile_size);
+            test_area.width += (12 * tile_size);
+            test_area.height += (12 * tile_size);
+
+            return test_area;
         }
 
 };

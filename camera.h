@@ -1,47 +1,40 @@
 #include "splashkit.h"
-
+#include "player.h"
+#include <memory>
 #pragma once
 
 class Camera
 {
-private:
-    /* save camera position */
-    point_2d *pos;
+    private:
+        double x_border_left = 0;
+        double y_border_top = 0;
+        double x_border_right;
+        double y_border_bottom;
+        std::shared_ptr<Player> player;
 
-public:
-    Camera(point_2d _init_pos)
-    {
-        pos = new (point_2d);
-        pos.x = _init_pos.x;
-        pos.y = _init_pos.y;
-
-        void set_camera_position(_init_pos);
-    };
-
-    ~Camera()
-    {
-        delete pos;
-    };
-
-    /* if the point is out side the screen, we don't have to move the camera
-        return value indicate whether we have move or not
-        leave the redraw to the caller thread
-    */
-    bool move_for_player(point_2d *_player)
-    {
-        bool should_move = point_on_screen(*_player);
-
-        if (!should_move)
+    public:
+        Camera(std::shared_ptr<Player> player, int tile_size, int map_height, int map_width)
         {
-            return should_move;
+            this->player = player;
+
+            this->x_border_right = tile_size * map_width;
+            this->y_border_bottom = -(tile_size * map_height);
+        };
+
+        ~Camera(){};
+
+
+        void update()
+        {
+            center_camera_on(this->player->get_player_sprite(), 0, 0);
+
+            if(camera_x() < x_border_left)
+                set_camera_x(x_border_left);
+            if(camera_x() + screen_width() > x_border_right)
+                set_camera_x(x_border_right - screen_width());
+            if(camera_y() < y_border_top)
+                set_camera_y(y_border_top);
+            if(y_border_bottom > -camera_y() - screen_height())
+                set_camera_y(abs(y_border_bottom) - screen_height());
         }
-        double dif_x = _player.x - pos.x;
-        double dif_y = _player.y - pos.y;
-
-        // update the camera pos
-        *pos = *_pplayer;
-
-        move_camera_by(dif_x, dif_y);
-        return should_move;
-    };
 };

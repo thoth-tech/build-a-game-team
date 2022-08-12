@@ -81,6 +81,16 @@ class LevelOjectsMap
             this->map_width = x_count;
         };
 
+        int get_map_width()
+        {
+            return this->map_width;
+        };
+
+        int get_map_height()
+        {
+            return this->map_height;
+        };
+
         vector<vector<int> > new_level(string file)
         {
             // Initialise a 2D matrix of int to store level design  
@@ -211,7 +221,7 @@ class LevelOjectsMap
 
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
-                        cockroach->get_ai()->set_facing_left(left);
+                        cockroach->get_ai()->set_facing_left(true);
                         level_enemies.push_back(cockroach);
                     }
                 }
