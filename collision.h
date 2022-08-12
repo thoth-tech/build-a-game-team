@@ -7,7 +7,31 @@
 
 #pragma once
 
-void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+string test_hitbox_collision(rectangle one, rectangle two)
+{
+    bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+    bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+    bool collision = x_overlaps && y_overlaps;
+    
+    if(collision)
+        return "Collision";
+    else
+        return "None";
+};
+
+bool test_rectangle_collision(rectangle one, rectangle two)
+{
+    bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
+    bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
+    bool collision = x_overlaps && y_overlaps;
+    
+    if(collision)
+        return true;
+    else
+        return false;
+};
+
+void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players, rectangle test_area)
 {
     for(int k = 0; k < level_players.size(); k++)
     {
@@ -16,8 +40,11 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
         {
             for (int i = 0; i < layers[j].size(); i++)
             {
-                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
-                    continue;
+                //if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                    //continue;
+                
+                // if(!test_rectangle_collision(test_area, layers[j][i]->get_block_hitbox()))
+                //     continue;
 
                 if(layers[j][i]->is_block_solid())
                     collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox(), layers[j][i]->get_block_hitbox());
@@ -36,7 +63,8 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                         break;
 
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
-                    if(level_players[k]->is_on_ladder()) {
+                    if(level_players[k]->is_on_ladder())
+                    {
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
                         level_players[k]->set_player_dy(0);
                         level_players[k]->set_on_floor(false);
@@ -66,9 +94,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 {
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
-                    {
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
-                    }
                     level_players[k]->set_player_dx(0);
                     level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);
@@ -143,7 +169,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
     }
 }
 
-void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Enemy>> level_enemies)
+void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Enemy>> level_enemies, rectangle test_area)
 {
     for(int k = 0; k < level_enemies.size(); k++)
     {
@@ -155,8 +181,11 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
         {
             for (int i = 0; i < layers[j].size(); i++)
             {
-                if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
-                    continue;
+                // if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                //     continue;
+
+                // if(!test_rectangle_collision(test_area, layers[j][i]->get_block_hitbox()))
+                //     continue;
 
                 if(layers[j][i]->is_block_solid())
                     collision = layers[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox(), layers[j][i]->get_block_hitbox());
@@ -167,7 +196,6 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
                 {
                     level_enemies[k]->get_ai()->set_on_floor(true);
                     level_enemies[k]->get_ai()->set_y_value(layers[j][i]->get_top());
-                    //sprite_set_y(level_enemies[k]->get_enemy_sprite(), layers[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
@@ -196,18 +224,6 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
             level_enemies[k]->get_ai()->set_on_floor(false);
     }
 }
-
-string test_hitbox_collision(rectangle one, rectangle two)
-{
-    bool x_overlaps = (rectangle_left(one) < rectangle_right(two)) && (rectangle_right(one) > rectangle_left(two));
-    bool y_overlaps = (rectangle_top(one) < rectangle_bottom(two)) && (rectangle_bottom(one) > rectangle_top(two));
-    bool collision = x_overlaps && y_overlaps;
-    
-    if(collision)
-        return "Collision";
-    else
-        return "None";
-};
 
 void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vector<shared_ptr<Player>> level_players)
 {

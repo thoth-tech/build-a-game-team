@@ -81,6 +81,16 @@ class LevelOjectsMap
             this->map_width = x_count;
         };
 
+        int get_map_width()
+        {
+            return this->map_width;
+        };
+
+        int get_map_height()
+        {
+            return this->map_height;
+        };
+
         vector<vector<int> > new_level(string file)
         {
             // Initialise a 2D matrix of int to store level design  
