@@ -62,7 +62,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                         break;
                     }
                     level_players[k]->set_on_floor(true);
-                    level_players[k]->set_landing_y_value(layers[j][i]->get_top());
+                    sprite_set_y(level_players[k]->get_player_sprite(), layers[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
@@ -258,7 +258,7 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 if(!timer_started(timer_named("DamageTimer")))
                 {
                     level_players[j]->player_health -= 1;
-                    write_line("Player Health: " + std::to_string(level_players[j]->player_health));
+                    //write_line("Player Health: " + std::to_string(level_players[j]->player_health));
                     start_timer("DamageTimer");
                 }
 
@@ -275,8 +275,6 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 level_players[j]->set_player_dx(0);
                 level_enemies[i]->set_dead(true);
             }
-            else
-                break;
         }
         if(collision != "None")
                 break;
@@ -342,7 +340,7 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     if(!timer_started(timer_named("DamageTimer")))
                     {
                         level_players[j]->player_health -= 1;
-                        write_line("Player Health: " + std::to_string(level_players[j]->player_health));
+                        //write_line("Player Health: " + std::to_string(level_players[j]->player_health));
                         start_timer("DamageTimer");
                     }
 
@@ -356,9 +354,6 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     }
                }
             }
-
-            if(collision != "None")
-                break;
         }
     }
 }
