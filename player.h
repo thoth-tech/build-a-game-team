@@ -471,13 +471,12 @@ void JumpRiseState::update()
 {
     if (!run_once)
     {
-        // this->player->set_on_floor(false);
+        play_sound_effect("Jump");
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
         animation_routine(player, "LeftJump", "RightJump");
         this->max_jump_height = MAX_JUMP_HEIGHT + abs((JUMP_MOMENTUM_RATE * sprite_dx(player->get_player_sprite())));
         run_once = true;
-        // write_line(max_jump_height);
     }
 
     this->player->set_on_floor(false);
