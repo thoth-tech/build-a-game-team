@@ -321,3 +321,63 @@ class DoorBlock : public Block
         this->opts.anim = anim;
     }
 };
+
+class HoldablePipeBlock : public Block
+{
+    public:
+        HoldablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+    string test_collision(rectangle one) override 
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if(collision)
+                return "Collision";
+            else
+                return "None";
+        };
+};
+
+class TurnablePipeBlock : public Block
+{
+    public:
+        TurnablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+    string test_collision(rectangle one) override 
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if(collision)
+                return "Collision";
+            else
+                return "None";
+        };
+};
+
+class EmptyPipeBlock : public Block
+{
+    public:
+        EmptyPipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+        
+    //Collision to test distance from how far a player is and if holding pipe to place
+    string test_collision(rectangle one) override {return "None";};
+};

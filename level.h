@@ -82,7 +82,6 @@ class Level
         int level_layers;
         int players;
         bool hitbox = false;
-        bool test_camera = false;
 
     public:
         bool is_player1_out_of_lives = false;
@@ -164,10 +163,12 @@ class Level
             //Player functions
             for(int i = 0; i < level_players.size(); i++)
             {
-                level_players[i]->update();
-                level_players[i]->get_input();
-                level_players[i]->update_hitbox();
-                level_players[i]->update_lives();
+                if(!level_players[i]->is_player_dead())
+                {
+                    level_players[i]->update();
+                    level_players[i]->get_input();
+                    level_players[i]->update_hitbox();
+                }
                 //For testing hitboxes
                 if(hitbox)
                     draw_hitbox(level_players[i]->get_player_hitbox());
@@ -179,23 +180,6 @@ class Level
                     else
                         player2_complete = true;                    
                 }
-
-                point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
-                //Player Will lose a life when they fall off the bottom of the screen
-                if(!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
-                {
-                    this->level_players[i]->set_dead(true);
-                    this->level_players[i]->player_lives -= 1;
-                }
-
-                if(level_players[i]->player_lives == 0)
-                {
-                    if(i == 0)
-                        is_player1_out_of_lives = true;
-                    else
-                        is_player2_out_of_lives = true;
-                }
-
             }
 
             for(int i = 0; i < level_enemies.size(); i++)
@@ -219,7 +203,6 @@ class Level
             this->camera->update();
             //rectangle current_window = screen_rectangle();
 
-
             check_solid_block_collisions(layers, level_players, to_screen(get_collision_test_area()));
             check_ladder_collisions(layers, level_players);
             check_door_block_collisions(door, level_players);
@@ -228,8 +211,41 @@ class Level
             check_water_block_collisions(layers, level_players);
             check_toxic_block_collisions(layers, level_players);
 
-            if(test_camera)
-                test_camera_on(level_players[0]);
+            for(int i = 0; i < level_players.size(); i++)
+            {
+                point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
+                //Player Will lose a life when they fall off the bottom of the screen
+                if(!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
+                {
+                    sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
+                    this->level_players[i]->player_lives -= 1;
+                }
+
+                if(level_players[i]->player_health < 1)
+                {
+                    sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
+                    level_players[i]->player_health = 3;
+                    level_players[i]->player_lives -= 1;
+                }
+
+                if(level_players[i]->player_lives == 0)
+                {
+                    this->level_players[i]->set_dead(true);
+                    
+                    if(i == 0)
+                    {
+                        is_player1_out_of_lives = true;
+                        if(players == 2)
+                            player1_complete = true;
+                    }
+                    else
+                    {
+                        is_player2_out_of_lives = true;
+                        if(players == 2)
+                            player2_complete = true;
+                    }
+                }
+            }
 
             check_test_input();
 
@@ -243,15 +259,6 @@ class Level
                     hitbox = false;
                 else
                     hitbox = true;
-            }
-
-            //Turn on test camera
-            if(key_typed(C_KEY))
-            {
-                if(test_camera)
-                    test_camera = false;
-                else
-                    test_camera = true;
             }
         }
 

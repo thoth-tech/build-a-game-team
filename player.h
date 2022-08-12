@@ -50,7 +50,6 @@ private:
     bool facing_left;
     bool on_floor;
     bool on_ladder;
-    float landing_y_value;
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
@@ -65,7 +64,6 @@ public:
         this->change_state(state, "Initial");
         this->player_sprite = player_sprite;
         this->position = initial_position;
-        this->landing_y_value = initial_position.y;
         this->facing_left = facing_left;
         this->on_floor = true;
         this->on_ladder = false;
@@ -159,16 +157,6 @@ public:
         this->on_ladder = new_value;
     };
 
-    void set_landing_y_value(float landing_y_value)
-    {
-        this->landing_y_value = landing_y_value;
-    };
-
-    float get_landing_y_value()
-    {
-        return this->landing_y_value;
-    };
-
     void set_player_dy(float value)
     {
         sprite_set_dy(this->player_sprite, value);
@@ -204,14 +192,9 @@ public:
         return this->state->get_type();
     };
 
-    void update_lives()
+    point_2d get_player_position()
     {
-        if(player_health == 0)
-        {
-            write_line("Removing Life");
-            player_lives -= 1;
-            player_health = 3;
-        }
+        return this->position;
     };
 };
 
@@ -376,7 +359,6 @@ void IdleState::update()
     {
         sprite_set_dx(player_sprite, 0);
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
     }
     else
         sprite_fall(player->get_player_sprite());
@@ -447,7 +429,6 @@ void RunState::update()
     if (player->is_on_floor())
     {
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
     }
     else
         sprite_fall(player->get_player_sprite());
@@ -527,7 +508,6 @@ void JumpFallState::update()
     if (player->is_on_floor())
     {
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), player->get_landing_y_value());
         if (player->is_facing_left() && key_down(LEFT_KEY) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
         else if (!player->is_facing_left() && key_down(RIGHT_KEY) && player->is_on_floor())
