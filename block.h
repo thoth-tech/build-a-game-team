@@ -1,4 +1,6 @@
 #include "splashkit.h"
+#include "types.h"
+
 #pragma once
 
 class Block
@@ -15,8 +17,13 @@ class Block
         bool is_water = false;
         bool is_ladder = false;
         bool is_toxic = false;
+        bool is_holdable = false;
+        bool is_turnable = false;
+        bool is_empty = false;
+        bool is_picked_up = false;
+        color *clr;
         int cell;
-        
+
     public:
         Block(bitmap cell_sheet, point_2d position)
         {
@@ -27,9 +34,8 @@ class Block
             make_hitbox();
         };
 
-        ~Block()
-        {
-            //write_line("Deleting Block");
+        ~Block(){
+            // write_line("Deleting Block");
         };
 
         virtual void draw_block()
@@ -88,6 +94,40 @@ class Block
         {
             return this->is_toxic;
         };
+        bool is_holdable_pipe()
+        {
+            return this->is_holdable;
+        };
+
+        bool is_turnable_pipe()
+        {
+            return this->is_turnable;
+        };
+
+        bool is_empty_pipe()
+        {
+            return this->is_empty;
+        };
+
+        int get_cell()
+        {
+            return this->cell;
+        };
+
+        void set_picked_up(bool new_value)
+        {
+            this->is_picked_up = new_value;
+        };
+
+        bool picked_up()
+        {
+            return this->is_picked_up;
+        };
+
+        void change_cell_sheet(bitmap image)
+        {
+            this->image = image;
+        };
 };
 
 class SolidBlock : public Block
@@ -103,26 +143,26 @@ class SolidBlock : public Block
         string test_collision(rectangle one) override
         {
             string collision = "None";
-            double dx = (one.x + one.width/2) - (this->hitbox.x + this->hitbox.width/2);
-            double dy = (one.y + one.height/2) - (this->hitbox.y + this->hitbox.height/2);
-            double width = (one.width + this->hitbox.width)/2;
-            double height = (one.height + this->hitbox.height)/2;
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
             double crossWidth = width * dy;
             double crossHeight = height * dx;
 
-            if(abs(dx) <= width && abs(dy) <= height)
+            if (abs(dx) <= width && abs(dy) <= height)
             {
-                if(crossWidth>=crossHeight)
+                if (crossWidth >= crossHeight)
                 {
-                    if(crossWidth + 100 > (-crossHeight))
+                    if (crossWidth + 100 > (-crossHeight))
                         collision = "Bottom";
                     else
                         collision = "Left";
                 }
                 else
                 {
-                    //Gave a bias to top collision to avoid right edge stopping player during movement
-                    if(crossWidth - 200 > -(crossHeight))
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth - 200 > -(crossHeight))
                         collision = "Right";
                     else
                         collision = "Top";
@@ -144,13 +184,13 @@ class Ladder : public Block
             this->opts.draw_cell = this->cell;
         };
 
-        string test_collision(rectangle one) override 
+        string test_collision(rectangle one) override
         {
             bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
             bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
 
-            if(collision)
+            if (collision)
                 return "Collision";
             else
                 return "None";
@@ -167,7 +207,7 @@ class PipeBlock : public Block
             this->opts.draw_cell = this->cell;
         }
 
-    string test_collision(rectangle one) override {return "None";};
+        string test_collision(rectangle one) override { return "None"; };
 };
 
 class WaterBlock : public Block
@@ -190,40 +230,41 @@ class WaterBlock : public Block
             this->opts.anim = anim;
         }
 
-    string test_collision(rectangle one) override
-    {
-        string collision = "None";
-        double dx = (one.x + one.width/2) - (this->hitbox.x + this->hitbox.width/2);
-        double dy = (one.y + one.height/2) - (this->hitbox.y + this->hitbox.height/2);
-        double width = (one.width + this->hitbox.width)/2;
-        double height = (one.height + this->hitbox.height)/2;
-        double crossWidth = width * dy;
-        double crossHeight = height * dx;
-
-        if(abs(dx) <= width && abs(dy) <= height)
+        string test_collision(rectangle one) override
         {
-            if(crossWidth>=crossHeight)
-                collision = "Left";
-            else
-                collision = "Right";
+            string collision = "None";
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if (abs(dx) <= width && abs(dy) <= height)
+            {
+                if (crossWidth >= crossHeight)
+                    collision = "Left";
+                else
+                    collision = "Right";
+            }
+
+            return collision;
+        };
+
+        void draw_block() override
+        {
+            draw_bitmap("Water", position.x, position.y, opts);
+            update_animation(this->anim);
+            if (animation_ended(this->anim))
+                restart_animation(this->anim);
         }
-
-        return collision;
-    };
-
-    void draw_block() override
-    {
-        draw_bitmap("Water", position.x, position.y, opts);
-        update_animation(this->anim);
-        if(animation_ended(this->anim))
-            restart_animation(this->anim);
-    }
 };
 
 class ToxicBlock : public Block
 {
     private:
         animation anim;
+
     public:
         ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
@@ -244,17 +285,17 @@ class ToxicBlock : public Block
         {
             draw_bitmap("Toxic", position.x, position.y, opts);
             update_animation(this->anim);
-            if(animation_ended(this->anim))
+            if (animation_ended(this->anim))
                 restart_animation(this->anim);
         }
 
-        string test_collision(rectangle one) override 
+        string test_collision(rectangle one) override
         {
             bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
             bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
-            
-            if(collision)
+
+            if (collision)
                 return "Collision";
             else
                 return "None";
@@ -265,6 +306,7 @@ class DoorBlock : public Block
 {
     private:
         animation anim;
+
     public:
         DoorBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
@@ -281,45 +323,45 @@ class DoorBlock : public Block
             make_hitbox();
         }
 
-    string test_collision(rectangle one) override 
-    {
-        bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
-        bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
-        bool collision = x_overlaps && y_overlaps;
-        
-        if(collision)
-            return "Collision";
-        else
-            return "None";
-    };
+        string test_collision(rectangle one) override
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
 
-    void draw_block() override
-    {
-        draw_bitmap("Door", position.x, position.y, opts);
-        update_animation(this->anim);
-        if(animation_ended(this->anim))
-            restart_animation(this->anim);
-    }
+            if (collision)
+                return "Collision";
+            else
+                return "None";
+        };
 
-    void make_hitbox() override
-    {
-        rectangle hitbox;
-        hitbox.x = this->position.x + 10;
-        hitbox.y = this->position.y + 20;
-        hitbox.height = bitmap_cell_height(this->image) - 20;
-        hitbox.width = bitmap_cell_width(this->image) - 30;
-        this->hitbox = hitbox;
-    };
+        void draw_block() override
+        {
+            draw_bitmap("Door", position.x, position.y, opts);
+            update_animation(this->anim);
+            if (animation_ended(this->anim))
+                restart_animation(this->anim);
+        }
 
-    void open_portal()
-    {
-        animation_script door_script = animation_script_named("CellAnim");
-        animation anim = create_animation(door_script, "Door_Portal");
-        drawing_options opts = option_defaults();
-        this->opts = opts;
-        this->anim = anim;
-        this->opts.anim = anim;
-    }
+        void make_hitbox() override
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x + 10;
+            hitbox.y = this->position.y + 20;
+            hitbox.height = bitmap_cell_height(this->image) - 20;
+            hitbox.width = bitmap_cell_width(this->image) - 30;
+            this->hitbox = hitbox;
+        };
+
+        void open_portal()
+        {
+            animation_script door_script = animation_script_named("CellAnim");
+            animation anim = create_animation(door_script, "Door_Portal");
+            drawing_options opts = option_defaults();
+            this->opts = opts;
+            this->anim = anim;
+            this->opts.anim = anim;
+        }
 };
 
 class HoldablePipeBlock : public Block
@@ -327,21 +369,27 @@ class HoldablePipeBlock : public Block
     public:
         HoldablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
+            this->is_holdable = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
 
-    string test_collision(rectangle one) override 
+        string test_collision(rectangle one) override
         {
             bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
             bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
 
-            if(collision)
+            if (collision)
                 return "Collision";
             else
                 return "None";
+        };
+
+        void draw_block() override
+        {
+            if(!is_picked_up)
+                draw_bitmap(image, position.x, position.y, opts);
         };
 };
 
@@ -350,18 +398,18 @@ class TurnablePipeBlock : public Block
     public:
         TurnablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
+            this->is_turnable = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
 
-    string test_collision(rectangle one) override 
+        string test_collision(rectangle one) override
         {
             bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
             bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
             bool collision = x_overlaps && y_overlaps;
 
-            if(collision)
+            if (collision)
                 return "Collision";
             else
                 return "None";
@@ -373,11 +421,21 @@ class EmptyPipeBlock : public Block
     public:
         EmptyPipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
+            this->is_empty = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
-        
-    //Collision to test distance from how far a player is and if holding pipe to place
-    string test_collision(rectangle one) override {return "None";};
+
+        // Collision to test distance from how far a player is and if holding pipe to place
+        string test_collision(rectangle one) override
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if (collision)
+                return "Collision";
+            else
+                return "None";
+        };
 };

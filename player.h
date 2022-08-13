@@ -1,5 +1,7 @@
 #include "splashkit.h"
 #include "playerinput.h"
+#include "block.h"
+#include <memory>
 #pragma once
 
 // Player Physics variables
@@ -53,6 +55,9 @@ private:
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
+    std::shared_ptr<Block> held_pipe;
+    bool is_holding_pipe = false;
+    int id;
 
 public:
     player_input input;
@@ -195,6 +200,52 @@ public:
     point_2d get_player_position()
     {
         return this->position;
+    };
+
+    bool with_pipe()
+    {
+        return this->is_holding_pipe;
+    };
+
+    void set_with_pipe(bool new_value)
+    {
+        this->is_holding_pipe = new_value;
+    };
+
+    bool pick_pipe(std::shared_ptr<Block> pipe)
+    {
+        if (this->is_holding_pipe)
+        {
+            return false;
+        }
+
+        write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
+
+        this->held_pipe = pipe;
+        this->held_pipe->set_picked_up(true);
+        set_with_pipe(true);
+        return this->is_holding_pipe;
+    };
+
+    void place_pipe(std::shared_ptr<Block> empty)
+    {
+        empty = this->held_pipe;
+        this->is_holding_pipe = false;
+    };
+
+    int get_player_id()
+    {
+        return this->id;
+    };
+
+    void set_player_id(int id)
+    {
+        this->id = id;
+    };
+
+    std::shared_ptr<Block> get_held_pipe()
+    {
+        return this->held_pipe;
     };
 };
 
@@ -452,7 +503,7 @@ void JumpRiseState::update()
 {
     if (!run_once)
     {
-        if(!sound_effect_playing("Jump"))
+        if (!sound_effect_playing("Jump"))
             play_sound_effect("Jump");
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
@@ -697,11 +748,11 @@ void ClimbState::get_input()
         sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
     }
     else
-    {   
+    {
         // This will just change the state to JumpFallState if the player is off the ladder.
         if (!player->is_on_ladder())
         {
             this->player->change_state(new JumpFallState, "JumpFall");
-        } 
+        }
     }
 }
