@@ -1,5 +1,7 @@
 #include "splashkit.h"
 #include "playerinput.h"
+#include "block.h"
+#include <memory>
 #pragma once
 
 // Player Physics variables
@@ -53,9 +55,9 @@ private:
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
-    Block *pipe;
-    bool hold_pipe = false;
-    color clr;
+    std::shared_ptr<Block> held_pipe;
+    bool is_holding_pipe = false;
+    int id;
 
 public:
     player_input input;
@@ -202,24 +204,49 @@ public:
 
     bool with_pipe()
     {
-        return this->hold_pipe;
+        return this->is_holding_pipe;
     };
 
-    bool pick_pipe(Block *_pipe)
+    void set_with_pipe(bool new_value)
     {
-        if (this->hold_pipe)
+        this->is_holding_pipe = new_value;
+    };
+
+    bool pick_pipe(std::shared_ptr<Block> pipe)
+    {
+        if (this->is_holding_pipe)
         {
             return false;
         }
-        this->pipe = _pipe;
-        return this->hold_pipe;
+
+        write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
+
+        this->held_pipe = pipe;
+        this->held_pipe->set_picked_up(true);
+        set_with_pipe(true);
+        return this->is_holding_pipe;
     };
 
-    void place_pipe(Block *_empty)
+    void place_pipe(std::shared_ptr<Block> empty)
     {
-        _empty = this->pipe;
-        this->hold_pipe = false;
-    }
+        empty = this->held_pipe;
+        this->is_holding_pipe = false;
+    };
+
+    int get_player_id()
+    {
+        return this->id;
+    };
+
+    void set_player_id(int id)
+    {
+        this->id = id;
+    };
+
+    std::shared_ptr<Block> get_held_pipe()
+    {
+        return this->held_pipe;
+    };
 };
 
 class IdleState : public PlayerState

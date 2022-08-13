@@ -361,7 +361,7 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> laye
 {
     for (int k = 0; k < level_players.size(); k++)
     {
-        // if the player is already hold a holdable pipe, we skip this player
+        // if the player is already hold a holding a pipe, we skip this player
         if (level_players[k]->with_pipe())
         {
             continue;
@@ -369,30 +369,42 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> laye
         string collision = "None";
         for (int j = 0; j < layers.size(); j++)
         {
-            if (level_players[k]->with_pipe())
-            {
-                break;
-            }
             for (int i = 0; i < layers[j].size(); i++)
             {
-                if (level_players[k]->with_pipe())
-                {
-                    break;
-                }
-
-                if (layers[j][i]->is_holdable_pipe())
+                if (layers[j][i]->is_holdable_pipe() && !layers[j][i]->picked_up())
                     collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
                 if (collision != "None")
                 {
-                    // player pick this pipe
-                    shared_ptr<Block> block = layers[j][i];
-                    Block *tmp = block.get();
-                    level_players[k]->pick_pipe(tmp);
-                    std::cout << "get collision in holdable pipe block" << std::endl;
-                    break;
+                    //Pink and purple can interact with these pipes
+                    if(layers[j][i]->get_cell() < 6)
+                    {
+                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
+                        {
+                            layers[j][i]->set_picked_up(true);
+                            level_players[k]->pick_pipe(layers[j][i]);
+                            break;
+                        }
+                    }
+                    //Blue and purple can interact with these pipes
+                    else if(layers[j][i]->get_cell() >=6 && layers[j][i]->get_cell() < 12)
+                    {
+                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
+                        {
+                            layers[j][i]->set_picked_up(true);
+                            level_players[k]->pick_pipe(layers[j][i]);
+                            break;
+                        }
+                    }
+                    //Everyone can interact with these pipes
+                    else
+                    {
+                        layers[j][i]->set_picked_up(true);
+                        level_players[k]->pick_pipe(layers[j][i]);
+                        break;
+                    }
                 }
             }
         }
@@ -411,29 +423,24 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
         string collision = "None";
         for (int j = 0; j < layers.size(); j++)
         {
-            if (!level_players[k]->with_pipe())
-            {
-                break;
-            }
             for (int i = 0; i < layers[j].size(); i++)
             {
-                if (!level_players[k]->with_pipe())
-                {
-                    break;
-                }
-
                 if (layers[j][i]->is_empty_pipe())
+                {
                     collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
+                }
                 else
                     continue;
 
                 if (collision != "None")
                 {
-                    // player place this pipe
-                    shared_ptr<Block> block = layers[j][i];
-                    Block *tmp = block.get();
-                    level_players[k]->place_pipe(tmp);
-                    std::cout << "get collision in empty block pipe" << std::endl;
+                    if(layers[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
+                    {
+                        write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(layers[j][i]->get_cell()));
+                        // player place this pipe
+                        level_players[k]->place_pipe(layers[j][i]);
+                        layers[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));           
+                    }
                     break;
                 }
             }
