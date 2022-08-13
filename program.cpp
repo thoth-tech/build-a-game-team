@@ -91,10 +91,6 @@ int main(int argc, char *argv[])
     {
         screen->update();
         process_events();
-        if (!music_playing())
-        {
-            play_music("LevelOne");
-        }
         refresh_screen(60);
     }
 
