@@ -1,5 +1,4 @@
 #include "splashkit.h"
-#include "types.h"
 
 #pragma once
 
@@ -20,7 +19,7 @@ protected:
     bool holdable = false;
     bool turnable = false;
     bool is_empty = false;
-    color *clr;
+    int id; // if player.id == this.id, then player can interact with this block
     int cell;
 
 public:
@@ -108,12 +107,22 @@ public:
         return this->is_empty;
     }
 
-    bool can_pick(color _player_color)
+    bool can_pick(int player_id)
     {
         // require player and block with the same color
         // since neither player nor block have initialize the color, we omit this logic for now
-
-        return holdable;
+        /*
+        value from map.h init player, should strictly align with player.id
+        blue = 1
+        pink = 2
+        purple = 3
+        */
+        // purple can be touched with no restrict,
+        return this->id == player_id || this->id == 3;
+    }
+    int get_id()
+    {
+        return this->id;
     }
 };
 

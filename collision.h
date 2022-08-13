@@ -389,9 +389,13 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> laye
                 {
                     // player pick this pipe
                     shared_ptr<Block> block = layers[j][i];
-                    Block *tmp = block.get();
+                    HoldablePipeBlock *tmp = static_cast<HoldablePipeBlock *>(block.get());
+                    if (!tmp->can_pick(level_players[k]->get_id()))
+                    {
+                        continue;
+                    }
                     level_players[k]->pick_pipe(tmp);
-                    std::cout << "get collision in holdable pipe block" << std::endl;
+                    write_line("get collision in holdable pipe block");
                     break;
                 }
             }
@@ -433,7 +437,7 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
                     shared_ptr<Block> block = layers[j][i];
                     Block *tmp = block.get();
                     level_players[k]->place_pipe(tmp);
-                    std::cout << "get collision in empty block pipe" << std::endl;
+                    write_line("get collision in empty block pipe");
                     break;
                 }
             }

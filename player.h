@@ -53,16 +53,23 @@ private:
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
-    Block *pipe;
+    HoldablePipeBlock *pipe;
     bool hold_pipe = false;
-    color clr;
+
+    // to identify color, value from map.h init player
+    /*
+     blue = 1
+     pink = 2
+     purple = 3
+     */
+    int id;
 
 public:
     player_input input;
     int player_lives = 3;
     int player_health = 3;
 
-    Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
+    Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input, int _id) : state(nullptr)
     {
         this->change_state(state, "Initial");
         this->player_sprite = player_sprite;
@@ -71,6 +78,7 @@ public:
         this->on_floor = true;
         this->on_ladder = false;
         this->input = input;
+        this->id = _id;
         sprite_set_position(player_sprite, this->position);
         make_hitbox();
     };
@@ -205,7 +213,7 @@ public:
         return this->hold_pipe;
     };
 
-    bool pick_pipe(Block *_pipe)
+    bool pick_pipe(HoldablePipeBlock *_pipe)
     {
         if (this->hold_pipe)
         {
@@ -219,7 +227,11 @@ public:
     {
         _empty = this->pipe;
         this->hold_pipe = false;
-    }
+    };
+    int get_id()
+    {
+        return this->id;
+    };
 };
 
 class IdleState : public PlayerState
