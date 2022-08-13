@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
+    window_toggle_border("Platform Prototype");
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
@@ -90,6 +91,10 @@ int main(int argc, char *argv[])
     {
         screen->update();
         process_events();
+        if (!music_playing())
+        {
+            play_music("LevelOne");
+        }
         refresh_screen(60);
     }
 
