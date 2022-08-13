@@ -53,6 +53,9 @@ private:
     rectangle hitbox;
     bool is_dead = false;
     bool has_won = false;
+    Block *pipe;
+    bool hold_pipe = false;
+    color clr;
 
 public:
     player_input input;
@@ -196,6 +199,27 @@ public:
     {
         return this->position;
     };
+
+    bool with_pipe()
+    {
+        return this->hold_pipe;
+    };
+
+    bool pick_pipe(Block *_pipe)
+    {
+        if (this->hold_pipe)
+        {
+            return false;
+        }
+        this->pipe = _pipe;
+        return this->hold_pipe;
+    };
+
+    void place_pipe(Block *_empty)
+    {
+        _empty = this->pipe;
+        this->hold_pipe = false;
+    }
 };
 
 class IdleState : public PlayerState
@@ -452,7 +476,7 @@ void JumpRiseState::update()
 {
     if (!run_once)
     {
-        if(!sound_effect_playing("Jump"))
+        if (!sound_effect_playing("Jump"))
             play_sound_effect("Jump");
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
@@ -697,11 +721,11 @@ void ClimbState::get_input()
         sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
     }
     else
-    {   
+    {
         // This will just change the state to JumpFallState if the player is off the ladder.
         if (!player->is_on_ladder())
         {
             this->player->change_state(new JumpFallState, "JumpFall");
-        } 
+        }
     }
 }
