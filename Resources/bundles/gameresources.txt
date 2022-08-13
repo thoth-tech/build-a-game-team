@@ -12,5 +12,6 @@ BITMAP, TurnPipes, turn_pipes.png, 64, 64, 2, 6, 6
 BITMAP, Empty, holdable_pipes_empty_le.png, 64, 64, 6, 3, 18
 
 SOUND, Select, Select.wav
+MUSIC, LevelOne, LevelOneTheme1.mp3
 
 BITMAP,background,Background.png

@@ -286,6 +286,10 @@ public:
         this->files.push_back("file0.txt");
         this->files.push_back("file1.txt");
         make_level();
+        if (!music_playing())
+        {
+            play_music("LevelOne");
+        }
     };
 };
 
@@ -298,6 +302,10 @@ public:
         this->files.push_back("levels/level1_1.txt");
         this->files.push_back("levels/level1_2.txt");
         make_level();
+        if (!music_playing())
+        {
+            play_music("LevelOne"); // adjust later when more music is created
+        }
     };
 };
 
