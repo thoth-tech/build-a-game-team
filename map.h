@@ -146,6 +146,7 @@ class LevelOjectsMap
                             sprite player_sprite = create_sprite("blueGuy", "PlayerAnim");
                             player_input input = make_player1_input();
                             shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            player->set_player_id(1);
                             return player;
                         }
                         if(player_number == 3)
@@ -153,6 +154,7 @@ class LevelOjectsMap
                             sprite player_sprite = create_sprite("purpleGuy", "PlayerAnim");
                             player_input input = make_player1_input();
                             shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            player->set_player_id(3);
                             return player;
                         }
                     }
@@ -163,6 +165,7 @@ class LevelOjectsMap
                             sprite player_sprite = create_sprite("pinkGirl", "PlayerAnim");
                             player_input input = make_player2_input();
                             shared_ptr<Player> player(new Player(new IdleState, player_sprite, position, false, input));
+                            player->set_player_id(2);
                             return player;
                         }
                     }
@@ -310,7 +313,7 @@ class LevelOjectsMap
                         {
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
-                                shared_ptr<Block> block(new TurnablePipeBlock(cell_sheet, position, cell));
+                                shared_ptr<Block> block(new EmptyPipeBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
                             }
                         }
