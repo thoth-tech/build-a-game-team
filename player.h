@@ -369,6 +369,35 @@ public:
     void get_input() override;
 };
 
+class DyingState : public PlayerState
+{
+private:
+    bool run_once = false;
+
+public:
+    DyingState(){};
+
+    ~DyingState(){};
+
+    void update() override;
+    void get_input() override;
+};
+
+class SpawningState : public PlayerState
+{
+private:
+    bool run_once = false;
+
+public:
+    SpawningState(){};
+
+    ~SpawningState(){};
+
+    void update() override;
+    void get_input() override;
+};
+
+
 void sprite_fall(sprite sprite)
 {
     if (sprite_dy(sprite) < MAX_FALL_SPEED)
@@ -433,15 +462,9 @@ void IdleState::get_input()
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
-
     if (key_typed(Z_KEY))
     {
         this->player->change_state(new DanceState, "Dance");
-    }
-
-    if (key_typed(V_KEY))
-    {
-        this->player->change_state(new HurtState, "Hurt");
     }
     if (key_typed(B_KEY))
     {
@@ -642,10 +665,14 @@ void HurtState::update()
     if (!run_once)
     {
         sprite_set_dx(player_sprite, 0);
-        sprite_set_dy(player_sprite, 0);
         animation_routine(player, "LeftFall", "RightFall");
         run_once = true;
     }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player->get_player_sprite());
+    else
+        sprite_set_dy(player_sprite, 0);
 
     draw_sprite(player_sprite);
     if (sprite_animation_has_ended(player_sprite))
@@ -755,4 +782,82 @@ void ClimbState::get_input()
             this->player->change_state(new JumpFallState, "JumpFall");
         }
     }
+}
+
+void DyingState::update()
+{
+    string dying_timer = "";
+    if(this->player->get_player_id() == 1 || this->player->get_player_id() == 3)
+        dying_timer = "DyingTimerP1";
+    else
+        dying_timer = "DyingTimerP2";
+    
+    sprite player_sprite = this->player->get_player_sprite();
+    if (!run_once)
+    {
+        start_timer(dying_timer);
+        sprite_set_dx(player_sprite, 0);
+        animation_routine(player, "LeftDying", "RightDying");
+        run_once = true;
+    }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player_sprite);
+    else
+        sprite_set_dy(player_sprite, 0);
+
+    int time = timer_ticks(dying_timer) / 1000;
+
+    if(time < 2)
+         sprite_update_routine_continuous(player_sprite);
+    else
+    {
+        sprite_set_position(player_sprite, this->player->get_player_position());
+        stop_timer(dying_timer);
+        this->player->change_state(new SpawningState, "Spawn");
+    }
+}
+
+void DyingState::get_input()
+{
+}
+
+void SpawningState::update()
+{
+    string spawn_timer = "";
+    if(this->player->get_player_id() == 1 || this->player->get_player_id() == 3)
+        spawn_timer = "SpawnTimerP1";
+    else
+        spawn_timer = "SpawnTimerP2";
+
+    sprite player_sprite = this->player->get_player_sprite();
+    if (!run_once)
+    {
+        start_timer(spawn_timer);
+        this->player->set_facing_left(false);
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        animation_routine(player, "LeftSpawn", "RightSpawn");
+        run_once = true;
+    }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player_sprite);
+    else
+        sprite_set_dy(player_sprite, 0);
+
+    int time = timer_ticks(spawn_timer) / 1000;
+
+    if(time < 1)
+         sprite_update_routine_continuous(player_sprite);
+    else
+    {
+        stop_timer(spawn_timer);
+        this->player->change_state(new IdleState, "Idle");
+    }
+        
+}
+
+void SpawningState::get_input()
+{
 }

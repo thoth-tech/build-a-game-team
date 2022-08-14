@@ -254,18 +254,19 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
 
             if (collision != "Top" && collision != "None")
             {
-                if (!timer_started(timer_named("DamageTimer")))
+                string damage_timer = "DamageTimerP" + std::to_string(j + 1);
+                if (!timer_started(timer_named(damage_timer)))
                 {
                     level_players[j]->player_health -= 1;
-                    // write_line("Player Health: " + std::to_string(level_players[j]->player_health));
-                    start_timer("DamageTimer");
+                    start_timer(damage_timer);
+                    level_players[j]->change_state(new HurtState, "Hurt");
                 }
 
-                int time = timer_ticks("DamageTimer") / 1000;
+                int time = timer_ticks(damage_timer) / 1000;
 
                 // Invincibility frames
                 if (!(time < 2))
-                    stop_timer("DamageTimer");
+                    stop_timer(damage_timer);
             }
             else if (collision != "None" && !level_players[j]->is_on_floor())
             {
@@ -336,19 +337,19 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
 
                 if (collision != "None")
                 {
-                    if (!timer_started(timer_named("DamageTimer")))
+                    string damage_timer = "DamageTimerP" + std::to_string(k + 1);
+                    if (!timer_started(timer_named(damage_timer)))
                     {
-                        level_players[j]->player_health -= 1;
-                        // write_line("Player Health: " + std::to_string(level_players[j]->player_health));
-                        start_timer("DamageTimer");
+                        level_players[k]->player_health -= 1;
+                        start_timer(damage_timer);
                     }
 
-                    int time = timer_ticks("DamageTimer") / 1000;
+                    int time = timer_ticks(damage_timer) / 1000;
 
                     // Invincibility frames
                     if (!(time < 2))
                     {
-                        stop_timer("DamageTimer");
+                        stop_timer(damage_timer);
                         break;
                     }
                 }
