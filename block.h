@@ -465,7 +465,18 @@ class EmptyPipeBlock : public Block
             this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
+            this->make_hitbox();
         }
+
+        void make_hitbox() override
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x - 20;
+            hitbox.y = this->position.y - 20;
+            hitbox.height = bitmap_cell_height(this->image) + 40;
+            hitbox.width = bitmap_cell_width(this->image) + 40;
+            this->hitbox = hitbox;
+        };
 
         // Collision to test distance from how far a player is and if holding pipe to place
         string test_collision(rectangle one) override
