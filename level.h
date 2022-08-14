@@ -82,6 +82,7 @@ class Level
         int players;
         bool hitbox = false;
         string level_name = "";
+        music level_music;
 
     public:
         bool is_player1_out_of_lives = false;
@@ -140,6 +141,8 @@ class Level
         {
             clear_screen(COLOR_BLACK);
             draw_bitmap("background", 0, 0, option_to_screen());
+            if (!music_playing())
+                play_music(this->level_music);
 
             // Draw Initial Layer
             for (int j = 0; j < layers[0].size(); j++)
@@ -290,11 +293,8 @@ class Level1 : public Level
             this->files.push_back("file0.txt");
             this->files.push_back("file1.txt");
             make_level();
-            if (!music_playing())
-            {
-                play_music("LevelOne");
-            }
-            this->level_name = "Test Level 1";
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Climb the ladder";
         };
 };
 
@@ -307,10 +307,7 @@ class Level2 : public Level
             this->files.push_back("levels/level1_1.txt");
             this->files.push_back("levels/level1_2.txt");
             make_level();
-            if (!music_playing())
-            {
-                play_music("LevelOne"); // adjust later when more music is created
-            }
+            this->level_music = music_named("LevelOne");
             this->level_name = "Too Many Roaches";
         };
 };
@@ -328,6 +325,7 @@ class BlankLevel : public Level
                 else
                     this->level_name = file_names[i];
             }
+            this->level_music = music_named("LevelOne");
             make_level();
         };
 };

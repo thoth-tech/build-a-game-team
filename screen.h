@@ -312,22 +312,6 @@ void PreLevelScreen::update()
 
 void LevelScreen::update()
 {
-    if(!run_once)
-    {
-        if(this->screen->get_files().size() != 0)
-        {
-            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
-            this->screen->current_level = custom_level;
-            this->screen->max_levels = 1;
-        }
-        else
-        {
-            this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-        }
-
-        run_once = true;
-    }
-
     if(!pause)
     {
         this->screen->current_level->update();
