@@ -32,8 +32,9 @@ int main(int argc, char *argv[])
 {
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
-    open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
-    window_toggle_border("Platform Prototype");
+    open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
+    //Turn this on when compiling for Arcade Machine
+    //window_toggle_border("Platform Prototype");
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
         screen = normal_screen;
     }
 
-    while (!key_typed(ESCAPE_KEY))
+    while (!key_typed(ESCAPE_KEY) && !quit_requested())
     {
         screen->update();
         process_events();
