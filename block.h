@@ -148,6 +148,11 @@ class Block
         {
             this->image = image;
         };
+
+        bitmap get_bitmap()
+        {
+            return this->image;
+        };
 };
 
 class SolidBlock : public Block

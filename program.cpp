@@ -75,8 +75,6 @@ int main(int argc, char *argv[])
             {
                 for (int j = 1; j < std::stoi(args[i + 1]) + 2; j++)
                     files.push_back(args[i + 1 + j]);
-
-                
             }
             if (args[i] == "-t")
             {
