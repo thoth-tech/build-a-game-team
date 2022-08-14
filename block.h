@@ -21,7 +21,7 @@ class Block
         bool is_turnable = false;
         bool is_empty = false;
         bool is_picked_up = false;
-        color *clr;
+        bool is_flowing = false;
         int cell;
 
     public:
@@ -109,6 +109,16 @@ class Block
             return this->is_empty;
         };
 
+        bool get_is_flowing()
+        {
+            return this->is_flowing;
+        };
+
+        void set_empty_pipe(bool new_value)
+        {
+            this->is_empty = new_value;
+        };
+
         int get_cell()
         {
             return this->cell;
@@ -119,14 +129,29 @@ class Block
             this->is_picked_up = new_value;
         };
 
+        void set_water(bool new_value)
+        {
+            this->is_water = new_value;
+        };
+
         bool picked_up()
         {
             return this->is_picked_up;
         };
 
+        void set_flowing(bool new_value)
+        {
+            this->is_flowing = new_value;
+        };
+
         void change_cell_sheet(bitmap image)
         {
             this->image = image;
+        };
+
+        bitmap get_bitmap()
+        {
+            return this->image;
         };
 };
 
@@ -220,6 +245,7 @@ class WaterBlock : public Block
         {
             this->is_solid = false;
             this->is_water = true;
+            this->is_flowing = false;
             this->position = position;
 
             animation_script water_script = animation_script_named("CellAnim");
@@ -243,9 +269,20 @@ class WaterBlock : public Block
             if (abs(dx) <= width && abs(dy) <= height)
             {
                 if (crossWidth >= crossHeight)
-                    collision = "Left";
+                {
+                    if (crossWidth > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
                 else
-                    collision = "Right";
+                {
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth - 200 > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
             }
 
             return collision;
@@ -253,10 +290,13 @@ class WaterBlock : public Block
 
         void draw_block() override
         {
-            draw_bitmap("Water", position.x, position.y, opts);
-            update_animation(this->anim);
-            if (animation_ended(this->anim))
-                restart_animation(this->anim);
+            if(is_flowing)
+            {
+                draw_bitmap("Water", position.x, position.y, opts);
+                update_animation(this->anim);
+                if (animation_ended(this->anim))
+                    restart_animation(this->anim);
+            }
         }
 };
 
@@ -422,9 +462,21 @@ class EmptyPipeBlock : public Block
         EmptyPipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_empty = true;
+            this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
+            this->make_hitbox();
         }
+
+        void make_hitbox() override
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x - 20;
+            hitbox.y = this->position.y - 20;
+            hitbox.height = bitmap_cell_height(this->image) + 40;
+            hitbox.width = bitmap_cell_width(this->image) + 40;
+            this->hitbox = hitbox;
+        };
 
         // Collision to test distance from how far a player is and if holding pipe to place
         string test_collision(rectangle one) override
