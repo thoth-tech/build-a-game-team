@@ -18,12 +18,22 @@ f:104, 1, 7,
 //Right Fall 
 f:[105-106], [5-6], 7,
 
+//Right Dying
+f:107, 5, 5, 108
+f:108, 9, 5,
+
+//Right Spawn
+f:109, 3, 5, 110
+f:110, 9, 5,
+
 //Right Animation Identifiers
 i:RightIdle, 100
 i:RightRun, 101
 i:RightJump, 103
 i:RightAttack, 104
 i:RightFall, 105
+i:RightDying, 107
+i:RightSpawn, 109
 
 
 //-----Left Movements-----
@@ -43,13 +53,22 @@ f:204, 13, 7,
 //Left Fall
 f:[205-206], [17-18], 4,
 
+//Left Dying
+f:207, 17, 5, 208
+f:208, 21, 5,
+
+//Left Spawn
+f:209, 15, 5, 210
+f:210, 21, 5,
+
 //Left Animation Identifiers
 i:LeftIdle, 200
 i:LeftRun, 201
 i:LeftJump, 203
 i:LeftAttack, 204
 i:LeftFall, 205
-
+i:LeftDying, 207
+i:LeftSpawn, 209
 
 //-----Dance Movements-----
 f: [300-303], [28-31], 6, 304

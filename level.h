@@ -85,8 +85,8 @@ protected:
 public:
     bool is_player1_out_of_lives = false;
     bool player1_complete = false;
-    // set true for 1 player game
-    bool is_player2_out_of_lives = true;
+
+    bool is_player2_out_of_lives = false;
     bool player2_complete = true;
 
     Level(vector<CellSheet> cell_sheets, int tile_size, int players)
@@ -101,9 +101,6 @@ public:
             this->player2_complete = false;
             this->is_player2_out_of_lives = false;
         }
-
-        if (!has_timer("DamageTimer"))
-            create_timer("DamageTimer");
     };
 
     ~Level(){};
@@ -218,38 +215,39 @@ public:
         for (int i = 0; i < level_players.size(); i++)
         {
             point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
+
             // Player Will lose a life when they fall off the bottom of the screen
             if (!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
             {
-                sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
                 this->level_players[i]->player_lives -= 1;
+                sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
+                this->level_players[i]->change_state(new SpawningState, "Spawn");
             }
 
+            //Player loses a life if they run out of health
             if (level_players[i]->player_health < 1)
             {
-                sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
                 level_players[i]->player_health = 3;
                 level_players[i]->player_lives -= 1;
+                this->level_players[i]->change_state(new DyingState, "Dying");
             }
 
-            if (level_players[i]->player_lives == 0)
+            //If players sets out of lives
+            if (level_players[i]->player_lives == 0 && level_players[i]->get_state_type() == "Spawn")
             {
                 this->level_players[i]->set_dead(true);
 
                 if (i == 0)
-                {
                     is_player1_out_of_lives = true;
-                    if (players == 2)
-                        player1_complete = true;
-                }
                 else
-                {
                     is_player2_out_of_lives = true;
-                    if (players == 2)
-                        player2_complete = true;
-                }
             }
         }
+
+        //Testing Purposes
+        draw_text("P1 Lives: " + std::to_string(level_players[0]->player_lives) + " P1 Health: " + std::to_string(level_players[0]->player_health), COLOR_WHITE, 0, 0, option_to_screen());
+        if(level_players.size() > 1)
+            draw_text("P1 Lives: " + std::to_string(level_players[1]->player_lives) + " P1 Health: " + std::to_string(level_players[1]->player_health), COLOR_WHITE, 0, 10, option_to_screen());
 
         check_test_input();
     }

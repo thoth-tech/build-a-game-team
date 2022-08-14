@@ -147,7 +147,6 @@ class LevelScreen : public ScreenState
 
         ~LevelScreen()
         {
-            free_timer(timer_named("DanceTime"));
         };
 
         void update() override;
@@ -271,7 +270,6 @@ void LevelScreen::update()
 {
     if(!run_once)
     {
-        create_timer("DanceTime");
         if(this->screen->get_files().size() != 0)
         {
             shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
@@ -290,7 +288,7 @@ void LevelScreen::update()
     {
         this->current_level->update();
 
-        if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+        if(this->current_level->is_player1_out_of_lives || this->current_level->is_player2_out_of_lives)
         {
             this->screen->change_state(new GameOverScreen, "GameOver");
         }
