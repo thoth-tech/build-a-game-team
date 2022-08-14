@@ -215,6 +215,8 @@ class Level
             check_enemy_player_collisions(level_enemies, level_players);
             check_water_block_collisions(layers, level_players);
             check_toxic_block_collisions(layers, level_players);
+            check_water_water_block_collisions(layers, layers);
+            check_water_empty_block_collisions(layers, layers);
 
             for (int i = 0; i < level_players.size(); i++)
             {
@@ -289,12 +291,13 @@ class Level1 : public Level
     public:
         Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
-            this->level_layers = 2;
+            this->level_layers = 3;
             this->files.push_back("file0.txt");
             this->files.push_back("file1.txt");
+            this->files.push_back("file2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Climb the ladder";
+            this->level_name = "Place the pipes";
         };
 };
 
