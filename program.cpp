@@ -30,14 +30,14 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
 
 int main(int argc, char *argv[])
 {
-    //Load Resources
+    // Load Resources
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     load_resource_bundle("roach", "roachbundle.txt");
 
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
-    //Turn this on when compiling for Arcade Machine
-    //window_toggle_border("Platform Prototype");
+    // Turn this on when compiling for Arcade Machine
+    window_toggle_border("Below The Surface");
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
@@ -52,8 +52,7 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("TurnPipes");
     cell_sheet_names.push_back("Empty");
 
-
-    //Timers
+    // Timers
     create_timer("Dying");
     create_timer("DamageTimerP1");
     create_timer("DamageTimerP2");
