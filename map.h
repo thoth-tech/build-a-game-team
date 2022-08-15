@@ -271,7 +271,7 @@ class LevelOjectsMap
                         {
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
-                                shared_ptr<Block> block(new WaterBlock(cell_sheet, position));
+                                shared_ptr<Block> block(new WaterBlock(cell_sheet, position, cell));
                                 level_blocks.push_back(block);
                             }
                         }

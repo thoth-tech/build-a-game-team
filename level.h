@@ -5,6 +5,7 @@
 #include "enemy.h"
 #include "cellsheet.h"
 #include "player.h"
+#include "hud.h"
 #include "map.h"
 #include "testing.h"
 #include "collision.h"
@@ -77,6 +78,7 @@ class Level
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
         shared_ptr<Camera> camera;
+        shared_ptr<HUD> level_hud;
         int tile_size;
         int level_layers;
         int players;
@@ -133,6 +135,9 @@ class Level
                 shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
                 this->level_players.push_back(player);
             }
+
+            shared_ptr<HUD> hud(new HUD(level_players));
+            this->level_hud = hud;
 
             this->camera = make_level_camera(level_players[0], files[0], tile_size);
         }
@@ -250,10 +255,7 @@ class Level
                 }
             }
 
-            //Testing Purposes
-            draw_text("P1 Lives: " + std::to_string(level_players[0]->player_lives) + " P1 Health: " + std::to_string(level_players[0]->player_health), COLOR_WHITE, 0, 0, option_to_screen());
-            if(level_players.size() > 1)
-                draw_text("P1 Lives: " + std::to_string(level_players[1]->player_lives) + " P1 Health: " + std::to_string(level_players[1]->player_health), COLOR_WHITE, 0, 10, option_to_screen());
+            //level_hud->update();
 
             check_test_input();
         }
@@ -291,13 +293,12 @@ class Level1 : public Level
     public:
         Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
-            this->level_layers = 3;
+            this->level_layers = 2;
             this->files.push_back("file0.txt");
             this->files.push_back("file1.txt");
-            this->files.push_back("file2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Place the pipes";
+            this->level_name = "Don't Fall in the hole";
         };
 };
 
