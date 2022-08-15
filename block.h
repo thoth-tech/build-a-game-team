@@ -258,7 +258,6 @@ class WaterBlock : public Block
 {
     private:
         animation anim;
-        bool once = false;
         int time = 0;
 
     public:
@@ -362,17 +361,6 @@ class WaterBlock : public Block
             {
                 if(is_flowing)
                 {
-                    if(!once)
-                    {
-                        animation_script water_script = animation_script_named("CellAnim");
-                        animation anim = create_animation(water_script, "Water");
-                        drawing_options opts = option_defaults();
-                        this->opts = opts;
-                        this->anim = anim;
-                        this->opts.anim = anim;
-                        once = true;
-                    }
-
                     draw_bitmap("Water", position.x, position.y, opts);
                     update_animation(this->anim);
                     if (animation_ended(this->anim))

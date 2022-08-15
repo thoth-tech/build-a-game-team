@@ -293,13 +293,12 @@ class Level1 : public Level
     public:
         Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
-            this->level_layers = 3;
+            this->level_layers = 2;
             this->files.push_back("file0.txt");
             this->files.push_back("file1.txt");
-            this->files.push_back("file2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Place the pipes";
+            this->level_name = "Don't Fall in the hole";
         };
 };
 

@@ -1,7 +1,7 @@
 ANIM, CellAnim, cell.txt
 
 BITMAP, SewerBlocks, bts_tiles.png, 64, 64, 2, 3, 6
-BITMAP, Solid, solid_blocks.png, 64, 64, 3, 2, 6
+BITMAP, Solid, solid_blocks.png, 64, 64, 4, 8, 32
 BITMAP, Ladder, ladder.png, 64, 64, 1, 1, 1
 BITMAP, Pipe, pipes_64.png, 64, 64, 4, 11, 43
 BITMAP, Water, water_blocks.png, 64, 64, 2, 5, 10
