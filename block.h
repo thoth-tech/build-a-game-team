@@ -262,15 +262,55 @@ class WaterBlock : public Block
         int time = 0;
 
     public:
-        WaterBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
+        WaterBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->is_water = true;
             this->is_flowing = true;
             this->position = position;
+            this->cell = cell;
 
             animation_script water_script = animation_script_named("CellAnim");
-            animation anim = create_animation(water_script, "Water");
+            animation anim;
+            switch(this->cell)
+            {
+                case 0: {}
+                case 1:
+                {
+                    anim = create_animation(water_script, "WaterFlow");
+                    break;
+                }
+                case 2: {}
+                case 3: 
+                {
+                    anim = create_animation(water_script, "WaterTwoSide");
+                        break;
+                }
+                case 4: {}
+                case 5: 
+                {
+                    anim = create_animation(water_script, "WaterLeft");
+                        break;
+                }
+                case 6: {}
+                case 7: 
+                {
+                    anim = create_animation(water_script, "WaterRight");
+                        break;
+                }
+                case 8: {}
+                case 9: 
+                {
+                    anim = create_animation(water_script, "WaterLake");
+                        break;
+                }
+                default:
+                {
+                    anim = create_animation(water_script, "WaterFlow");
+                    break;
+                }
+            }
+                
             drawing_options opts = option_defaults();
             this->opts = opts;
             this->anim = anim;
