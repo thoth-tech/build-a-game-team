@@ -428,7 +428,7 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
             {
                 if (layers[j][i]->is_empty_pipe())
                 {
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
+                    collision = layers[j][i]->special_collision(level_players[k]->get_player_hitbox());
                 }
                 else
                     continue;
@@ -441,7 +441,8 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
                         // player place this pipe
                         level_players[k]->place_pipe(layers[j][i]);
                         layers[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
-                        layers[j][i]->set_flowing(false);        
+                        layers[j][i]->set_flowing(false); 
+                        layers[j][i]->set_stopped(true);      
                     }
                     break;
                 }
@@ -465,14 +466,15 @@ void check_water_empty_block_collisions(vector<vector<shared_ptr<Block>>> layers
                     for(int l = 0; l < layers2[k].size(); l++)
                     {
                         //Found Water Block
-                        if(layers2[k][l]->is_block_water())
+                        if(layers2[k][l]->is_block_water() && layers2[k][l]->get_is_flowing())
                         {
-                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && layers[i][j]->get_is_flowing())
+                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && !layers[i][j]->get_is_stopped())
                             {
-                                layers2[k][l]->set_flowing(true);
+                                layers2[k][l]->set_stopped(false);
                             }
-                            else if (layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && !layers[i][j]->get_is_flowing())
+                            else if (layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && layers[i][j]->get_is_stopped())
                             {
+                                layers2[k][l]->set_stopped(true);
                                 layers2[k][l]->set_flowing(false);
                             }
                         }
@@ -496,7 +498,7 @@ void check_water_water_block_collisions(vector<vector<shared_ptr<Block>>> layers
     {
         for(int j = 0; j < layers[i].size(); j++)
         {
-            if(layers[i][j]->is_block_water() && layers[i][j]->get_is_flowing())
+            if((layers[i][j]->is_block_water() && layers[i][j]->get_is_flowing()))
             {
                 //Found flowing block
                 for(int k = 0; k < layers2.size(); k++)
@@ -504,11 +506,11 @@ void check_water_water_block_collisions(vector<vector<shared_ptr<Block>>> layers
                     for(int l = 0; l < layers2[k].size(); l++)
                     {
                         //Found Water Block
-                        if(layers2[k][l]->is_block_water() && !layers2[k][l]->get_is_flowing())
+                        if(layers2[k][l]->is_block_water() && layers[i][j]->get_is_flowing())
                         {
                             if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
                             {
-                                layers2[k][l]->set_flowing(true);
+                                layers2[k][l]->set_stopped(false);
                             }
                         }
                     }
@@ -521,11 +523,11 @@ void check_water_water_block_collisions(vector<vector<shared_ptr<Block>>> layers
                     for(int l = 0; l < layers2[k].size(); l++)
                     {
                         //Found Water Block
-                        if(layers2[k][l]->is_block_water() && layers2[k][l]->get_is_flowing())
+                        if(layers2[k][l]->is_block_water())
                         {
                             if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
                             {
-                                layers2[k][l]->set_flowing(false);
+                                layers2[k][l]->set_stopped(true);
                             }
                         }
                     }

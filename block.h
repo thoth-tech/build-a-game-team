@@ -12,6 +12,7 @@ class Block
         double top;
         string type;
         rectangle hitbox;
+        rectangle special_hitbox;
         bool is_solid = false;
         bool is_door = false;
         bool is_water = false;
@@ -22,6 +23,7 @@ class Block
         bool is_empty = false;
         bool is_picked_up = false;
         bool is_flowing = false;
+        bool is_stopped = false;
         int cell;
 
     public:
@@ -64,6 +66,8 @@ class Block
         };
 
         virtual string test_collision(rectangle one) = 0;
+
+        virtual string special_collision(rectangle one){return "";};
 
         rectangle get_block_hitbox()
         {
@@ -144,6 +148,16 @@ class Block
             this->is_flowing = new_value;
         };
 
+        void set_stopped(bool new_value)
+        {
+            this->is_stopped = new_value;
+        };
+
+        bool get_is_stopped()
+        {
+            return this->is_stopped;
+        };
+
         void change_cell_sheet(bitmap image)
         {
             this->image = image;
@@ -152,6 +166,11 @@ class Block
         bitmap get_bitmap()
         {
             return this->image;
+        };
+
+        rectangle get_special_hitbox()
+        {
+            return this->special_hitbox;
         };
 };
 
@@ -239,13 +258,15 @@ class WaterBlock : public Block
 {
     private:
         animation anim;
+        bool once = false;
+        int time = 0;
 
     public:
         WaterBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->is_water = true;
-            this->is_flowing = false;
+            this->is_flowing = true;
             this->position = position;
 
             animation_script water_script = animation_script_named("CellAnim");
@@ -290,14 +311,43 @@ class WaterBlock : public Block
 
         void draw_block() override
         {
-            if(is_flowing)
+            if(!is_stopped)
             {
                 draw_bitmap("Water", position.x, position.y, opts);
                 update_animation(this->anim);
                 if (animation_ended(this->anim))
                     restart_animation(this->anim);
             }
-        }
+            else
+            {
+                if(is_flowing)
+                {
+                    if(!once)
+                    {
+                        animation_script water_script = animation_script_named("CellAnim");
+                        animation anim = create_animation(water_script, "Water");
+                        drawing_options opts = option_defaults();
+                        this->opts = opts;
+                        this->anim = anim;
+                        this->opts.anim = anim;
+                        once = true;
+                    }
+
+                    draw_bitmap("Water", position.x, position.y, opts);
+                    update_animation(this->anim);
+                    if (animation_ended(this->anim))
+                        restart_animation(this->anim);
+
+                    if(time > 10)
+                    {
+                        this->is_flowing = false;
+                    }
+                }
+
+                if(time < 15)
+                    time += 1;
+            }
+        } 
 };
 
 class ToxicBlock : public Block
@@ -465,17 +515,17 @@ class EmptyPipeBlock : public Block
             this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
-            this->make_hitbox();
+            make_special_hitbox();
         }
 
-        void make_hitbox() override
+        void make_special_hitbox()
         {
             rectangle hitbox;
             hitbox.x = this->position.x - 20;
             hitbox.y = this->position.y - 20;
             hitbox.height = bitmap_cell_height(this->image) + 40;
             hitbox.width = bitmap_cell_width(this->image) + 40;
-            this->hitbox = hitbox;
+            this->special_hitbox = hitbox;
         };
 
         // Collision to test distance from how far a player is and if holding pipe to place
@@ -489,5 +539,18 @@ class EmptyPipeBlock : public Block
                 return "Collision";
             else
                 return "None";
+        };
+
+        string special_collision(rectangle one) override
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->special_hitbox)) && (rectangle_right(one) > rectangle_left(this->special_hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->special_hitbox)) && (rectangle_bottom(one) > rectangle_top(this->special_hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if (collision)
+                return "Collision";
+            else
+                return "None";
+
         };
 };
