@@ -36,9 +36,9 @@ int main(int argc, char *argv[])
     load_resource_bundle("roach", "roachbundle.txt");
 
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
-    // Turn this on when compiling for Arcade Machine
-    window_toggle_border("Below The Surface");
+    
     bool test_screen = false;
+    bool window_border = true;
 
     vector<string> cell_sheet_names;
 
@@ -79,6 +79,10 @@ int main(int argc, char *argv[])
             {
                 test_screen = true;
             }
+            if (args[i] == "-b")
+            {
+                window_border = false;
+            }
         }
     }
     catch (const std::exception &e)
@@ -87,6 +91,9 @@ int main(int argc, char *argv[])
         write_line("Closing program");
         exit(1);
     }
+    
+    if(!window_border)
+        window_toggle_border("Below The Surface");
 
     shared_ptr<Screen> screen;
     if (test_screen)
