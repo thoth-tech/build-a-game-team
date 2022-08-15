@@ -30,9 +30,14 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
 
 int main(int argc, char *argv[])
 {
+    //Load Resources
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
-    open_window("Platform Prototype", SCREEN_WIDTH, SCREEN_HEIGHT);
+    load_resource_bundle("roach", "roachbundle.txt");
+
+    open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
+    //Turn this on when compiling for Arcade Machine
+    //window_toggle_border("Platform Prototype");
     bool test_screen = false;
 
     vector<string> cell_sheet_names;
@@ -47,6 +52,17 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("TurnPipes");
     cell_sheet_names.push_back("Empty");
 
+
+    //Timers
+    create_timer("Dying");
+    create_timer("DamageTimerP1");
+    create_timer("DamageTimerP2");
+    create_timer("DyingTimerP1");
+    create_timer("DyingTimerP2");
+    create_timer("SpawnTimerP1");
+    create_timer("SpawnTimerP2");
+    create_timer("DanceTime");
+
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
     std::vector<std::string> args(argv, argv + argc);
     vector<string> files;
@@ -57,7 +73,7 @@ int main(int argc, char *argv[])
         {
             if (args[i] == "-l")
             {
-                for (int j = 1; j < std::stoi(args[i + 1]) + 1; j++)
+                for (int j = 1; j < std::stoi(args[i + 1]) + 2; j++)
                     files.push_back(args[i + 1 + j]);
             }
             if (args[i] == "-t")
@@ -86,7 +102,7 @@ int main(int argc, char *argv[])
         screen = normal_screen;
     }
 
-    while (!key_typed(ESCAPE_KEY))
+    while (!key_typed(ESCAPE_KEY) && !quit_requested())
     {
         screen->update();
         process_events();
@@ -95,8 +111,7 @@ int main(int argc, char *argv[])
 
     free_resource_bundle("player");
     free_resource_bundle("game_resources");
-
-    //
     free_resource_bundle("roach");
+    free_all_timers();
     return 0;
 }

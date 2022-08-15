@@ -45,329 +45,358 @@ public:
 
 class Player
 {
-private:
-    PlayerState *state;
-    sprite player_sprite;
-    point_2d position;
-    bool facing_left;
-    bool on_floor;
-    bool on_ladder;
-    rectangle hitbox;
-    bool is_dead = false;
-    bool has_won = false;
-    std::shared_ptr<Block> held_pipe;
-    bool is_holding_pipe = false;
-    int id;
-
-public:
-    player_input input;
-    int player_lives = 3;
-    int player_health = 3;
-
-    Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
-    {
-        this->change_state(state, "Initial");
-        this->player_sprite = player_sprite;
-        this->position = initial_position;
-        this->facing_left = facing_left;
-        this->on_floor = true;
-        this->on_ladder = false;
-        this->input = input;
-        sprite_set_position(player_sprite, this->position);
-        make_hitbox();
-    };
-
-    ~Player()
-    {
-        delete state;
-    };
-
-    void change_state(PlayerState *new_state, string type)
-    {
-        if (this->state != nullptr)
-            delete this->state;
-        this->state = new_state;
-        this->state->set_state(this, type);
-    };
-
-    void update()
-    {
-        this->state->update();
-    };
-
-    void get_input()
-    {
-        this->state->get_input();
-    };
-
-    void make_hitbox()
-    {
+    private:
+        PlayerState *state;
+        sprite player_sprite;
+        point_2d position;
+        bool facing_left;
+        bool on_floor;
+        bool on_ladder;
         rectangle hitbox;
-        hitbox.x = this->position.x;
-        hitbox.y = this->position.y + 5;
-        hitbox.height = sprite_height(this->player_sprite) - 5;
-        hitbox.width = sprite_width(this->player_sprite);
-        this->hitbox = hitbox;
-    };
+        bool is_dead = false;
+        bool has_won = false;
+        std::shared_ptr<Block> held_pipe;
+        bool is_holding_pipe = false;
+        int id;
 
-    void update_hitbox()
-    {
-        point_2d current_position = sprite_position(this->player_sprite);
-        this->hitbox.x = current_position.x;
-        this->hitbox.y = current_position.y + 5;
-    };
+    public:
+        player_input input;
+        int player_lives = 3;
+        int player_health = 3;
 
-    sprite get_player_sprite()
-    {
-        return this->player_sprite;
-    };
-
-    rectangle get_player_hitbox()
-    {
-        return this->hitbox;
-    };
-
-    string get_player_state_type()
-    {
-        return this->state->get_type();
-    }
-
-    bool is_facing_left()
-    {
-        return this->facing_left;
-    };
-
-    void set_facing_left(bool facing_left)
-    {
-        this->facing_left = facing_left;
-    };
-
-    bool is_on_floor()
-    {
-        return this->on_floor;
-    };
-
-    bool is_on_ladder()
-    {
-        return this->on_ladder;
-    };
-
-    void set_on_floor(bool new_value)
-    {
-        this->on_floor = new_value;
-    };
-
-    void set_on_ladder(bool new_value)
-    {
-        this->on_ladder = new_value;
-    };
-
-    void set_player_dy(float value)
-    {
-        sprite_set_dy(this->player_sprite, value);
-    };
-
-    void set_player_dx(float value)
-    {
-        sprite_set_dx(this->player_sprite, value);
-    };
-
-    bool is_player_dead()
-    {
-        return this->is_dead;
-    };
-
-    void set_dead(bool is_dead)
-    {
-        this->is_dead = is_dead;
-    };
-
-    bool has_player_won()
-    {
-        return this->has_won;
-    };
-
-    void set_player_won(bool status)
-    {
-        this->has_won = status;
-    };
-
-    string get_state_type()
-    {
-        return this->state->get_type();
-    };
-
-    point_2d get_player_position()
-    {
-        return this->position;
-    };
-
-    bool with_pipe()
-    {
-        return this->is_holding_pipe;
-    };
-
-    void set_with_pipe(bool new_value)
-    {
-        this->is_holding_pipe = new_value;
-    };
-
-    bool pick_pipe(std::shared_ptr<Block> pipe)
-    {
-        if (this->is_holding_pipe)
+        Player(PlayerState *state, sprite player_sprite, point_2d initial_position, bool facing_left, player_input input) : state(nullptr)
         {
-            return false;
+            this->change_state(state, "Initial");
+            this->player_sprite = player_sprite;
+            this->position = initial_position;
+            this->facing_left = facing_left;
+            this->on_floor = true;
+            this->on_ladder = false;
+            this->input = input;
+            sprite_set_position(player_sprite, this->position);
+            make_hitbox();
+        };
+
+        ~Player()
+        {
+            delete state;
+        };
+
+        void change_state(PlayerState *new_state, string type)
+        {
+            if (this->state != nullptr)
+                delete this->state;
+            this->state = new_state;
+            this->state->set_state(this, type);
+        };
+
+        void update()
+        {
+            this->state->update();
+        };
+
+        void get_input()
+        {
+            this->state->get_input();
+        };
+
+        void make_hitbox()
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x;
+            hitbox.y = this->position.y + 5;
+            hitbox.height = sprite_height(this->player_sprite) - 5;
+            hitbox.width = sprite_width(this->player_sprite);
+            this->hitbox = hitbox;
+        };
+
+        void update_hitbox()
+        {
+            point_2d current_position = sprite_position(this->player_sprite);
+            this->hitbox.x = current_position.x;
+            this->hitbox.y = current_position.y + 5;
+        };
+
+        sprite get_player_sprite()
+        {
+            return this->player_sprite;
+        };
+
+        rectangle get_player_hitbox()
+        {
+            return this->hitbox;
+        };
+
+        string get_player_state_type()
+        {
+            return this->state->get_type();
         }
 
-        write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
+        bool is_facing_left()
+        {
+            return this->facing_left;
+        };
 
-        this->held_pipe = pipe;
-        this->held_pipe->set_picked_up(true);
-        set_with_pipe(true);
-        return this->is_holding_pipe;
-    };
+        void set_facing_left(bool facing_left)
+        {
+            this->facing_left = facing_left;
+        };
 
-    void place_pipe(std::shared_ptr<Block> empty)
-    {
-        empty = this->held_pipe;
-        this->is_holding_pipe = false;
-    };
+        bool is_on_floor()
+        {
+            return this->on_floor;
+        };
 
-    int get_player_id()
-    {
-        return this->id;
-    };
+        bool is_on_ladder()
+        {
+            return this->on_ladder;
+        };
 
-    void set_player_id(int id)
-    {
-        this->id = id;
-    };
+        void set_on_floor(bool new_value)
+        {
+            this->on_floor = new_value;
+        };
 
-    std::shared_ptr<Block> get_held_pipe()
-    {
-        return this->held_pipe;
-    };
+        void set_on_ladder(bool new_value)
+        {
+            this->on_ladder = new_value;
+        };
+
+        void set_player_dy(float value)
+        {
+            sprite_set_dy(this->player_sprite, value);
+        };
+
+        void set_player_dx(float value)
+        {
+            sprite_set_dx(this->player_sprite, value);
+        };
+
+        bool is_player_dead()
+        {
+            return this->is_dead;
+        };
+
+        void set_dead(bool is_dead)
+        {
+            this->is_dead = is_dead;
+        };
+
+        bool has_player_won()
+        {
+            return this->has_won;
+        };
+
+        void set_player_won(bool status)
+        {
+            this->has_won = status;
+        };
+
+        string get_state_type()
+        {
+            return this->state->get_type();
+        };
+
+        point_2d get_player_position()
+        {
+            return this->position;
+        };
+
+        bool with_pipe()
+        {
+            return this->is_holding_pipe;
+        };
+
+        void set_with_pipe(bool new_value)
+        {
+            this->is_holding_pipe = new_value;
+        };
+
+        bool pick_pipe(std::shared_ptr<Block> pipe)
+        {
+            if (this->is_holding_pipe)
+            {
+                return false;
+            }
+
+            write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
+
+            this->held_pipe = pipe;
+            this->held_pipe->set_picked_up(true);
+            set_with_pipe(true);
+            return this->is_holding_pipe;
+        };
+
+        void place_pipe(std::shared_ptr<Block> empty)
+        {
+            empty = this->held_pipe;
+            this->is_holding_pipe = false;
+        };
+
+        int get_player_id()
+        {
+            return this->id;
+        };
+
+        void set_player_id(int id)
+        {
+            this->id = id;
+        };
+
+        std::shared_ptr<Block> get_held_pipe()
+        {
+            return this->held_pipe;
+        };
 };
 
 class IdleState : public PlayerState
 {
-private:
-    bool run_once = false;
+    private:
+        bool run_once = false;
 
-public:
-    IdleState(){};
+    public:
+        IdleState(){};
 
-    ~IdleState(){};
+        ~IdleState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class RunState : public PlayerState
 {
-private:
-    bool run_once = false;
-    float dx;
+    private:
+        bool run_once = false;
+        float dx;
 
-public:
-    RunState(float dx)
-    {
-        this->dx = dx;
-    };
+    public:
+        RunState(float dx)
+        {
+            this->dx = dx;
+        };
 
-    ~RunState(){};
+        ~RunState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class JumpRiseState : public PlayerState
 {
-private:
-    bool run_once = false;
-    float initial_y;
-    float max_jump_height;
+    private:
+        bool run_once = false;
+        float initial_y;
+        float max_jump_height;
 
-public:
-    JumpRiseState(){};
+    public:
+        JumpRiseState(){};
 
-    ~JumpRiseState(){};
+        ~JumpRiseState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class JumpFallState : public PlayerState
 {
-private:
-    bool run_once = false;
+    private:
+        bool run_once = false;
 
-public:
-    JumpFallState(){};
+    public:
+        JumpFallState(){};
 
-    ~JumpFallState(){};
+        ~JumpFallState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class DanceState : public PlayerState
 {
-private:
-    bool run_once = false;
+    private:
+        bool run_once = false;
 
-public:
-    DanceState(){};
+    public:
+        DanceState(){};
 
-    ~DanceState(){};
+        ~DanceState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class AttackState : public PlayerState
 {
-private:
-    bool run_once = false;
+    private:
+        bool run_once = false;
 
-public:
-    AttackState(){};
+    public:
+        AttackState(){};
 
-    ~AttackState(){};
+        ~AttackState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 class HurtState : public PlayerState
 {
-private:
-    bool run_once = false;
+    private:
+        bool run_once = false;
 
-public:
-    HurtState(){};
+    public:
+        HurtState(){};
 
-    ~HurtState(){};
+        ~HurtState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
 
 // Created ClimbState Class
 class ClimbState : public PlayerState
 {
-private:
-    bool run_once = false;
-    bool is_moving = false;
+    private:
+        bool run_once = false;
+        bool is_moving = false;
 
-public:
-    ClimbState(){};
+    public:
+        ClimbState(){};
 
-    ~ClimbState(){};
+        ~ClimbState(){};
 
-    void update() override;
-    void get_input() override;
+        void update() override;
+        void get_input() override;
 };
+
+class DyingState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        DyingState(){};
+
+        ~DyingState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
+class SpawningState : public PlayerState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        SpawningState(){};
+
+        ~SpawningState(){};
+
+        void update() override;
+        void get_input() override;
+};
+
 
 void sprite_fall(sprite sprite)
 {
@@ -389,6 +418,18 @@ void sprite_update_routine_continuous(sprite player_sprite)
     if (sprite_animation_has_ended(player_sprite))
         sprite_replay_animation(player_sprite);
     update_sprite(player_sprite);
+}
+
+void player_draw_pipe(Player *player)
+{
+    if(player->with_pipe())
+    {
+        point_2d position = sprite_position(player->get_player_sprite());
+        bitmap pipe = player->get_held_pipe()->get_bitmap();
+        drawing_options opts = option_defaults();
+        opts.draw_cell = player->get_held_pipe()->get_cell();
+        draw_bitmap(pipe, position.x, position.y, opts);
+    }
 }
 
 void IdleState::update()
@@ -414,6 +455,8 @@ void IdleState::update()
     else
         sprite_fall(player->get_player_sprite());
 
+    player_draw_pipe(player);
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
@@ -433,15 +476,9 @@ void IdleState::get_input()
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
-
     if (key_typed(Z_KEY))
     {
         this->player->change_state(new DanceState, "Dance");
-    }
-
-    if (key_typed(V_KEY))
-    {
-        this->player->change_state(new HurtState, "Hurt");
     }
     if (key_typed(B_KEY))
     {
@@ -484,6 +521,8 @@ void RunState::update()
     else
         sprite_fall(player->get_player_sprite());
 
+    player_draw_pipe(player);
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
@@ -518,6 +557,8 @@ void JumpRiseState::update()
     if (sprite_dy(player->get_player_sprite()) < 0)
         sprite_set_dy(player->get_player_sprite(), sprite_dy(player->get_player_sprite()) + JUMP_RISE_LOSS);
 
+    player_draw_pipe(player);
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 
     float current_y = sprite_y(player->get_player_sprite());
@@ -550,11 +591,11 @@ void JumpFallState::update()
         sprite_set_dy(player->get_player_sprite(), 0);
         run_once = true;
     }
+
+    player_draw_pipe(player);
     sprite_update_routine_continuous(this->player->get_player_sprite());
 
     sprite_fall(player->get_player_sprite());
-
-    // write_line(sprite_dy(player->get_player_sprite()));
 
     if (player->is_on_floor())
     {
@@ -642,10 +683,14 @@ void HurtState::update()
     if (!run_once)
     {
         sprite_set_dx(player_sprite, 0);
-        sprite_set_dy(player_sprite, 0);
         animation_routine(player, "LeftFall", "RightFall");
         run_once = true;
     }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player->get_player_sprite());
+    else
+        sprite_set_dy(player_sprite, 0);
 
     draw_sprite(player_sprite);
     if (sprite_animation_has_ended(player_sprite))
@@ -675,6 +720,7 @@ void ClimbState::update()
         sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
     }
 
+    player_draw_pipe(player);
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
@@ -755,4 +801,82 @@ void ClimbState::get_input()
             this->player->change_state(new JumpFallState, "JumpFall");
         }
     }
+}
+
+void DyingState::update()
+{
+    string dying_timer = "";
+    if(this->player->get_player_id() == 1 || this->player->get_player_id() == 3)
+        dying_timer = "DyingTimerP1";
+    else
+        dying_timer = "DyingTimerP2";
+    
+    sprite player_sprite = this->player->get_player_sprite();
+    if (!run_once)
+    {
+        start_timer(dying_timer);
+        sprite_set_dx(player_sprite, 0);
+        animation_routine(player, "LeftDying", "RightDying");
+        run_once = true;
+    }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player_sprite);
+    else
+        sprite_set_dy(player_sprite, 0);
+
+    int time = timer_ticks(dying_timer) / 1000;
+
+    if(time < 2)
+         sprite_update_routine_continuous(player_sprite);
+    else
+    {
+        sprite_set_position(player_sprite, this->player->get_player_position());
+        stop_timer(dying_timer);
+        this->player->change_state(new SpawningState, "Spawn");
+    }
+}
+
+void DyingState::get_input()
+{
+}
+
+void SpawningState::update()
+{
+    string spawn_timer = "";
+    if(this->player->get_player_id() == 1 || this->player->get_player_id() == 3)
+        spawn_timer = "SpawnTimerP1";
+    else
+        spawn_timer = "SpawnTimerP2";
+
+    sprite player_sprite = this->player->get_player_sprite();
+    if (!run_once)
+    {
+        start_timer(spawn_timer);
+        this->player->set_facing_left(false);
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        animation_routine(player, "LeftSpawn", "RightSpawn");
+        run_once = true;
+    }
+
+    if(!this->player->is_on_floor())
+        sprite_fall(player_sprite);
+    else
+        sprite_set_dy(player_sprite, 0);
+
+    int time = timer_ticks(spawn_timer) / 1000;
+
+    if(time < 1)
+         sprite_update_routine_continuous(player_sprite);
+    else
+    {
+        stop_timer(spawn_timer);
+        this->player->change_state(new IdleState, "Idle");
+    }
+        
+}
+
+void SpawningState::get_input()
+{
 }

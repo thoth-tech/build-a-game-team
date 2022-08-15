@@ -41,6 +41,10 @@ class Screen
         vector<string> files;
         
     public:
+        int level_number = 1;
+        int max_levels = 2;
+        shared_ptr<Level> current_level;
+
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
         {
             this->cell_sheets = cell_sheets;
@@ -132,22 +136,32 @@ class MenuScreen : public ScreenState
         void update() override;
 };
 
+class PreLevelScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        PreLevelScreen(){};
+
+        ~PreLevelScreen(){};
+
+        void update() override;
+};
+
 class LevelScreen : public ScreenState
 {
     private:
         bool run_once = false;
         bool pause = false;
         bool pause_run_once;
-        shared_ptr<Level> current_level;
-        int level_number = 1;
-        int max_levels = 2;
+        
 
     public:
         LevelScreen(){};
 
         ~LevelScreen()
         {
-            free_timer(timer_named("DanceTime"));
         };
 
         void update() override;
@@ -164,19 +178,19 @@ class LevelScreen : public ScreenState
             {
                 if(key_typed(NUM_1_KEY))
                 {
-                    if(level_number < max_levels)
+                    if(this->screen->level_number < this->screen->max_levels)
                     {
-                        level_number += 1;
-                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                        this->screen->level_number += 1;
+                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                     }
                 }
 
                 if(key_typed(NUM_2_KEY))
                 {
-                    if(level_number > 1)
+                    if(this->screen->level_number > 1)
                     {
-                        level_number -= 1;
-                        this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                        this->screen->level_number -= 1;
+                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                     }
                 }
             }
@@ -257,44 +271,56 @@ void MenuScreen::update()
     {
         play_sound_effect("Select");
         this->screen->set_players(1);
-        this->screen->change_state(new LevelScreen, "Level");
+        this->screen->change_state(new PreLevelScreen, "Pre Level");
     }
     if(key_typed(NUM_2_KEY))
     {
         play_sound_effect("Select");
         this->screen->set_players(2);
+        this->screen->change_state(new PreLevelScreen, "Pre Level");
+    }
+}
+
+void PreLevelScreen::update()
+{
+    if(!run_once)
+    {
+        if(this->screen->get_files().size() != 0)
+        {
+            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
+            this->screen->current_level = custom_level;
+            this->screen->max_levels = 1;
+        }
+        else
+        {
+            this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+        }
+
+        run_once = true;
+    }
+
+    point_2d pt = screen_center();
+    clear_screen(COLOR_BLACK);
+    draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, pt.x, pt.y);
+    draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, pt.x, pt.y + 10);
+
+    if(key_typed(RETURN_KEY))
+    {
         this->screen->change_state(new LevelScreen, "Level");
     }
 }
 
 void LevelScreen::update()
 {
-    if(!run_once)
-    {
-        create_timer("DanceTime");
-        if(this->screen->get_files().size() != 0)
-        {
-            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
-            current_level = custom_level;
-            this->max_levels = 1;
-        }
-        else
-        {
-            this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-        }
-
-        run_once = true;
-    }
-
     if(!pause)
     {
-        this->current_level->update();
+        this->screen->current_level->update();
 
-        if(this->current_level->is_player1_out_of_lives && this->current_level->is_player2_out_of_lives)
+        if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
         {
             this->screen->change_state(new GameOverScreen, "GameOver");
         }
-        if(this->current_level->player1_complete && this->current_level->player2_complete)
+        if(this->screen->current_level->player1_complete && this->screen->current_level->player2_complete)
         {
             if(!timer_started("DanceTime"))
                 start_timer("DanceTime");
@@ -302,10 +328,10 @@ void LevelScreen::update()
             if(time > 2)
             {
                 stop_timer("DanceTime");
-                if(this->level_number < max_levels)
+                if(this->screen->level_number < this->screen->max_levels)
                 {
-                    this->level_number += 1;
-                    this->current_level = get_next_level(this->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                    this->screen->level_number += 1;
+                    this->screen->change_state(new PreLevelScreen, "Pre Level");
                 }
                 else
                     this->screen->change_state(new WinScreen, "Win");

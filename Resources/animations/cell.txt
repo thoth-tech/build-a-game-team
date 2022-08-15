@@ -5,6 +5,11 @@ SplashKit Animation
 f: 100, 0, 7, 101
 f: 101, 1, 7,
 
+f: 102, 0, 7, 103
+f: 103, 100, 2, 104
+f: 104, 1, 7, 105
+f: 105, 100, 2,
+
 //Door Animation1
 f: [200-202], [0-2], 10,
 
@@ -15,6 +20,7 @@ f: [203-205], [3-5], 10,
 f:[300-304], [0-4], 8,
 
 i:Water, 100
+i:WaterFlash, 102
 i:Door_Open, 200
 i:Door_Portal, 203
 i:ToxicFlow, 300

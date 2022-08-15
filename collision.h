@@ -254,18 +254,19 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
 
             if (collision != "Top" && collision != "None")
             {
-                if (!timer_started(timer_named("DamageTimer")))
+                string damage_timer = "DamageTimerP" + std::to_string(j + 1);
+                if (!timer_started(timer_named(damage_timer)))
                 {
                     level_players[j]->player_health -= 1;
-                    // write_line("Player Health: " + std::to_string(level_players[j]->player_health));
-                    start_timer("DamageTimer");
+                    start_timer(damage_timer);
+                    level_players[j]->change_state(new HurtState, "Hurt");
                 }
 
-                int time = timer_ticks("DamageTimer") / 1000;
+                int time = timer_ticks(damage_timer) / 1000;
 
                 // Invincibility frames
                 if (!(time < 2))
-                    stop_timer("DamageTimer");
+                    stop_timer(damage_timer);
             }
             else if (collision != "None" && !level_players[j]->is_on_floor())
             {
@@ -292,7 +293,7 @@ void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 if (!rect_on_screen(layers[j][i]->get_block_hitbox()))
                     continue;
 
-                if (layers[j][i]->is_block_water())
+                if (layers[j][i]->is_block_water() && layers[j][i]->get_is_flowing())
                     collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
@@ -336,19 +337,19 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
 
                 if (collision != "None")
                 {
-                    if (!timer_started(timer_named("DamageTimer")))
+                    string damage_timer = "DamageTimerP" + std::to_string(k + 1);
+                    if (!timer_started(timer_named(damage_timer)))
                     {
-                        level_players[j]->player_health -= 1;
-                        // write_line("Player Health: " + std::to_string(level_players[j]->player_health));
-                        start_timer("DamageTimer");
+                        level_players[k]->player_health -= 1;
+                        start_timer(damage_timer);
                     }
 
-                    int time = timer_ticks("DamageTimer") / 1000;
+                    int time = timer_ticks(damage_timer) / 1000;
 
                     // Invincibility frames
                     if (!(time < 2))
                     {
-                        stop_timer("DamageTimer");
+                        stop_timer(damage_timer);
                         break;
                     }
                 }
@@ -427,7 +428,7 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
             {
                 if (layers[j][i]->is_empty_pipe())
                 {
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
+                    collision = layers[j][i]->special_collision(level_players[k]->get_player_hitbox());
                 }
                 else
                     continue;
@@ -439,11 +440,101 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers,
                         write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(layers[j][i]->get_cell()));
                         // player place this pipe
                         level_players[k]->place_pipe(layers[j][i]);
-                        layers[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));           
+                        layers[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
+                        layers[j][i]->set_flowing(false); 
+                        layers[j][i]->set_stopped(true);      
                     }
                     break;
                 }
             }
+        }
+    }
+}
+
+void check_water_empty_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<vector<shared_ptr<Block>>> layers2)
+{
+    string collision = "None";
+    for(int i = 0; i < layers.size(); i++)
+    {
+        for(int j = 0; j < layers[i].size(); j++)
+        {
+            if(layers[i][j]->is_empty_pipe())
+            {
+                //Found Empty Space
+                for(int k = 0; k < layers2.size(); k++)
+                {
+                    for(int l = 0; l < layers2[k].size(); l++)
+                    {
+                        //Found Water Block
+                        if(layers2[k][l]->is_block_water() && layers2[k][l]->get_is_flowing())
+                        {
+                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && !layers[i][j]->get_is_stopped())
+                            {
+                                layers2[k][l]->set_stopped(false);
+                            }
+                            else if (layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && layers[i][j]->get_is_stopped())
+                            {
+                                layers2[k][l]->set_stopped(true);
+                                layers2[k][l]->set_flowing(false);
+                            }
+                        }
+                        else
+                            continue;
+                    }
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
+    }
+}
+
+void check_water_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<vector<shared_ptr<Block>>> layers2)
+{
+    string collision = "None";
+    for(int i = 0; i < layers.size(); i++)
+    {
+        for(int j = 0; j < layers[i].size(); j++)
+        {
+            if((layers[i][j]->is_block_water() && layers[i][j]->get_is_flowing()))
+            {
+                //Found flowing block
+                for(int k = 0; k < layers2.size(); k++)
+                {
+                    for(int l = 0; l < layers2[k].size(); l++)
+                    {
+                        //Found Water Block
+                        if(layers2[k][l]->is_block_water() && layers[i][j]->get_is_flowing())
+                        {
+                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
+                            {
+                                layers2[k][l]->set_stopped(false);
+                            }
+                        }
+                    }
+                }
+            }
+            else if(layers[i][j]->is_block_water())
+            {
+                for(int k = 0; k < layers2.size(); k++)
+                {
+                    for(int l = 0; l < layers2[k].size(); l++)
+                    {
+                        //Found Water Block
+                        if(layers2[k][l]->is_block_water())
+                        {
+                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
+                            {
+                                layers2[k][l]->set_stopped(true);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+                continue;
         }
     }
 }
