@@ -221,6 +221,21 @@ class LevelOjectsMap
                         cockroach->get_ai()->set_facing_left(true);
                         level_enemies.push_back(cockroach);
                     }
+
+                    if(this->map_array[i][j] == 709)
+                    {
+                        sprite snake = create_sprite("Snake", "SnakeAnim");
+                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        ssnake->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(ssnake);
+                    }
+                    if(this->map_array[i][j] == 710)
+                    {
+                        sprite snake = create_sprite("Snake", "SnakeAnim");
+                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        ssnake->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(ssnake);
+                    }
                 }
 
             return level_enemies;

@@ -671,7 +671,7 @@ void DanceState::get_input()
     if (key_typed(Z_KEY))
     {
         this->player->change_state(new IdleState, "Idle");
-    }
+    }//this is a test please don't use this for actual actions!
 }
 
 void AttackState::update()
@@ -704,14 +704,17 @@ void CrouchState::update()
         animation_routine(player, "LeftCrouch", "RightCrouch");
         run_once = true;
     }
-    draw_sprite(player_sprite);
-    if (sprite_animation_has_ended(player_sprite))
-        this->player->change_state(new IdleState, "Idle");
-    update_sprite(player_sprite);
+    player_draw_pipe(player);
+
+    sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
 void CrouchState::get_input()
 {
+     if (key_released(player->input.crouch_key))
+    {
+        this->player->change_state(new IdleState, "Idle");
+    }
 }
 
 void HurtState::update()

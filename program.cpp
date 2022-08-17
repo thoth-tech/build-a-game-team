@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     load_resource_bundle("player", "playerbundle.txt");
     load_resource_bundle("game_resources", "gameresources.txt");
     load_resource_bundle("roach", "roachbundle.txt");
+    load_resource_bundle("snake", "snakebundle.txt");
 
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
     
@@ -118,6 +119,7 @@ int main(int argc, char *argv[])
     free_resource_bundle("player");
     free_resource_bundle("game_resources");
     free_resource_bundle("roach");
+    free_resource_bundle("snake");
     free_all_timers();
     return 0;
 }
