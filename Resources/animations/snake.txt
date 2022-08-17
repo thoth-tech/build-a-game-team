@@ -12,10 +12,10 @@ i:LeftIdle, 100
 i:LeftRun, 101
 
 //Right Idle
-f:200, 0, 4, 
+f:200, 12, 4, 
 
 //Right Run
-f:[201-204], [0-3], 4,
+f:[201-204], [12-15], 4,
 
 //Right Animation Identifiers
 i:RightIdle, 200

@@ -1,2 +1,2 @@
-ANIM, SnakeAnim, snake.txt
-BITMAP,Snake,snake.png, 64, 32, 4, 2, 8
+ANIM,SnakeAnim,snake.txt
+BITMAP,Snake,snake.png, 64, 32, 4, 4, 16
