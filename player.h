@@ -397,6 +397,19 @@ class SpawningState : public PlayerState
         void get_input() override;
 };
 
+class CrouchState : public PlayerState
+{
+private:
+    bool run_once = false;
+
+public:
+    CrouchState(){};
+
+    ~CrouchState(){};
+
+    void update() override;
+    void get_input() override;
+};
 
 void sprite_fall(sprite sprite)
 {
@@ -483,6 +496,10 @@ void IdleState::get_input()
     if (key_typed(B_KEY))
     {
         this->player->change_state(new AttackState, "Attack");
+    }
+    if (key_down(player->input.crouch_key))
+    {
+        this->player->change_state(new CrouchState, "Crouch");
     }
 }
 
@@ -674,6 +691,26 @@ void AttackState::update()
 }
 
 void AttackState::get_input()
+{
+}
+
+void CrouchState::update()
+{
+    sprite player_sprite = this->player->get_player_sprite();
+    if (!run_once)
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player_sprite, 0);
+        animation_routine(player, "LeftCrouch", "RightCrouch");
+        run_once = true;
+    }
+    draw_sprite(player_sprite);
+    if (sprite_animation_has_ended(player_sprite))
+        this->player->change_state(new IdleState, "Idle");
+    update_sprite(player_sprite);
+}
+
+void CrouchState::get_input()
 {
 }
 
