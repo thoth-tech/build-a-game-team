@@ -26,6 +26,9 @@ f:108, 9, 5,
 f:109, 3, 5, 110
 f:110, 9, 5,
 
+//Right Crouch
+f:111, 4, 5,
+
 //Right Animation Identifiers
 i:RightIdle, 100
 i:RightRun, 101
@@ -34,6 +37,7 @@ i:RightAttack, 104
 i:RightFall, 105
 i:RightDying, 107
 i:RightSpawn, 109
+i:RightCrouch, 111
 
 
 //-----Left Movements-----
@@ -61,6 +65,9 @@ f:208, 21, 5,
 f:209, 15, 5, 210
 f:210, 21, 5,
 
+//Left Crouch
+f:211, 16, 5,
+
 //Left Animation Identifiers
 i:LeftIdle, 200
 i:LeftRun, 201
@@ -69,6 +76,7 @@ i:LeftAttack, 204
 i:LeftFall, 205
 i:LeftDying, 207
 i:LeftSpawn, 209
+i:LeftCrouch, 211
 
 //-----Dance Movements-----
 f: [300-303], [28-31], 6, 304
