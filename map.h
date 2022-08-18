@@ -139,7 +139,7 @@ class LevelOjectsMap
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
 
-                    if(this->map_array[i][j] == 909)
+                    if(this->map_array[i][j] == 1201)
                     {
                         if(player_number == 1)
                         {
@@ -158,7 +158,7 @@ class LevelOjectsMap
                             return player;
                         }
                     }
-                    if(this->map_array[i][j] == 910)
+                    if(this->map_array[i][j] == 1202)
                     {
                         if(player_number == 2)
                         {
@@ -186,7 +186,7 @@ class LevelOjectsMap
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
 
-                    if(this->map_array[i][j] == 808)
+                    if(this->map_array[i][j] == 1301)
                     {
                         shared_ptr<DoorBlock> level_door(new DoorBlock(cell_sheet, position));
                         door = level_door;
@@ -196,6 +196,7 @@ class LevelOjectsMap
 
             return door;
         };
+        
 
         vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies)
         {
@@ -207,14 +208,14 @@ class LevelOjectsMap
                     position.x = j * this->tile_size;
                     position.y = i * this->tile_size;
 
-                    if(this->map_array[i][j] == 707)
+                    if(this->map_array[i][j] == 1401)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
                         cockroach->get_ai()->set_facing_left(false);
                         level_enemies.push_back(cockroach);
                     }
-                    if(this->map_array[i][j] == 708)
+                    if(this->map_array[i][j] == 1402)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
                         shared_ptr<Roach> cockroach(new Roach(roach, position));
@@ -222,14 +223,14 @@ class LevelOjectsMap
                         level_enemies.push_back(cockroach);
                     }
 
-                    if(this->map_array[i][j] == 709)
+                    if(this->map_array[i][j] == 1403)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
                         shared_ptr<Snake> ssnake(new Snake(snake, position));
                         ssnake->get_ai()->set_facing_left(false);
                         level_enemies.push_back(ssnake);
                     }
-                    if(this->map_array[i][j] == 710)
+                    if(this->map_array[i][j] == 1404)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
                         shared_ptr<Snake> ssnake(new Snake(snake, position));
@@ -241,7 +242,7 @@ class LevelOjectsMap
             return level_enemies;
         };
 
-        vector<shared_ptr<Block>> get_tiles(vector<shared_ptr<Block>> level_blocks, bitmap cell_sheet, int offset)
+        vector<shared_ptr<SolidBlock>> get_solid_blocks(vector<shared_ptr<SolidBlock>> solid_blocks, bitmap cell_sheet, int offset)
         {
             point_2d position;
 
@@ -259,78 +260,186 @@ class LevelOjectsMap
                         {
                             if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1)
                             {
-                                shared_ptr<Block> block(new SolidBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
+                                shared_ptr<SolidBlock> block(new SolidBlock(cell_sheet, position, cell));
+                                solid_blocks.push_back(block);
                             }
                         }
+                    }
 
-                        if(bitmap_name(cell_sheet) == "Ladder")
-                        {
-                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
-                            {
-                                shared_ptr<Block> block(new Ladder(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
-                            }
-                        }
+                    //Half Solid Blocks
+                }
 
+            return solid_blocks;
+        }
+
+        vector<shared_ptr<Block>> get_decoration(vector<shared_ptr<Block>> decoration_blocks, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
                         if(bitmap_name(cell_sheet) == "Pipe")
                         {
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<Block> block(new PipeBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
+                                decoration_blocks.push_back(block);
                             }
                         }
+                    }
+                    //Decoration
+                }
 
+            return decoration_blocks;
+        }
+
+        vector<shared_ptr<WaterBlock>> get_water(vector<shared_ptr<WaterBlock>> water_blocks, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
                         if(bitmap_name(cell_sheet) == "Water")
                         {
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
-                                shared_ptr<Block> block(new WaterBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
-                            }
-                        }
-
-                        if(bitmap_name(cell_sheet) == "Toxic")
-                        {
-                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
-                            {
-                                shared_ptr<Block> block(new ToxicBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
-                            }
-                        }
-
-                        if(bitmap_name(cell_sheet) == "HoldPipes")
-                        {
-                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
-                            {
-                                shared_ptr<Block> block(new HoldablePipeBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
-                            }
-                        }
-
-                        if(bitmap_name(cell_sheet) == "TurnPipes")
-                        {
-                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
-                            {
-                                shared_ptr<Block> block(new TurnablePipeBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
-                            }
-                        }
-
-                        if(bitmap_name(cell_sheet) == "Empty")
-                        {
-                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
-                            {
-                                shared_ptr<Block> block(new EmptyPipeBlock(cell_sheet, position, cell));
-                                level_blocks.push_back(block);
+                                shared_ptr<WaterBlock> block(new WaterBlock(cell_sheet, position, cell));
+                                water_blocks.push_back(block);
                             }
                         }
                     }
                 }
 
-            return level_blocks;
-        };
+            return water_blocks;
+        }
 
+        vector<shared_ptr<ToxicBlock>> get_toxic(vector<shared_ptr<ToxicBlock>> toxic_blocks, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "Toxic")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<ToxicBlock> block(new ToxicBlock(cell_sheet, position, cell));
+                                toxic_blocks.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return toxic_blocks;
+        }
+
+        vector<shared_ptr<HoldablePipeBlock>> get_holdable_pipes(vector<shared_ptr<HoldablePipeBlock>> hold_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "HoldPipes")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<HoldablePipeBlock> block(new HoldablePipeBlock(cell_sheet, position, cell));
+                                hold_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return hold_pipes;
+        }
+
+        vector<shared_ptr<EmptyPipeBlock>> get_empty_pipe_blocks(vector<shared_ptr<EmptyPipeBlock>> empty_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "EmptyHold")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<EmptyPipeBlock> block(new EmptyPipeBlock(cell_sheet, position, cell));
+                                empty_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return empty_pipes;
+        }
+        
+
+        vector<shared_ptr<Ladder>> get_ladders(vector<shared_ptr<Ladder>> ladder_blocks, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "Ladder")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Ladder> block(new Ladder(cell_sheet, position, cell));
+                                ladder_blocks.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return ladder_blocks;
+        }
 };
 

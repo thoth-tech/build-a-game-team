@@ -31,14 +31,14 @@ bool test_rectangle_collision(rectangle one, rectangle two)
         return false;
 };
 
-void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players, rectangle test_area)
+void check_solid_block_collisions(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < solid_blocks.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < solid_blocks[j].size(); i++)
             {
                 // if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
                 // continue;
@@ -46,10 +46,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                 // if(!test_rectangle_collision(test_area, layers[j][i]->get_block_hitbox()))
                 //     continue;
 
-                if (layers[j][i]->is_block_solid())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
-                else
-                    continue;
+                collision = solid_blocks[j][i]->test_collision(level_players[k]->get_player_hitbox());
 
                 if (collision == "Top")
                 {
@@ -62,7 +59,7 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                         break;
                     }
                     level_players[k]->set_on_floor(true);
-                    sprite_set_y(level_players[k]->get_player_sprite(), layers[j][i]->get_top());
+                    sprite_set_y(level_players[k]->get_player_sprite(), solid_blocks[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
@@ -114,7 +111,6 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
                     break;
                 }
             }
-
             if (collision != "None")
                 break;
         }
@@ -141,22 +137,19 @@ void check_door_block_collisions(shared_ptr<DoorBlock> door, vector<shared_ptr<P
     }
 }
 
-void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+void check_ladder_collisions(vector<vector<shared_ptr<Ladder>>> ladders, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < ladders.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < ladders[j].size(); i++)
             {
-                if (!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                if (!rect_on_screen(ladders[j][i]->get_block_hitbox()))
                     continue;
 
-                if (layers[j][i]->is_block_ladder())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
-                else
-                    continue;
+                collision = ladders[j][i]->test_collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None" && (key_typed(level_players[k]->input.jump_key) || key_typed(level_players[k]->input.crouch_key)))
                 {
@@ -182,7 +175,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Block>>> layers, vector<sh
     }
 }
 
-void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Enemy>> level_enemies, rectangle test_area)
+void check_enemy_solid_block_collisions(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<shared_ptr<Enemy>> level_enemies)
 {
     for (int k = 0; k < level_enemies.size(); k++)
     {
@@ -190,9 +183,9 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
             continue;
 
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < solid_blocks.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < solid_blocks[j].size(); i++)
             {
                 // if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
                 //     continue;
@@ -200,15 +193,13 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> layers
                 // if(!test_rectangle_collision(test_area, layers[j][i]->get_block_hitbox()))
                 //     continue;
 
-                if (layers[j][i]->is_block_solid())
-                    collision = layers[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox());
-                else
-                    continue;
+                collision = solid_blocks[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox());
+
 
                 if (collision == "Top")
                 {
                     level_enemies[k]->get_ai()->set_on_floor(true);
-                    level_enemies[k]->get_ai()->set_y_value(layers[j][i]->get_top());
+                    level_enemies[k]->get_ai()->set_y_value(solid_blocks[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
@@ -281,20 +272,20 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
     }
 }
 
-void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+void check_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> water, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < water.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < water[j].size(); i++)
             {
-                if (!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                if (!rect_on_screen(water[j][i]->get_block_hitbox()))
                     continue;
 
-                if (layers[j][i]->is_block_water() && layers[j][i]->get_is_flowing())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
+                if (water[j][i]->get_is_flowing())
+                    collision = water[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
@@ -318,22 +309,19 @@ void check_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
     }
 }
 
-void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players)
+void check_toxic_block_collisions(vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < toxic.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < toxic[j].size(); i++)
             {
-                if (!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                if (!rect_on_screen(toxic[j][i]->get_block_hitbox()))
                     continue;
 
-                if (layers[j][i]->is_block_toxic())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
-                else
-                    continue;
+                collision = toxic[j][i]->test_collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None")
                 {
@@ -358,7 +346,7 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<Block>>> layers, vect
     }
 }
 
-void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players, rectangle test_area)
+void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeBlock>>> pipes, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
@@ -368,42 +356,42 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> laye
             continue;
         }
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < pipes.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < pipes[j].size(); i++)
             {
-                if (layers[j][i]->is_holdable_pipe() && !layers[j][i]->picked_up())
-                    collision = layers[j][i]->test_collision(level_players[k]->get_player_hitbox());
+                if (!pipes[j][i]->picked_up())
+                    collision = pipes[j][i]->test_collision(level_players[k]->get_player_hitbox());
                 else
                     continue;
 
                 if (collision != "None")
                 {
                     //Pink and purple can interact with these pipes
-                    if(layers[j][i]->get_cell() < 6)
+                    if(pipes[j][i]->get_cell() < 6)
                     {
                         if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            layers[j][i]->set_picked_up(true);
-                            level_players[k]->pick_pipe(layers[j][i]);
+                            pipes[j][i]->set_picked_up(true);
+                            level_players[k]->pick_pipe(pipes[j][i]);
                             break;
                         }
                     }
                     //Blue and purple can interact with these pipes
-                    else if(layers[j][i]->get_cell() >=6 && layers[j][i]->get_cell() < 12)
+                    else if(pipes[j][i]->get_cell() >=6 && pipes[j][i]->get_cell() < 12)
                     {
                         if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
-                            layers[j][i]->set_picked_up(true);
-                            level_players[k]->pick_pipe(layers[j][i]);
+                            pipes[j][i]->set_picked_up(true);
+                            level_players[k]->pick_pipe(pipes[j][i]);
                             break;
                         }
                     }
                     //Everyone can interact with these pipes
                     else
                     {
-                        layers[j][i]->set_picked_up(true);
-                        level_players[k]->pick_pipe(layers[j][i]);
+                        pipes[j][i]->set_picked_up(true);
+                        level_players[k]->pick_pipe(pipes[j][i]);
                         break;
                     }
                 }
@@ -412,129 +400,105 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<Block>>> laye
     }
 }
 
-void check_empty_pipe_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<shared_ptr<Player>> level_players, rectangle test_area)
+void check_empty_pipe_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
         // if the player do not hold a holdable pipe, we skip this player
         if (!level_players[k]->with_pipe())
-        {
             continue;
-        }
+
         string collision = "None";
-        for (int j = 0; j < layers.size(); j++)
+        for (int j = 0; j < empty_pipes.size(); j++)
         {
-            for (int i = 0; i < layers[j].size(); i++)
+            for (int i = 0; i < empty_pipes[j].size(); i++)
             {
-                if (layers[j][i]->is_empty_pipe())
-                {
-                    collision = layers[j][i]->special_collision(level_players[k]->get_player_hitbox());
-                }
-                else
-                    continue;
+                collision = empty_pipes[j][i]->special_collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None")
                 {
-                    if(layers[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
+                    if(empty_pipes[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
                     {
-                        write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(layers[j][i]->get_cell()));
+                        write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(empty_pipes[j][i]->get_cell()));
                         // player place this pipe
-                        level_players[k]->place_pipe(layers[j][i]);
-                        layers[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
-                        layers[j][i]->set_flowing(false); 
-                        layers[j][i]->set_stopped(true);      
+                        level_players[k]->place_pipe(empty_pipes[j][i]);
+                        empty_pipes[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
+                        empty_pipes[j][i]->set_flowing(false); 
+                        empty_pipes[j][i]->set_stopped(true);      
                     }
-                    break;
                 }
             }
         }
     }
 }
 
-void check_water_empty_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<vector<shared_ptr<Block>>> layers2)
+void check_water_empty_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes, vector<vector<shared_ptr<WaterBlock>>> water)
 {
     string collision = "None";
-    for(int i = 0; i < layers.size(); i++)
+    for(int i = 0; i < empty_pipes.size(); i++)
     {
-        for(int j = 0; j < layers[i].size(); j++)
+        for(int j = 0; j < empty_pipes[i].size(); j++)
         {
-            if(layers[i][j]->is_empty_pipe())
-            {
                 //Found Empty Space
-                for(int k = 0; k < layers2.size(); k++)
-                {
-                    for(int l = 0; l < layers2[k].size(); l++)
-                    {
-                        //Found Water Block
-                        if(layers2[k][l]->is_block_water() && layers2[k][l]->get_is_flowing())
-                        {
-                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && !layers[i][j]->get_is_stopped())
-                            {
-                                layers2[k][l]->set_stopped(false);
-                            }
-                            else if (layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) != "None" && layers[i][j]->get_is_stopped())
-                            {
-                                layers2[k][l]->set_stopped(true);
-                                layers2[k][l]->set_flowing(false);
-                            }
-                        }
-                        else
-                            continue;
-                    }
-                }
-            }
-            else
+            for(int k = 0; k < water.size(); k++)
             {
-                continue;
+                for(int l = 0; l < water[k].size(); l++)
+                {
+                    //Found Water Block
+                    if(water[k][l]->get_is_flowing())
+                    {
+                        if(empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None" && !empty_pipes[i][j]->get_is_stopped())
+                        {
+                            water[k][l]->set_stopped(false);
+                        }
+                        else if (empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None" && empty_pipes[i][j]->get_is_stopped())
+                        {
+                            water[k][l]->set_stopped(true);
+                            water[k][l]->set_flowing(false);
+                        }
+                    }
+                    else
+                        continue;
+                }
             }
         }
     }
 }
 
-void check_water_water_block_collisions(vector<vector<shared_ptr<Block>>> layers, vector<vector<shared_ptr<Block>>> layers2)
+void check_water_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<WaterBlock>>> water2)
 {
     string collision = "None";
-    for(int i = 0; i < layers.size(); i++)
+    for(int i = 0; i < water.size(); i++)
     {
-        for(int j = 0; j < layers[i].size(); j++)
+        for(int j = 0; j < water[i].size(); j++)
         {
-            if((layers[i][j]->is_block_water() && layers[i][j]->get_is_flowing()))
+            if(water[i][j]->get_is_flowing())
             {
                 //Found flowing block
-                for(int k = 0; k < layers2.size(); k++)
+                for(int k = 0; k < water2.size(); k++)
                 {
-                    for(int l = 0; l < layers2[k].size(); l++)
+                    for(int l = 0; l < water2[k].size(); l++)
                     {
                         //Found Water Block
-                        if(layers2[k][l]->is_block_water() && layers[i][j]->get_is_flowing())
+                        if(water[i][j]->get_is_flowing())
                         {
-                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
-                            {
-                                layers2[k][l]->set_stopped(false);
-                            }
-                        }
-                    }
-                }
-            }
-            else if(layers[i][j]->is_block_water())
-            {
-                for(int k = 0; k < layers2.size(); k++)
-                {
-                    for(int l = 0; l < layers2[k].size(); l++)
-                    {
-                        //Found Water Block
-                        if(layers2[k][l]->is_block_water())
-                        {
-                            if(layers[i][j]->test_collision(layers2[k][l]->get_block_hitbox()) == "Bottom")
-                            {
-                                layers2[k][l]->set_stopped(true);
-                            }
+                            if(water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
+                                water2[k][l]->set_stopped(false);
                         }
                     }
                 }
             }
             else
-                continue;
+            {
+                for(int k = 0; k < water2.size(); k++)
+                {
+                    for(int l = 0; l < water2[k].size(); l++)
+                    {
+                        if(water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
+                            water2[k][l]->set_stopped(true);
+                    }
+                }
+            }
         }
     }
 }
