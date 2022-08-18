@@ -14,22 +14,99 @@
 
 #pragma once
 
-vector<shared_ptr<Block>> make_layer_level(string file, int tile_size, vector<CellSheet> cell_sheets)
+vector<shared_ptr<Block>> make_level_solid_blocks(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
-    vector<shared_ptr<Block>> level_blocks;
+    vector<shared_ptr<Block>> solid_blocks;
     LevelOjectsMap map(file, tile_size);
 
     for (int i = 0; i < cell_sheets.size(); i++)
     {
-        level_blocks = map.get_tiles(level_blocks, cell_sheets[i].cells, cell_sheets[i].offset);
+        solid_blocks = map.get_solid_blocks(solid_blocks, cell_sheets[i].cells, cell_sheets[i].offset);
     }
 
-    return level_blocks;
+    return solid_blocks;
+}
+
+vector<shared_ptr<Ladder>> make_level_ladders(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<Ladder>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_ladders(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<WaterBlock>> make_level_water(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<WaterBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_water(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<ToxicBlock>> make_level_toxic(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<ToxicBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_toxic(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<HoldablePipeBlock>> make_holdable_pipes(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<HoldablePipeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_holdable_pipes(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<EmptyPipeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_empty_pipe_blocks(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<Block>> make_level_decoration(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<Block>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_decoration(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
 }
 
 vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size)
 {
-    // vector<shared_ptr<Enemy>> level_enemy;
     LevelOjectsMap map(file, tile_size);
 
     level_enemy = map.get_enemies(level_enemy);
@@ -68,15 +145,94 @@ shared_ptr<Camera> make_level_camera(shared_ptr<Player> player, string file, int
     return camera;
 }
 
+void draw_first_layer(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
+                     vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
+                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
+{
+    for(int i = 0; i < solid_blocks[0].size(); i++)
+        if(rect_on_screen(solid_blocks[0][i]->get_block_hitbox()))
+            solid_blocks[0][i]->draw_block();
+
+    for(int i = 0; i < ladders[0].size(); i++)
+        if(rect_on_screen(ladders[0][i]->get_block_hitbox()))
+            ladders[0][i]->draw_block();
+
+    for(int i = 0; i < decoration[0].size(); i++)
+        if(rect_on_screen(decoration[0][i]->get_block_hitbox()))
+            decoration[0][i]->draw_block();
+
+    for(int i = 0; i < water[0].size(); i++)
+        if(rect_on_screen(water[0][i]->get_block_hitbox()))
+            water[0][i]->draw_block();
+    
+    for(int i = 0; i < toxic[0].size(); i++)
+        if(rect_on_screen(toxic[0][i]->get_block_hitbox()))
+            toxic[0][i]->draw_block();
+
+    for(int i = 0; i < hold_pipes[0].size(); i++)
+        if(rect_on_screen(hold_pipes[0][i]->get_block_hitbox()))
+            hold_pipes[0][i]->draw_block();
+    
+    for(int i = 0; i < empty_pipes[0].size(); i++)
+        if(rect_on_screen(empty_pipes[0][i]->get_block_hitbox()))
+            empty_pipes[0][i]->draw_block();
+}
+
+void draw_foreground_layers(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
+                     vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
+                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
+{
+    for(int i = 1; i < solid_blocks.size(); i++)
+        for(int j = 0; j < solid_blocks[i].size(); j++)
+            if(rect_on_screen(solid_blocks[i][j]->get_block_hitbox()))
+                solid_blocks[i][j]->draw_block();
+
+    for(int i = 1; i < ladders.size(); i++)
+        for(int j = 0; j < ladders[i].size(); j++)
+            if(rect_on_screen(ladders[i][j]->get_block_hitbox()))
+                ladders[i][j]->draw_block();
+
+    for(int i = 1; i < decoration.size(); i++)
+        for(int j = 0; j < decoration[i].size(); j++)
+            if(rect_on_screen(decoration[i][j]->get_block_hitbox()))
+                decoration[i][j]->draw_block();
+    
+    for(int i = 1; i < water.size(); i++)
+        for(int j = 0; j < water[i].size(); j++)
+            if(rect_on_screen(water[i][j]->get_block_hitbox()))
+                water[i][j]->draw_block();
+
+    for(int i = 1; i < toxic.size(); i++)
+        for(int j = 0; j < toxic[i].size(); j++)
+            if(rect_on_screen(toxic[i][j]->get_block_hitbox()))
+                toxic[i][j]->draw_block();
+
+    for(int i = 1; i < hold_pipes.size(); i++)
+        for(int j = 0; j < hold_pipes[i].size(); j++)
+            if(rect_on_screen(hold_pipes[i][j]->get_block_hitbox()))
+                hold_pipes[i][j]->draw_block();
+
+    for(int i = 1; i < empty_pipes.size(); i++)
+        for(int j = 0; j < empty_pipes[i].size(); j++)
+            if(rect_on_screen(empty_pipes[i][j]->get_block_hitbox()))
+                empty_pipes[i][j]->draw_block();
+}
+
 class Level
 {
     protected:
-        vector<vector<shared_ptr<Block>>> layers;
         vector<CellSheet> cell_sheets;
         vector<string> files;
         vector<shared_ptr<Player>> level_players;
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
+        vector<vector<shared_ptr<Block>>> solid_blocks;
+        vector<vector<shared_ptr<Ladder>>> ladders;
+        vector<vector<shared_ptr<Block>>> decoration;
+        vector<vector<shared_ptr<WaterBlock>>> water;
+        vector<vector<shared_ptr<ToxicBlock>>> toxic;
+        vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes;
+        vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes;
         shared_ptr<Camera> camera;
         shared_ptr<HUD> level_hud;
         int tile_size;
@@ -115,10 +271,36 @@ class Level
 
             for (int i = 0; i < level_layers; i++)
             {
-                vector<shared_ptr<Block>> level_blocks;
                 string file = files[i];
-                level_blocks = make_layer_level(file, this->tile_size, this->cell_sheets);
-                this->layers.push_back(level_blocks);
+
+                vector<shared_ptr<Block>> solid_block;
+                solid_block = make_level_solid_blocks(file, this->tile_size, this->cell_sheets);
+                this->solid_blocks.push_back(solid_block);
+
+                vector<shared_ptr<Ladder>> ladder_block;
+                ladder_block = make_level_ladders(file, this->tile_size, this->cell_sheets);
+                this->ladders.push_back(ladder_block);
+
+                vector<shared_ptr<WaterBlock>> water_block;
+                water_block = make_level_water(file, this->tile_size, this->cell_sheets);
+                this->water.push_back(water_block);
+
+                vector<shared_ptr<ToxicBlock>> toxic_block;
+                toxic_block = make_level_toxic(file, this->tile_size, this->cell_sheets);
+                this->toxic.push_back(toxic_block);
+
+                vector<shared_ptr<HoldablePipeBlock>> holdpipe_block;
+                holdpipe_block = make_holdable_pipes(file, this->tile_size, this->cell_sheets);
+                this->hold_pipes.push_back(holdpipe_block);
+
+                vector<shared_ptr<EmptyPipeBlock>> emp_block;
+                emp_block = make_holdable_pipe_empty_spaces(file, this->tile_size, this->cell_sheets);
+                this->empty_pipes.push_back(emp_block);
+
+                vector<shared_ptr<Block>> decoration_block;
+                decoration_block = make_level_decoration(file, this->tile_size, this->cell_sheets);
+                this->decoration.push_back(decoration_block);
+
                 this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
             }
 
@@ -149,15 +331,7 @@ class Level
             if (!music_playing())
                 play_music(this->level_music);
 
-            // Draw Initial Layer
-            for (int j = 0; j < layers[0].size(); j++)
-            {
-                if (rect_on_screen(layers[0][j]->get_block_hitbox()))
-                    layers[0][j]->draw_block();
-                // For testing hitboxes
-                if (hitbox)
-                    draw_hitbox(layers[0][j]->get_block_hitbox());
-            }
+            draw_first_layer(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes);
 
             door->draw_block();
             if (hitbox)
@@ -191,37 +365,25 @@ class Level
                     level_enemies[i]->update();
             }
 
-            // Draw foreground Layers
-            for (int i = 1; i < layers.size(); i++)
-            {
-                for (int j = 0; j < layers[i].size(); j++)
-                {
-                    if (rect_on_screen(layers[i][j]->get_block_hitbox()))
-                        layers[i][j]->draw_block();
-                    if (hitbox)
-                        draw_hitbox(layers[i][j]->get_block_hitbox());
-                }
-            }
+            draw_foreground_layers(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes);
 
             this->camera->update();
-            // rectangle current_window = screen_rectangle();
 
-            check_solid_block_collisions(layers, level_players, to_screen(get_collision_test_area()));
+            check_solid_block_collisions(solid_blocks, level_players);
 
             // check for player to pick up a holdable pipe
-            check_holdable_pipe_block_collisions(layers, level_players, to_screen(get_collision_test_area()));
+            check_holdable_pipe_block_collisions(hold_pipes, level_players);
 
             // check for player to place it's pipe on th empty pipe
-            check_empty_pipe_block_collisions(layers, level_players, to_screen(get_collision_test_area()));
-
-            check_ladder_collisions(layers, level_players);
+            check_empty_pipe_block_collisions(empty_pipes, level_players);
+            check_ladder_collisions(ladders, level_players);
             check_door_block_collisions(door, level_players);
-            check_enemy_solid_block_collisions(layers, level_enemies, to_screen(get_collision_test_area()));
+            check_enemy_solid_block_collisions(solid_blocks, level_enemies);
             check_enemy_player_collisions(level_enemies, level_players);
-            check_water_block_collisions(layers, level_players);
-            check_toxic_block_collisions(layers, level_players);
-            check_water_water_block_collisions(layers, layers);
-            check_water_empty_block_collisions(layers, layers);
+            check_water_block_collisions(water, level_players);
+            check_toxic_block_collisions(toxic, level_players);
+            check_water_water_block_collisions(water, water);
+            check_water_empty_block_collisions(empty_pipes, water);
 
             for (int i = 0; i < level_players.size(); i++)
             {

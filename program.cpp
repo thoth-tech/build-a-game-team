@@ -21,7 +21,7 @@ vector<CellSheet> make_cell_sheets(vector<string> cell_sheet_names)
     {
         bitmap new_bitmap = bitmap_named(cell_sheet_names[i]);
         CellSheet new_type(new_bitmap, cell_sheet_names[i], offset);
-        offset += new_type.number_of_cells;
+        offset += 100;
         cell_sheets.push_back(new_type);
     }
 
@@ -44,14 +44,18 @@ int main(int argc, char *argv[])
     vector<string> cell_sheet_names;
 
     // Push the cell sheets used in the same order as the level editor
-    cell_sheet_names.push_back("Solid");
-    cell_sheet_names.push_back("Ladder");
-    cell_sheet_names.push_back("Pipe");
-    cell_sheet_names.push_back("Water");
-    cell_sheet_names.push_back("Toxic");
-    cell_sheet_names.push_back("HoldPipes");
-    cell_sheet_names.push_back("TurnPipes");
-    cell_sheet_names.push_back("Empty");
+    cell_sheet_names.push_back("Solid"); //0
+    cell_sheet_names.push_back("HalfBlocksTop"); //100
+    cell_sheet_names.push_back("HalfBlocksBottom"); //200
+    cell_sheet_names.push_back("Ladder"); //300
+    cell_sheet_names.push_back("Pipe"); //400
+    cell_sheet_names.push_back("Water"); //500
+    cell_sheet_names.push_back("Toxic"); //600
+    cell_sheet_names.push_back("HoldPipes"); //700
+    cell_sheet_names.push_back("EmptyHold"); //800
+    cell_sheet_names.push_back("TurnPipes"); //900
+    cell_sheet_names.push_back("EmptyTurn"); //1000
+    cell_sheet_names.push_back("Decorative"); //1100
 
     // Timers
     create_timer("Dying");
