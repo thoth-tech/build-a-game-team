@@ -31,7 +31,7 @@ bool test_rectangle_collision(rectangle one, rectangle two)
         return false;
 };
 
-void check_solid_block_collisions(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<shared_ptr<Player>> level_players)
+void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks, vector<shared_ptr<Player>> level_players)
 {
     for (int k = 0; k < level_players.size(); k++)
     {
@@ -175,7 +175,7 @@ void check_ladder_collisions(vector<vector<shared_ptr<Ladder>>> ladders, vector<
     }
 }
 
-void check_enemy_solid_block_collisions(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<shared_ptr<Enemy>> level_enemies)
+void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks, vector<shared_ptr<Enemy>> level_enemies)
 {
     for (int k = 0; k < level_enemies.size(); k++)
     {

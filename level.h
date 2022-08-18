@@ -14,9 +14,9 @@
 
 #pragma once
 
-vector<shared_ptr<SolidBlock>> make_level_solid_blocks(string file, int tile_size, vector<CellSheet> cell_sheets)
+vector<shared_ptr<Block>> make_level_solid_blocks(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
-    vector<shared_ptr<SolidBlock>> solid_blocks;
+    vector<shared_ptr<Block>> solid_blocks;
     LevelOjectsMap map(file, tile_size);
 
     for (int i = 0; i < cell_sheets.size(); i++)
@@ -145,7 +145,7 @@ shared_ptr<Camera> make_level_camera(shared_ptr<Player> player, string file, int
     return camera;
 }
 
-void draw_first_layer(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
+void draw_first_layer(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
                      vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
                      vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
 {
@@ -178,7 +178,7 @@ void draw_first_layer(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vecto
             empty_pipes[0][i]->draw_block();
 }
 
-void draw_foreground_layers(vector<vector<shared_ptr<SolidBlock>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
+void draw_foreground_layers(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
                      vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
                      vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
 {
@@ -226,7 +226,7 @@ class Level
         vector<shared_ptr<Player>> level_players;
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
-        vector<vector<shared_ptr<SolidBlock>>> solid_blocks;
+        vector<vector<shared_ptr<Block>>> solid_blocks;
         vector<vector<shared_ptr<Ladder>>> ladders;
         vector<vector<shared_ptr<Block>>> decoration;
         vector<vector<shared_ptr<WaterBlock>>> water;
@@ -273,7 +273,7 @@ class Level
             {
                 string file = files[i];
 
-                vector<shared_ptr<SolidBlock>> solid_block;
+                vector<shared_ptr<Block>> solid_block;
                 solid_block = make_level_solid_blocks(file, this->tile_size, this->cell_sheets);
                 this->solid_blocks.push_back(solid_block);
 

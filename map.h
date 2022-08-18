@@ -242,7 +242,7 @@ class LevelOjectsMap
             return level_enemies;
         };
 
-        vector<shared_ptr<SolidBlock>> get_solid_blocks(vector<shared_ptr<SolidBlock>> solid_blocks, bitmap cell_sheet, int offset)
+        vector<shared_ptr<Block>> get_solid_blocks(vector<shared_ptr<Block>> solid_blocks, bitmap cell_sheet, int offset)
         {
             point_2d position;
 
@@ -260,13 +260,27 @@ class LevelOjectsMap
                         {
                             if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1)
                             {
-                                shared_ptr<SolidBlock> block(new SolidBlock(cell_sheet, position, cell));
+                                shared_ptr<Block> block(new SolidBlock(cell_sheet, position, cell));
+                                solid_blocks.push_back(block);
+                            }
+                        }
+                        if(bitmap_name(cell_sheet) == "HalfBlocksTop")
+                        {
+                            if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1 + offset)
+                            {
+                                shared_ptr<Block> block(new HalfSolidBlockTop(cell_sheet, position, cell));
+                                solid_blocks.push_back(block);
+                            }
+                        }
+                        if(bitmap_name(cell_sheet) == "HalfBlocksBottom")
+                        {
+                            if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1 + offset)
+                            {
+                                shared_ptr<Block> block(new HalfSolidBlockBottom(cell_sheet, position, cell));
                                 solid_blocks.push_back(block);
                             }
                         }
                     }
-
-                    //Half Solid Blocks
                 }
 
             return solid_blocks;
