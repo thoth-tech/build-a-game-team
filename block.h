@@ -279,26 +279,32 @@ class WaterBlock : public Block
                     anim = create_animation(water_script, "WaterFlow");
                     break;
                 }
-                case 2: {}
-                case 3: 
+                case 2:
+                case 3:
                 {
-                    anim = create_animation(water_script, "WaterTwoSide");
+                    anim = create_animation(water_script, "WaterTop");
                         break;
                 }
                 case 4: {}
                 case 5: 
                 {
-                    anim = create_animation(water_script, "WaterLeft");
+                    anim = create_animation(water_script, "WaterTwoSide");
                         break;
                 }
                 case 6: {}
                 case 7: 
                 {
-                    anim = create_animation(water_script, "WaterRight");
+                    anim = create_animation(water_script, "WaterLeft");
                         break;
                 }
                 case 8: {}
                 case 9: 
+                {
+                    anim = create_animation(water_script, "WaterRight");
+                        break;
+                }
+                case 10: {}
+                case 11: 
                 {
                     anim = create_animation(water_script, "WaterLake");
                         break;
