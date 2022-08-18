@@ -43,6 +43,7 @@ class Block
         virtual void draw_block()
         {
             draw_bitmap(image, position.x, position.y, opts);
+            //draw_rectangle(COLOR_GREEN,hitbox);
         };
 
         float get_top()
@@ -217,6 +218,97 @@ class SolidBlock : public Block
         };
 };
 
+class HalfSolidBlockTop : public Block
+{
+    public:
+        HalfSolidBlockTop(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->top = position.y - 64;
+            this->is_solid = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        };
+
+        string test_collision(rectangle one) override
+        {
+            string collision = "None";
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if (abs(dx) <= width && abs(dy) <= height)
+            {
+                if (crossWidth >= crossHeight)
+                {
+                    if (crossWidth + 100 > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
+                else
+                {
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth - 200 > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
+            }
+
+            return collision;
+        };
+};
+
+class HalfSolidBlockBottom : public Block
+{
+    public:
+        HalfSolidBlockBottom(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->top = position.y - 32;
+            position.y += 32;
+            this->position = position;
+            this->is_solid = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+            make_hitbox();
+        };
+
+        string test_collision(rectangle one) override
+        {
+            string collision = "None";
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if (abs(dx) <= width && abs(dy) <= height)
+            {
+                if (crossWidth >= crossHeight)
+                {
+                    if (crossWidth > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
+                else
+                {
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
+            }
+
+            return collision;
+        };
+};
+
 class Ladder : public Block
 {
     public:
@@ -245,6 +337,19 @@ class PipeBlock : public Block
 {
     public:
         PipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        string test_collision(rectangle one) override { return "None"; };
+};
+
+class DecorativeBlock : public Block
+{
+    public:
+        DecorativeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_solid = false;
             this->cell = cell;
