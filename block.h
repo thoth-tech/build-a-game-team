@@ -254,6 +254,19 @@ class PipeBlock : public Block
         string test_collision(rectangle one) override { return "None"; };
 };
 
+class DecorativeBlock : public Block
+{
+    public:
+        DecorativeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_solid = false;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        string test_collision(rectangle one) override { return "None"; };
+};
+
 class WaterBlock : public Block
 {
     private:

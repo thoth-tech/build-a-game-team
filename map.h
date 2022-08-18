@@ -294,8 +294,15 @@ class LevelOjectsMap
                                 decoration_blocks.push_back(block);
                             }
                         }
+                        if(bitmap_name(cell_sheet) == "Decorative")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Block> block(new DecorativeBlock(cell_sheet, position, cell));
+                                decoration_blocks.push_back(block);
+                            }
+                        }
                     }
-                    //Decoration
                 }
 
             return decoration_blocks;
