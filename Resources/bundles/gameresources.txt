@@ -17,4 +17,4 @@ BITMAP, Decorative, decorative_blocks.png, 64, 64, 1, 1, 1
 SOUND, Select, Select.wav
 MUSIC, LevelOne, LevelOneTheme1.mp3
 
-BITMAP,background,Background.png
+BITMAP,background,Background4.png
