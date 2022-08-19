@@ -79,6 +79,19 @@ vector<shared_ptr<HoldablePipeBlock>> make_holdable_pipes(string file, int tile_
     return block;
 }
 
+vector<shared_ptr<TurnablePipeBlock>> make_turnable_pipes(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<TurnablePipeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_turnable_pipes(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
 vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
     vector<shared_ptr<EmptyPipeBlock>> block;
@@ -87,6 +100,19 @@ vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, 
     for (int i = 0; i < cell_sheets.size(); i++)
     {
         block = map.get_empty_pipe_blocks(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<EmptyTurnBlock>> make_turnable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<EmptyTurnBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_empty_turn_blocks(block, cell_sheets[i].cells, cell_sheets[i].offset);
     }
 
     return block;
@@ -147,7 +173,8 @@ shared_ptr<Camera> make_level_camera(shared_ptr<Player> player, string file, int
 
 void draw_first_layer(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
                      vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
-                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
+                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes, vector<vector<shared_ptr<TurnablePipeBlock>>> turn_pipes, 
+                     vector<vector<shared_ptr<EmptyTurnBlock>>> empty_turn_pipes)
 {
     for(int i = 0; i < solid_blocks[0].size(); i++)
         if(rect_on_screen(solid_blocks[0][i]->get_block_hitbox()))
@@ -176,11 +203,20 @@ void draw_first_layer(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vec
     for(int i = 0; i < empty_pipes[0].size(); i++)
         if(rect_on_screen(empty_pipes[0][i]->get_block_hitbox()))
             empty_pipes[0][i]->draw_block();
+
+    for(int i = 0; i < turn_pipes[0].size(); i++)
+        if(rect_on_screen(turn_pipes[0][i]->get_block_hitbox()))
+            turn_pipes[0][i]->draw_block();
+    
+    for(int i = 0; i < empty_turn_pipes[0].size(); i++)
+        if(rect_on_screen(empty_turn_pipes[0][i]->get_block_hitbox()))
+            empty_turn_pipes[0][i]->draw_block();
 }
 
 void draw_foreground_layers(vector<vector<shared_ptr<Block>>> solid_blocks, vector<vector<shared_ptr<Ladder>>> ladders, vector<vector<shared_ptr<Block>>> decoration, 
                      vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<ToxicBlock>>> toxic, vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes,
-                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes)
+                     vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes, vector<vector<shared_ptr<TurnablePipeBlock>>> turn_pipes, 
+                     vector<vector<shared_ptr<EmptyTurnBlock>>> empty_turn_pipes)
 {
     for(int i = 1; i < solid_blocks.size(); i++)
         for(int j = 0; j < solid_blocks[i].size(); j++)
@@ -196,11 +232,6 @@ void draw_foreground_layers(vector<vector<shared_ptr<Block>>> solid_blocks, vect
         for(int j = 0; j < decoration[i].size(); j++)
             if(rect_on_screen(decoration[i][j]->get_block_hitbox()))
                 decoration[i][j]->draw_block();
-    
-    for(int i = 1; i < water.size(); i++)
-        for(int j = 0; j < water[i].size(); j++)
-            if(rect_on_screen(water[i][j]->get_block_hitbox()))
-                water[i][j]->draw_block();
 
     for(int i = 1; i < toxic.size(); i++)
         for(int j = 0; j < toxic[i].size(); j++)
@@ -216,6 +247,21 @@ void draw_foreground_layers(vector<vector<shared_ptr<Block>>> solid_blocks, vect
         for(int j = 0; j < empty_pipes[i].size(); j++)
             if(rect_on_screen(empty_pipes[i][j]->get_block_hitbox()))
                 empty_pipes[i][j]->draw_block();
+
+    for(int i = 1; i < turn_pipes.size(); i++)
+        for(int j = 0; j < turn_pipes[i].size(); j++)
+            if(rect_on_screen(turn_pipes[i][j]->get_block_hitbox()))
+                turn_pipes[i][j]->draw_block();
+
+    for(int i = 1; i < empty_turn_pipes.size(); i++)
+        for(int j = 0; j < empty_turn_pipes[i].size(); j++)
+            if(rect_on_screen(empty_turn_pipes[i][j]->get_block_hitbox()))
+                empty_turn_pipes[i][j]->draw_block();
+
+    for(int i = 1; i < water.size(); i++)
+        for(int j = 0; j < water[i].size(); j++)
+            if(rect_on_screen(water[i][j]->get_block_hitbox()))
+                water[i][j]->draw_block();
 }
 
 class Level
@@ -233,6 +279,8 @@ class Level
         vector<vector<shared_ptr<ToxicBlock>>> toxic;
         vector<vector<shared_ptr<HoldablePipeBlock>>> hold_pipes;
         vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes;
+        vector<vector<shared_ptr<TurnablePipeBlock>>> turn_pipes;
+        vector<vector<shared_ptr<EmptyTurnBlock>>> empty_turn_pipes;
         shared_ptr<Camera> camera;
         shared_ptr<HUD> level_hud;
         int tile_size;
@@ -297,6 +345,14 @@ class Level
                 emp_block = make_holdable_pipe_empty_spaces(file, this->tile_size, this->cell_sheets);
                 this->empty_pipes.push_back(emp_block);
 
+                vector<shared_ptr<TurnablePipeBlock>> turnpipe_block;
+                turnpipe_block = make_turnable_pipes(file, this->tile_size, this->cell_sheets);
+                this->turn_pipes.push_back(turnpipe_block);
+
+                vector<shared_ptr<EmptyTurnBlock>> emp_turn_block;
+                emp_turn_block = make_turnable_pipe_empty_spaces(file, this->tile_size, this->cell_sheets);
+                this->empty_turn_pipes.push_back(emp_turn_block);
+
                 vector<shared_ptr<Block>> decoration_block;
                 decoration_block = make_level_decoration(file, this->tile_size, this->cell_sheets);
                 this->decoration.push_back(decoration_block);
@@ -331,7 +387,7 @@ class Level
             if (!music_playing())
                 play_music(this->level_music);
 
-            draw_first_layer(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes);
+            draw_first_layer(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes, turn_pipes, empty_turn_pipes);
 
             door->draw_block();
             if (hitbox)
@@ -365,7 +421,7 @@ class Level
                     level_enemies[i]->update();
             }
 
-            draw_foreground_layers(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes);
+            draw_foreground_layers(solid_blocks, ladders, decoration, water, toxic, hold_pipes, empty_pipes, turn_pipes, empty_turn_pipes);
 
             this->camera->update();
 
@@ -373,6 +429,7 @@ class Level
 
             // check for player to pick up a holdable pipe
             check_holdable_pipe_block_collisions(hold_pipes, level_players);
+            check_turnable_pipe_block_collisions(turn_pipes, level_players);
 
             // check for player to place it's pipe on th empty pipe
             check_empty_pipe_block_collisions(empty_pipes, level_players);
@@ -384,6 +441,8 @@ class Level
             check_toxic_block_collisions(toxic, level_players);
             check_water_water_block_collisions(water, water);
             check_water_empty_block_collisions(empty_pipes, water);
+            check_water_empty_turn_block_collisions(empty_turn_pipes, water);
+            check_turn_empty_pipes(turn_pipes, empty_turn_pipes);
 
             for (int i = 0; i < level_players.size(); i++)
             {
@@ -455,12 +514,13 @@ class Level1 : public Level
     public:
         Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
-            this->level_layers = 2;
+            this->level_layers = 3;
             this->files.push_back("file0.txt");
             this->files.push_back("file1.txt");
+            this->files.push_back("file2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Don't Fall in the hole";
+            this->level_name = "Fix the pipes";
         };
 };
 

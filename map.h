@@ -406,6 +406,34 @@ class LevelOjectsMap
             return hold_pipes;
         }
 
+        vector<shared_ptr<TurnablePipeBlock>> get_turnable_pipes(vector<shared_ptr<TurnablePipeBlock>> hold_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "TurnPipes")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<TurnablePipeBlock> block(new TurnablePipeBlock(cell_sheet, position, cell));
+                                hold_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return hold_pipes;
+        }
+
         vector<shared_ptr<EmptyPipeBlock>> get_empty_pipe_blocks(vector<shared_ptr<EmptyPipeBlock>> empty_pipes, bitmap cell_sheet, int offset)
         {
             point_2d position;
@@ -425,6 +453,34 @@ class LevelOjectsMap
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<EmptyPipeBlock> block(new EmptyPipeBlock(cell_sheet, position, cell));
+                                empty_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return empty_pipes;
+        }
+
+        vector<shared_ptr<EmptyTurnBlock>> get_empty_turn_blocks(vector<shared_ptr<EmptyTurnBlock>> empty_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "EmptyTurn")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<EmptyTurnBlock> block(new EmptyTurnBlock(cell_sheet, position, cell));
                                 empty_pipes.push_back(block);
                             }
                         }
