@@ -90,6 +90,19 @@ vector<shared_ptr<TurnablePipeBlock>> make_turnable_pipes(string file, int tile_
     return block;
 }
 
+vector<shared_ptr<MultiTurnablePipeBlock>> make_multi_turnable_pipes(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<MultiTurnablePipeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_multi_turnable_pipes(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
 vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
     vector<shared_ptr<EmptyPipeBlock>> block;
@@ -111,6 +124,19 @@ vector<shared_ptr<EmptyTurnBlock>> make_turnable_pipe_empty_spaces(string file, 
     for (int i = 0; i < cell_sheets.size(); i++)
     {
         block = map.get_empty_turn_blocks(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
+vector<shared_ptr<EmptyMultiTurnBlock>> make_multi_turnable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<EmptyMultiTurnBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_empty_multi_turn_blocks(block, cell_sheets[i].cells, cell_sheets[i].offset);
     }
 
     return block;

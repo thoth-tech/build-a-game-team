@@ -477,6 +477,8 @@ class WaterBlock : public Block
                 update_animation(this->anim);
                 if (animation_ended(this->anim))
                     restart_animation(this->anim);
+                this->is_flowing = true;
+                time = 0;
             }
             else
             {
@@ -655,6 +657,29 @@ class TurnablePipeBlock : public Block
         };
 };
 
+class MultiTurnablePipeBlock : public Block
+{
+    public:
+        MultiTurnablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_turnable = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        string test_collision(rectangle one) override
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if (collision)
+                return "Collision";
+            else
+                return "None";
+        };
+};
+
 class EmptyPipeBlock : public Block
 {
     public:
@@ -708,6 +733,31 @@ class EmptyTurnBlock : public Block
 {
     public:
         EmptyTurnBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->is_empty = true;
+            this->is_flowing = true;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        // Collision to test distance from how far a player is and if holding pipe to place
+        string test_collision(rectangle one) override
+        {
+            bool x_overlaps = (rectangle_left(one) < rectangle_right(this->hitbox)) && (rectangle_right(one) > rectangle_left(this->hitbox));
+            bool y_overlaps = (rectangle_top(one) < rectangle_bottom(this->hitbox)) && (rectangle_bottom(one) > rectangle_top(this->hitbox));
+            bool collision = x_overlaps && y_overlaps;
+
+            if (collision)
+                return "Collision";
+            else
+                return "None";
+        };
+};
+
+class EmptyMultiTurnBlock : public Block
+{
+    public:
+        EmptyMultiTurnBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->is_empty = true;
             this->is_flowing = true;

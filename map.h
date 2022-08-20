@@ -434,6 +434,34 @@ class LevelOjectsMap
             return hold_pipes;
         }
 
+        vector<shared_ptr<MultiTurnablePipeBlock>> get_multi_turnable_pipes(vector<shared_ptr<MultiTurnablePipeBlock>> hold_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "MultiPipes")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<MultiTurnablePipeBlock> block(new MultiTurnablePipeBlock(cell_sheet, position, cell));
+                                hold_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return hold_pipes;
+        }
+
         vector<shared_ptr<EmptyPipeBlock>> get_empty_pipe_blocks(vector<shared_ptr<EmptyPipeBlock>> empty_pipes, bitmap cell_sheet, int offset)
         {
             point_2d position;
@@ -481,6 +509,34 @@ class LevelOjectsMap
                             if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
                             {
                                 shared_ptr<EmptyTurnBlock> block(new EmptyTurnBlock(cell_sheet, position, cell));
+                                empty_pipes.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return empty_pipes;
+        }
+
+        vector<shared_ptr<EmptyMultiTurnBlock>> get_empty_multi_turn_blocks(vector<shared_ptr<EmptyMultiTurnBlock>> empty_pipes, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "EmptyMulti")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<EmptyMultiTurnBlock> block(new EmptyMultiTurnBlock(cell_sheet, position, cell));
                                 empty_pipes.push_back(block);
                             }
                         }
