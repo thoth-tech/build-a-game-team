@@ -493,7 +493,7 @@ void IdleState::get_input()
     {
         this->player->change_state(new DanceState, "Dance");
     }
-    if (key_typed(B_KEY))
+    if (key_typed(player->input.attack_key))
     {
         this->player->change_state(new AttackState, "Attack");
     }

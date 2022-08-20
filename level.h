@@ -330,7 +330,7 @@ class Level1 : public Level
             this->files.push_back("4.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Fix the pipes";
+            this->level_name = "Multi-Pipe Madness";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
         };

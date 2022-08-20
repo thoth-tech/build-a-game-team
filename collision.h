@@ -468,12 +468,10 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                             
                             if(pipes[j][i]->get_turnable())
                             {
-                                write_line("Turn 1");
                                 pipes[j][i]->set_turnable(false);
                             }
                             else
                             {
-                                write_line("Turn 2");
                                 pipes[j][i]->set_turnable(true);
                             }
                             break;
