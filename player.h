@@ -4,7 +4,7 @@
 #include <memory>
 #pragma once
 
-// Player Physics variables
+// Player Physics Variables (DO NOT CHANGE)
 #define MAX_JUMP_HEIGHT 127
 #define JUMP_MOMENTUM_RATE 8
 #define MAX_FALL_SPEED 9
@@ -100,6 +100,7 @@ class Player
             this->state->get_input();
         };
 
+        // Create the hitbox of the player_sprite.
         void make_hitbox()
         {
             rectangle hitbox;
@@ -110,6 +111,7 @@ class Player
             this->hitbox = hitbox;
         };
 
+        // Update the current hitbox of the player sprite.
         void update_hitbox()
         {
             point_2d current_position = sprite_position(this->player_sprite);
@@ -117,96 +119,115 @@ class Player
             this->hitbox.y = current_position.y + 5;
         };
 
+        // Returns the player_sprite.
         sprite get_player_sprite()
         {
             return this->player_sprite;
         };
 
+        // Returns the player_hitbox.
         rectangle get_player_hitbox()
         {
             return this->hitbox;
         };
 
+        // Returns the state type.
         string get_player_state_type()
         {
             return this->state->get_type();
         }
 
+        // Returns true or false if the player is facing left or not.
         bool is_facing_left()
         {
             return this->facing_left;
         };
 
+        // Variable facing_left will be set to bool facing_left true or false.
         void set_facing_left(bool facing_left)
         {
             this->facing_left = facing_left;
         };
 
+        // Returns true or false if the player is on the floor.
         bool is_on_floor()
         {
             return this->on_floor;
         };
 
+        // Returns true or false if the player is on the ladder.
         bool is_on_ladder()
         {
             return this->on_ladder;
         };
 
+        // Variable on_floor will be set to bool new_value true or false. 
         void set_on_floor(bool new_value)
         {
             this->on_floor = new_value;
         };
 
+        // Variable on_ladder will be set to bool new_value true or false.
         void set_on_ladder(bool new_value)
         {
             this->on_ladder = new_value;
         };
 
+        // Responsible for moving the player up or down depending on the float value.
         void set_player_dy(float value)
         {
             sprite_set_dy(this->player_sprite, value);
         };
 
+        // Responsible for moving the player left or right depending on the float value.
         void set_player_dx(float value)
         {
             sprite_set_dx(this->player_sprite, value);
         };
 
+        // Returns true or false if the player is dead or not.
         bool is_player_dead()
         {
             return this->is_dead;
         };
 
+        // Variable is_dead will be set to bool is_dead either true or false.
         void set_dead(bool is_dead)
         {
             this->is_dead = is_dead;
         };
 
+        // Returns true or false if the player has won or not.
         bool has_player_won()
         {
             return this->has_won;
         };
 
+        // Variable is_dead will be set to bool is_dead either true or false.
         void set_player_won(bool status)
         {
             this->has_won = status;
         };
 
+        // Returns the state type.
         string get_state_type()
         {
             return this->state->get_type();
         };
 
+        // Returns the position of the player.
         point_2d get_player_position()
         {
             return this->position;
         };
 
+        // Returns true or false if the player is holding a pipe or not.
         bool with_pipe()
         {
             return this->is_holding_pipe;
         };
 
+        // Variable is_holding_pipe is set to bool new_value true or false.
         void set_with_pipe(bool new_value)
         {
             this->is_holding_pipe = new_value;
@@ -233,11 +254,13 @@ class Player
             this->is_holding_pipe = false;
         };
 
+        // Returns the id of the player.
         int get_player_id()
         {
             return this->id;
         };
 
+        // Set the player id.
         void set_player_id(int id)
         {
             this->id = id;
@@ -249,6 +272,7 @@ class Player
         };
 };
 
+// Idle State Class
 class IdleState : public PlayerState
 {
     private:
@@ -263,6 +287,7 @@ class IdleState : public PlayerState
         void get_input() override;
 };
 
+// Run State Class
 class RunState : public PlayerState
 {
     private:
@@ -281,6 +306,7 @@ class RunState : public PlayerState
         void get_input() override;
 };
 
+// Jumping State Class
 class JumpRiseState : public PlayerState
 {
     private:
@@ -297,6 +323,7 @@ class JumpRiseState : public PlayerState
         void get_input() override;
 };
 
+// Falling State Class
 class JumpFallState : public PlayerState
 {
     private:
@@ -311,6 +338,7 @@ class JumpFallState : public PlayerState
         void get_input() override;
 };
 
+// Dancing State Class
 class DanceState : public PlayerState
 {
     private:
@@ -325,6 +353,7 @@ class DanceState : public PlayerState
         void get_input() override;
 };
 
+// Attacking State Class
 class AttackState : public PlayerState
 {
     private:
@@ -339,6 +368,7 @@ class AttackState : public PlayerState
         void get_input() override;
 };
 
+// Hurt State Class
 class HurtState : public PlayerState
 {
     private:
@@ -353,7 +383,7 @@ class HurtState : public PlayerState
         void get_input() override;
 };
 
-// Created ClimbState Class
+// Climbing State Class
 class ClimbState : public PlayerState
 {
     private:
@@ -369,6 +399,7 @@ class ClimbState : public PlayerState
         void get_input() override;
 };
 
+// Dying State Class
 class DyingState : public PlayerState
 {
     private:
@@ -383,6 +414,7 @@ class DyingState : public PlayerState
         void get_input() override;
 };
 
+// Spawn State Class
 class SpawningState : public PlayerState
 {
     private:
@@ -397,6 +429,7 @@ class SpawningState : public PlayerState
         void get_input() override;
 };
 
+// Crouch State Class
 class CrouchState : public PlayerState
 {
 private:
@@ -742,7 +775,7 @@ void HurtState::get_input()
 {
 }
 
-// ClimbState Update
+// ClimbState Update 
 void ClimbState::update()
 {
     if (!run_once)
@@ -764,7 +797,7 @@ void ClimbState::update()
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
-// ClimbState Get Input
+// ClimbState Get Input Checks
 void ClimbState::get_input()
 {
     if (!player->is_on_ladder())
@@ -789,6 +822,7 @@ void ClimbState::get_input()
             sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
         }
     }
+
     // Added release checks before key down checks so the program will acknowledge this first, making the climbing state responsive to player input.
     else if (key_released(player->input.jump_key) || key_released(player->input.crouch_key) || key_released(player->input.left_key) || key_released(player->input.right_key))
     {

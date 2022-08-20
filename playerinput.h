@@ -9,6 +9,7 @@ struct player_input
     key_code crouch_key;
 };
 
+// Player one input
 player_input make_player1_input()
 {
     player_input input;
@@ -20,6 +21,7 @@ player_input make_player1_input()
     return input;
 }
 
+// Player two input
 player_input make_player2_input()
 {
     player_input input;
