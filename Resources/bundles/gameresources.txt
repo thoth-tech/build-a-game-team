@@ -13,6 +13,8 @@ BITMAP, EmptyHold, holdable_pipes_empty_le.png, 64, 64, 6, 3, 18
 BITMAP, TurnPipes, turn_pipes.png, 64, 64, 2, 6, 6
 BITMAP, EmptyTurn, turn_pipes_empty.png, 64, 64, 2, 6, 6
 BITMAP, Decorative, decorative_blocks.png, 64, 64, 1, 1, 1
+BITMAP, MultiPipes, turn_pipes.png, 64, 64, 2, 6, 6
+BITMAP, EmptyMulti, multipipes_empty.png, 64, 64, 2, 6, 12
 
 SOUND, Select, Select.wav
 MUSIC, LevelOne, LevelOneTheme1.mp3

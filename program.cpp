@@ -56,6 +56,11 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("TurnPipes"); //900
     cell_sheet_names.push_back("EmptyTurn"); //1000
     cell_sheet_names.push_back("Decorative"); //1100
+    cell_sheet_names.push_back("Player"); //1200
+    cell_sheet_names.push_back("Door"); //1300
+    cell_sheet_names.push_back("Enemy"); //1400
+    cell_sheet_names.push_back("MultiPipes"); //1500
+    cell_sheet_names.push_back("EmptyMulti"); //1600
 
     // Timers
     create_timer("Dying");

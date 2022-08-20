@@ -32,6 +32,8 @@ class Level
         vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes;
         vector<vector<shared_ptr<TurnablePipeBlock>>> turn_pipes;
         vector<vector<shared_ptr<EmptyTurnBlock>>> empty_turn_pipes;
+        vector<vector<shared_ptr<MultiTurnablePipeBlock>>> multi_turn_pipes;
+        vector<vector<shared_ptr<EmptyMultiTurnBlock>>> empty_multi_turn_pipes;
         shared_ptr<Camera> camera;
         shared_ptr<Background> background;
         shared_ptr<HUD> level_hud;
@@ -104,6 +106,14 @@ class Level
                 vector<shared_ptr<EmptyTurnBlock>> emp_turn_block;
                 emp_turn_block = make_turnable_pipe_empty_spaces(file, this->tile_size, this->cell_sheets);
                 this->empty_turn_pipes.push_back(emp_turn_block);
+
+                vector<shared_ptr<MultiTurnablePipeBlock>> multiturnpipe_block;
+                multiturnpipe_block = make_multi_turnable_pipes(file, this->tile_size, this->cell_sheets);
+                this->multi_turn_pipes.push_back(multiturnpipe_block);
+
+                vector<shared_ptr<EmptyMultiTurnBlock>> emp_multi_turn_block;
+                emp_multi_turn_block = make_multi_turnable_pipe_empty_spaces(file, this->tile_size, this->cell_sheets);
+                this->empty_multi_turn_pipes.push_back(emp_multi_turn_block);
 
                 vector<shared_ptr<Block>> decoration_block;
                 decoration_block = make_level_decoration(file, this->tile_size, this->cell_sheets);
@@ -266,6 +276,14 @@ class Level
                 for(int i = 0; i < empty_turn_pipes[j].size(); i++)
                     if(rect_on_screen(empty_turn_pipes[j][i]->get_block_hitbox()))
                         empty_turn_pipes[j][i]->draw_block();
+
+                for(int i = 0; i < multi_turn_pipes[j].size(); i++)
+                    if(rect_on_screen(multi_turn_pipes[j][i]->get_block_hitbox()))
+                        multi_turn_pipes[j][i]->draw_block();
+
+                for(int i = 0; i < empty_multi_turn_pipes[j].size(); i++)
+                    if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
+                        empty_multi_turn_pipes[j][i]->draw_block();
             }
         }
 
