@@ -706,6 +706,14 @@ void CrouchState::update()
     }
     player_draw_pipe(player);
 
+    if (player->is_on_floor())
+    {
+        sprite_set_dx(player_sprite, 0);
+        sprite_set_dy(player->get_player_sprite(), 0);
+    }
+    else
+        sprite_fall(player->get_player_sprite());
+
     sprite_update_routine_continuous(this->player->get_player_sprite());
 }
 
