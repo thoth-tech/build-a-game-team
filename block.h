@@ -477,6 +477,8 @@ class WaterBlock : public Block
                 update_animation(this->anim);
                 if (animation_ended(this->anim))
                     restart_animation(this->anim);
+                this->is_flowing = true;
+                time = 0;
             }
             else
             {

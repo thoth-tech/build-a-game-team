@@ -307,6 +307,9 @@ class Level
             check_water_empty_block_collisions(empty_pipes, water);
             check_water_empty_turn_block_collisions(empty_turn_pipes, water);
             check_turn_empty_pipes(turn_pipes, empty_turn_pipes);
+            check_multi_turnable_pipe_block_collisions(multi_turn_pipes, level_players);
+            check_water_empty_multi_turn_block_collisions(empty_multi_turn_pipes, water);
+            check_turn_multi_empty_pipes(multi_turn_pipes, empty_multi_turn_pipes);
         }
 
         string get_level_name()
@@ -320,10 +323,11 @@ class Level1 : public Level
     public:
         Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
-            this->level_layers = 3;
-            this->files.push_back("file0.txt");
-            this->files.push_back("file1.txt");
-            this->files.push_back("file2.txt");
+            this->level_layers = 4;
+            this->files.push_back("1.txt");
+            this->files.push_back("2.txt");
+            this->files.push_back("3.txt");
+            this->files.push_back("4.txt");
             make_level();
             this->level_music = music_named("LevelOne");
             this->level_name = "Fix the pipes";
