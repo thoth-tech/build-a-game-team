@@ -465,15 +465,11 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                     {
                         if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            
                             if(pipes[j][i]->get_turnable())
-                            {
                                 pipes[j][i]->set_turnable(false);
-                            }
                             else
-                            {
                                 pipes[j][i]->set_turnable(true);
-                            }
+
                             break;
                         }
                     }
@@ -483,15 +479,10 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                         if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
                             if(pipes[j][i]->get_turnable())
-                            {
-                                write_line("Turn 1");
                                 pipes[j][i]->set_turnable(false);
-                            }
                             else
-                            {
-                                write_line("Turn 2");
                                 pipes[j][i]->set_turnable(true);
-                            }
+
                             break;
                         }
                     }
@@ -499,15 +490,10 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                     else
                     {
                         if(pipes[j][i]->get_turnable())
-                        {
-                            write_line("Turn 1");
                             pipes[j][i]->set_turnable(false);
-                        }
                         else
-                        {
-                            write_line("Turn 2");
                             pipes[j][i]->set_turnable(true);
-                        }
+
                         break;
                     }
                 }
@@ -535,7 +521,7 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>
                 {
                     if(empty_pipes[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
                     {
-                        write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(empty_pipes[j][i]->get_cell()));
+                        //write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(empty_pipes[j][i]->get_cell()));
                         // player place this pipe
                         level_players[k]->place_pipe(empty_pipes[j][i]);
                         empty_pipes[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
@@ -738,6 +724,31 @@ void check_turn_multi_empty_pipes(vector<vector<shared_ptr<MultiTurnablePipeBloc
                     }
                     else
                         continue;
+                }
+            }
+        }
+    }
+}
+
+void check_collectable_collisions(vector<vector<shared_ptr<Collectable>>> collect, vector<shared_ptr<Player>> level_players)
+{
+    for (int k = 0; k < level_players.size(); k++)
+    {
+        string collision = "None";
+        for (int j = 0; j < collect.size(); j++)
+        {
+            for (int i = 0; i < collect[j].size(); i++)
+            {
+                if (!rect_on_screen(collect[j][i]->get_hitbox()))
+                    continue;
+
+                if(!collect[j][i]->get_collected())
+                    collision = collect[j][i]->collision(level_players[k]->get_player_hitbox());
+
+                if (collision != "None")
+                {
+                    collect[j][i]->effect(level_players[k]);
+                    collect[j][i]->set_collected(true);
                 }
             }
         }
