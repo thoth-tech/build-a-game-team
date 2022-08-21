@@ -4,7 +4,7 @@
 #include <memory>
 #pragma once
 
-// Player Physics Variables (DO NOT CHANGE)
+// Player Physics Variables
 #define MAX_JUMP_HEIGHT 127
 #define JUMP_MOMENTUM_RATE 8
 #define MAX_FALL_SPEED 9
@@ -240,7 +240,7 @@ class Player
                 return false;
             }
 
-            write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
+            //write_line("Player Holding Holdable pipe with id: " + std::to_string(pipe->get_cell()));
 
             this->held_pipe = pipe;
             this->held_pipe->set_picked_up(true);

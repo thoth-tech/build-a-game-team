@@ -116,6 +116,19 @@ vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, 
     return block;
 }
 
+vector<shared_ptr<Collectable>> make_level_collectables(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<Collectable>> collect;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        collect = map.get_collectables(collect, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return collect;
+}
+
 vector<shared_ptr<EmptyTurnBlock>> make_turnable_pipe_empty_spaces(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
     vector<shared_ptr<EmptyTurnBlock>> block;

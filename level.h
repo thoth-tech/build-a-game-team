@@ -34,6 +34,7 @@ class Level
         vector<vector<shared_ptr<EmptyTurnBlock>>> empty_turn_pipes;
         vector<vector<shared_ptr<MultiTurnablePipeBlock>>> multi_turn_pipes;
         vector<vector<shared_ptr<EmptyMultiTurnBlock>>> empty_multi_turn_pipes;
+        vector<vector<shared_ptr<Collectable>>> level_collectables;
         shared_ptr<Camera> camera;
         shared_ptr<Background> background;
         shared_ptr<HUD> level_hud;
@@ -118,6 +119,10 @@ class Level
                 vector<shared_ptr<Block>> decoration_block;
                 decoration_block = make_level_decoration(file, this->tile_size, this->cell_sheets);
                 this->decoration.push_back(decoration_block);
+
+                vector<shared_ptr<Collectable>> collect;
+                collect = make_level_collectables(file, this->tile_size, this->cell_sheets);
+                this->level_collectables.push_back(collect);
 
                 this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
             }
@@ -284,6 +289,10 @@ class Level
                 for(int i = 0; i < empty_multi_turn_pipes[j].size(); i++)
                     if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
                         empty_multi_turn_pipes[j][i]->draw_block();
+                
+                for(int i = 0; i < level_collectables[j].size(); i++)
+                    if(rect_on_screen(level_collectables[j][i]->get_hitbox()))
+                        level_collectables[j][i]->draw();
             }
         }
 
@@ -310,6 +319,7 @@ class Level
             check_multi_turnable_pipe_block_collisions(multi_turn_pipes, level_players);
             check_water_empty_multi_turn_block_collisions(empty_multi_turn_pipes, water);
             check_turn_multi_empty_pipes(multi_turn_pipes, empty_multi_turn_pipes);
+            check_collectable_collisions(level_collectables, level_players);
         }
 
         string get_level_name()

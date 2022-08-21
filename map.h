@@ -6,6 +6,7 @@
 #include <sstream>
 #include <memory>
 #include "block.h"
+#include "collectable.h"
 using namespace std;
 
 #pragma once
@@ -376,6 +377,35 @@ class LevelOjectsMap
                 }
 
             return toxic_blocks;
+        }
+
+        vector<shared_ptr<Collectable>> get_collectables(vector<shared_ptr<Collectable>> collectables, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        //Less then 3?
+                        if(bitmap_name(cell_sheet) == "Collect")
+                        {
+                            if(this->map_array[i][j] < (bitmap_cell_count(cell_sheet) + 1) + offset)
+                            {
+                                shared_ptr<Collectable> block(new HeartCollectable(cell_sheet, position, cell));
+                                collectables.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return collectables;
         }
 
         vector<shared_ptr<HoldablePipeBlock>> get_holdable_pipes(vector<shared_ptr<HoldablePipeBlock>> hold_pipes, bitmap cell_sheet, int offset)

@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("Enemy"); //1400
     cell_sheet_names.push_back("MultiPipes"); //1500
     cell_sheet_names.push_back("EmptyMulti"); //1600
+    cell_sheet_names.push_back("Collect"); //1700
 
     // Timers
     create_timer("Dying");
