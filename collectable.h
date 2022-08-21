@@ -82,7 +82,7 @@ class HeartCollectable : public Collectable
 
         ~HeartCollectable(){};
 
-        virtual void effect(std::shared_ptr<Player> player)
+        void effect(std::shared_ptr<Player> player)
         {
             //write_line("Heart Effect");
             player->player_health += 1;
