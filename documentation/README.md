@@ -33,6 +33,7 @@ Within folder **levels** there are text files filled with block id. These ids ar
 ```
 ./test -l 2 file0.txt file1.txt test
 ```
+Keep in mind, to have both the latest versions of the game and the level editor.
 
 ## Create files and folders
 The file explorer is accessible using the button in left corner of the navigation bar. You can create a new file by clicking the **New file** button in the file explorer. You can also create folders by clicking the **New folder** button.
