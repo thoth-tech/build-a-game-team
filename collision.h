@@ -195,7 +195,6 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_
 
                 collision = solid_blocks[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox());
 
-
                 if (collision == "Top")
                 {
                     level_enemies[k]->get_ai()->set_on_floor(true);
@@ -245,19 +244,30 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
 
             if (collision != "Top" && collision != "None")
             {
-                string damage_timer = "DamageTimerP" + std::to_string(j + 1);
-                if (!timer_started(timer_named(damage_timer)))
+                bool try_attacking = level_players[j]->get_state_type() == "Attack";
+                bool attack_success = try_attacking && ((level_players[j]->is_facing_left() && collision == "Right") || (!level_players[j]->is_facing_left() && collision == "Left"));
+
+                if (attack_success)
                 {
-                    level_players[j]->player_health -= 1;
-                    start_timer(damage_timer);
-                    level_players[j]->change_state(new HurtState, "Hurt");
+                    level_enemies[i]->set_dead(true);
                 }
+                else
+                {
+                    // player get hurt
+                    string damage_timer = "DamageTimerP" + std::to_string(j + 1);
+                    if (!timer_started(timer_named(damage_timer)))
+                    {
+                        level_players[j]->player_health -= 1;
+                        start_timer(damage_timer);
+                        level_players[j]->change_state(new HurtState, "Hurt");
+                    }
 
-                int time = timer_ticks(damage_timer) / 1000;
+                    int time = timer_ticks(damage_timer) / 1000;
 
-                // Invincibility frames
-                if (!(time < 2))
-                    stop_timer(damage_timer);
+                    // Invincibility frames
+                    if (!(time < 2))
+                        stop_timer(damage_timer);
+                }
             }
             else if (collision != "None" && !level_players[j]->is_on_floor())
             {
@@ -367,27 +377,27 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
 
                 if (collision != "None")
                 {
-                    //Pink and purple can interact with these pipes
-                    if(pipes[j][i]->get_cell() < 6)
+                    // Pink and purple can interact with these pipes
+                    if (pipes[j][i]->get_cell() < 6)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
                         }
                     }
-                    //Blue and purple can interact with these pipes
-                    else if(pipes[j][i]->get_cell() >=6 && pipes[j][i]->get_cell() < 12)
+                    // Blue and purple can interact with these pipes
+                    else if (pipes[j][i]->get_cell() >= 6 && pipes[j][i]->get_cell() < 12)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
                         }
                     }
-                    //Everyone can interact with these pipes
+                    // Everyone can interact with these pipes
                     else
                     {
                         pipes[j][i]->set_picked_up(true);
@@ -409,32 +419,32 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
         {
             for (int i = 0; i < pipes[j].size(); i++)
             {
-                if(pipes[j][i]->get_turnable())
+                if (pipes[j][i]->get_turnable())
                     collision = pipes[j][i]->test_collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None" && key_typed(level_players[k]->input.attack_key))
                 {
-                    //Pink and purple can interact with these pipes
-                    if(pipes[j][i]->get_cell() < 2)
+                    // Pink and purple can interact with these pipes
+                    if (pipes[j][i]->get_cell() < 2)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
                             write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
                         }
                     }
-                    //Blue and purple can interact with these pipes
-                    else if(pipes[j][i]->get_cell() >=2 && pipes[j][i]->get_cell() < 4)
+                    // Blue and purple can interact with these pipes
+                    else if (pipes[j][i]->get_cell() >= 2 && pipes[j][i]->get_cell() < 4)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
                             write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
                         }
                     }
-                    //Everyone can interact with these pipes
+                    // Everyone can interact with these pipes
                     else
                     {
                         write_line("Turned");
@@ -460,12 +470,12 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
 
                 if (collision != "None" && key_typed(level_players[k]->input.attack_key))
                 {
-                    //Pink and purple can interact with these pipes
-                    if(pipes[j][i]->get_cell() < 2)
+                    // Pink and purple can interact with these pipes
+                    if (pipes[j][i]->get_cell() < 2)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            if(pipes[j][i]->get_turnable())
+                            if (pipes[j][i]->get_turnable())
                                 pipes[j][i]->set_turnable(false);
                             else
                                 pipes[j][i]->set_turnable(true);
@@ -473,12 +483,12 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                             break;
                         }
                     }
-                    //Blue and purple can interact with these pipes
-                    else if(pipes[j][i]->get_cell() >=2 && pipes[j][i]->get_cell() < 4)
+                    // Blue and purple can interact with these pipes
+                    else if (pipes[j][i]->get_cell() >= 2 && pipes[j][i]->get_cell() < 4)
                     {
-                        if(level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
+                        if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
-                            if(pipes[j][i]->get_turnable())
+                            if (pipes[j][i]->get_turnable())
                                 pipes[j][i]->set_turnable(false);
                             else
                                 pipes[j][i]->set_turnable(true);
@@ -486,10 +496,10 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                             break;
                         }
                     }
-                    //Everyone can interact with these pipes
+                    // Everyone can interact with these pipes
                     else
                     {
-                        if(pipes[j][i]->get_turnable())
+                        if (pipes[j][i]->get_turnable())
                             pipes[j][i]->set_turnable(false);
                         else
                             pipes[j][i]->set_turnable(true);
@@ -519,14 +529,14 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>
 
                 if (collision != "None")
                 {
-                    if(empty_pipes[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
+                    if (empty_pipes[j][i]->get_cell() == level_players[k]->get_held_pipe()->get_cell())
                     {
-                        //write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(empty_pipes[j][i]->get_cell()));
-                        // player place this pipe
+                        // write_line("Collision between Held Pipe Id: " + std::to_string(level_players[k]->get_held_pipe()->get_cell()) + " Empty Block Id: " + std::to_string(empty_pipes[j][i]->get_cell()));
+                        //  player place this pipe
                         level_players[k]->place_pipe(empty_pipes[j][i]);
                         empty_pipes[j][i]->change_cell_sheet(bitmap_named("HoldPipes"));
-                        empty_pipes[j][i]->set_flowing(false); 
-                        empty_pipes[j][i]->set_stopped(true);      
+                        empty_pipes[j][i]->set_flowing(false);
+                        empty_pipes[j][i]->set_stopped(true);
                     }
                 }
             }
@@ -537,19 +547,19 @@ void check_empty_pipe_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>
 void check_water_empty_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>>> empty_pipes, vector<vector<shared_ptr<WaterBlock>>> water)
 {
     string collision = "None";
-    for(int i = 0; i < empty_pipes.size(); i++)
+    for (int i = 0; i < empty_pipes.size(); i++)
     {
-        for(int j = 0; j < empty_pipes[i].size(); j++)
+        for (int j = 0; j < empty_pipes[i].size(); j++)
         {
-                //Found Empty Space
-            for(int k = 0; k < water.size(); k++)
+            // Found Empty Space
+            for (int k = 0; k < water.size(); k++)
             {
-                for(int l = 0; l < water[k].size(); l++)
+                for (int l = 0; l < water[k].size(); l++)
                 {
-                    //Found Water Block
-                    if(water[k][l]->get_is_flowing())
+                    // Found Water Block
+                    if (water[k][l]->get_is_flowing())
                     {
-                        if(empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None" && !empty_pipes[i][j]->get_is_stopped())
+                        if (empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None" && !empty_pipes[i][j]->get_is_stopped())
                         {
                             water[k][l]->set_stopped(false);
                         }
@@ -570,21 +580,21 @@ void check_water_empty_block_collisions(vector<vector<shared_ptr<EmptyPipeBlock>
 void check_water_empty_turn_block_collisions(vector<vector<shared_ptr<EmptyTurnBlock>>> empty_pipes, vector<vector<shared_ptr<WaterBlock>>> water)
 {
     string collision = "None";
-    for(int i = 0; i < empty_pipes.size(); i++)
+    for (int i = 0; i < empty_pipes.size(); i++)
     {
-        for(int j = 0; j < empty_pipes[i].size(); j++)
+        for (int j = 0; j < empty_pipes[i].size(); j++)
         {
-            //Found Empty Space
-            for(int k = 0; k < water.size(); k++)
+            // Found Empty Space
+            for (int k = 0; k < water.size(); k++)
             {
-                for(int l = 0; l < water[k].size(); l++)
+                for (int l = 0; l < water[k].size(); l++)
                 {
-                    //Found Water Block
-                    if(water[k][l]->get_is_flowing())
+                    // Found Water Block
+                    if (water[k][l]->get_is_flowing())
                     {
-                        if(empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None")
+                        if (empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None")
                         {
-                            if(empty_pipes[i][j]->get_is_flowing())
+                            if (empty_pipes[i][j]->get_is_flowing())
                                 water[k][l]->set_stopped(false);
                             else
                                 water[k][l]->set_stopped(true);
@@ -603,31 +613,30 @@ void check_water_empty_turn_block_collisions(vector<vector<shared_ptr<EmptyTurnB
 void check_water_empty_multi_turn_block_collisions(vector<vector<shared_ptr<EmptyMultiTurnBlock>>> empty_pipes, vector<vector<shared_ptr<WaterBlock>>> water)
 {
     string collision = "None";
-    for(int i = 0; i < empty_pipes.size(); i++)
+    for (int i = 0; i < empty_pipes.size(); i++)
     {
-        for(int j = 0; j < empty_pipes[i].size(); j++)
+        for (int j = 0; j < empty_pipes[i].size(); j++)
         {
-            //Found Empty Space
-            for(int k = 0; k < water.size(); k++)
+            // Found Empty Space
+            for (int k = 0; k < water.size(); k++)
             {
-                for(int l = 0; l < water[k].size(); l++)
+                for (int l = 0; l < water[k].size(); l++)
                 {
-                    //Found Water Block
-                        if(empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None")
+                    // Found Water Block
+                    if (empty_pipes[i][j]->test_collision(water[k][l]->get_block_hitbox()) != "None")
+                    {
+                        if (empty_pipes[i][j]->get_is_flowing())
                         {
-                            if(empty_pipes[i][j]->get_is_flowing())
-                            {
-                                water[k][l]->set_stopped(false);
-                            }
-                            else
-                            {
-                                water[k][l]->set_stopped(true);
-                            }
+                            water[k][l]->set_stopped(false);
                         }
                         else
-                            continue;
+                        {
+                            water[k][l]->set_stopped(true);
+                        }
+                    }
+                    else
+                        continue;
                 }
-                
             }
         }
     }
@@ -636,21 +645,21 @@ void check_water_empty_multi_turn_block_collisions(vector<vector<shared_ptr<Empt
 void check_water_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> water, vector<vector<shared_ptr<WaterBlock>>> water2)
 {
     string collision = "None";
-    for(int i = 0; i < water.size(); i++)
+    for (int i = 0; i < water.size(); i++)
     {
-        for(int j = 0; j < water[i].size(); j++)
+        for (int j = 0; j < water[i].size(); j++)
         {
-            if(water[i][j]->get_is_flowing())
+            if (water[i][j]->get_is_flowing())
             {
-                //Found flowing block
-                for(int k = 0; k < water2.size(); k++)
+                // Found flowing block
+                for (int k = 0; k < water2.size(); k++)
                 {
-                    for(int l = 0; l < water2[k].size(); l++)
+                    for (int l = 0; l < water2[k].size(); l++)
                     {
-                        //Found Water Block
-                        if(!water[k][l]->get_is_flowing())
+                        // Found Water Block
+                        if (!water[k][l]->get_is_flowing())
                         {
-                            if(water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
+                            if (water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
                             {
                                 water2[k][l]->set_stopped(false);
                             }
@@ -660,11 +669,11 @@ void check_water_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> w
             }
             else
             {
-                for(int k = 0; k < water2.size(); k++)
+                for (int k = 0; k < water2.size(); k++)
                 {
-                    for(int l = 0; l < water2[k].size(); l++)
+                    for (int l = 0; l < water2[k].size(); l++)
                     {
-                        if(water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
+                        if (water[i][j]->test_collision(water2[k][l]->get_block_hitbox()) == "Bottom")
                             water2[k][l]->set_stopped(true);
                     }
                 }
@@ -676,17 +685,17 @@ void check_water_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> w
 void check_turn_empty_pipes(vector<vector<shared_ptr<TurnablePipeBlock>>> turn_pipes, vector<vector<shared_ptr<EmptyTurnBlock>>> empty_blocks)
 {
     string collision = "None";
-    for(int i = 0; i < turn_pipes.size(); i++)
+    for (int i = 0; i < turn_pipes.size(); i++)
     {
-        for(int j = 0; j < turn_pipes[i].size(); j++)
+        for (int j = 0; j < turn_pipes[i].size(); j++)
         {
-            for(int k = 0; k < empty_blocks.size(); k++)
+            for (int k = 0; k < empty_blocks.size(); k++)
             {
-                for(int l = 0; l < empty_blocks[k].size(); l++)
+                for (int l = 0; l < empty_blocks[k].size(); l++)
                 {
-                    if(turn_pipes[i][j]->get_cell() == empty_blocks[k][l]->get_cell())
+                    if (turn_pipes[i][j]->get_cell() == empty_blocks[k][l]->get_cell())
                     {
-                        if(!turn_pipes[i][j]->get_turnable())
+                        if (!turn_pipes[i][j]->get_turnable())
                             empty_blocks[k][l]->set_flowing(false);
                     }
                     else
@@ -700,24 +709,24 @@ void check_turn_empty_pipes(vector<vector<shared_ptr<TurnablePipeBlock>>> turn_p
 void check_turn_multi_empty_pipes(vector<vector<shared_ptr<MultiTurnablePipeBlock>>> turn_pipes, vector<vector<shared_ptr<EmptyMultiTurnBlock>>> empty_blocks)
 {
     string collision = "None";
-    for(int i = 0; i < turn_pipes.size(); i++)
+    for (int i = 0; i < turn_pipes.size(); i++)
     {
-        for(int j = 0; j < turn_pipes[i].size(); j++)
+        for (int j = 0; j < turn_pipes[i].size(); j++)
         {
-            for(int k = 0; k < empty_blocks.size(); k++)
+            for (int k = 0; k < empty_blocks.size(); k++)
             {
-                for(int l = 0; l < empty_blocks[k].size(); l++)
+                for (int l = 0; l < empty_blocks[k].size(); l++)
                 {
-                    if(turn_pipes[i][j]->get_cell() == empty_blocks[k][l]->get_cell())
+                    if (turn_pipes[i][j]->get_cell() == empty_blocks[k][l]->get_cell())
                     {
-                        if(!turn_pipes[i][j]->get_turnable())
+                        if (!turn_pipes[i][j]->get_turnable())
                             empty_blocks[k][l]->set_flowing(false);
                         else
                             empty_blocks[k][l]->set_flowing(true);
                     }
-                    else if(turn_pipes[i][j]->get_cell() + 6 == empty_blocks[k][l]->get_cell())
+                    else if (turn_pipes[i][j]->get_cell() + 6 == empty_blocks[k][l]->get_cell())
                     {
-                        if(turn_pipes[i][j]->get_turnable())
+                        if (turn_pipes[i][j]->get_turnable())
                             empty_blocks[k][l]->set_flowing(false);
                         else
                             empty_blocks[k][l]->set_flowing(true);
@@ -742,7 +751,7 @@ void check_collectable_collisions(vector<vector<shared_ptr<Collectable>>> collec
                 if (!rect_on_screen(collect[j][i]->get_hitbox()))
                     continue;
 
-                if(!collect[j][i]->get_collected())
+                if (!collect[j][i]->get_collected())
                     collision = collect[j][i]->collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None")
