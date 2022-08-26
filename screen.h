@@ -261,22 +261,30 @@ void TeamIntroScreen::update()
 
 void MenuScreen::update()
 {
+    if (!music_playing())
+    {
+        play_music("MenuMusic.mp3");
+    }
+    
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
     draw_text("Menu Screen", COLOR_WHITE, pt.x - 20, pt.y);
     draw_text("Press 1 for 1P Game", COLOR_WHITE, pt.x - 20, pt.y + 10);
     draw_text("Press 2 for 2P Game", COLOR_WHITE, pt.x - 20, pt.y + 20);
 
+
     if(key_typed(NUM_1_KEY))
     {
         play_sound_effect("Select");
         this->screen->set_players(1);
+        stop_music();
         this->screen->change_state(new PreLevelScreen, "Pre Level");
     }
     if(key_typed(NUM_2_KEY))
     {
         play_sound_effect("Select");
         this->screen->set_players(2);
+        stop_music();
         this->screen->change_state(new PreLevelScreen, "Pre Level");
     }
 }
