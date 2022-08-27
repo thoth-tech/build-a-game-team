@@ -368,7 +368,7 @@ class Level3 : public Level
         Level3(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 2;
-            this->files.push_back("levels/level3_1.txt"); //level3_1 caused segmentation error
+            this->files.push_back("levels/level3_1.txt");
             this->files.push_back("levels/level3_2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
