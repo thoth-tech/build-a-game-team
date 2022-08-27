@@ -42,7 +42,7 @@ class Screen
         
     public:
         int level_number = 1;
-        int max_levels = 2;
+        int max_levels = 3;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)

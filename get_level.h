@@ -19,6 +19,12 @@ shared_ptr<Level> get_next_level(int level, vector<CellSheet> cell_sheets, int t
                 next_level = level2;
                 break;
             }
+        case 3:
+            {
+                shared_ptr<Level> level3(new Level3(cell_sheets, tile_size, players));
+                next_level = level3;
+                break;
+            }
         default:
             {
                 shared_ptr<Level> level1(new Level1(cell_sheets, tile_size, players));
