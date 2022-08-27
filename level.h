@@ -207,7 +207,7 @@ class Level
                 }
 
                 //Player loses a life if they run out of health
-                if (level_players[i]->player_health < 1)
+                if (level_players[i]->player_health < 0)
                 {
                     level_players[i]->player_health = 3;
                     level_players[i]->player_lives -= 1;
@@ -226,7 +226,7 @@ class Level
                 }
             }
 
-            //level_hud->update();
+            level_hud->update();
 
             check_test_input();
         }
