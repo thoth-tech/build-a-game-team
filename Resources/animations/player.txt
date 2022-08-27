@@ -13,31 +13,31 @@ f:[101-102], [2-3], 4,
 f:103, 7, 4,
 
 //Right Attack
-f:[104-105], [0-1], 5,
+f:104, 1, 7,
 
 //Right Fall 
-f:[106-107], [5-6], 7,
+f:[105-106], [5-6], 7,
 
 //Right Dying
-f:108, 5, 5, 109
-f:109, 9, 5,
+f:107, 5, 5, 108
+f:108, 9, 5,
 
 //Right Spawn
-f:110, 3, 5, 110
-f:111, 9, 5,
+f:109, 3, 5, 110
+f:110, 9, 5,
 
 //Right Crouch
-f:112, 4, 5,
+f:111, 4, 5,
 
 //Right Animation Identifiers
 i:RightIdle, 100
 i:RightRun, 101
 i:RightJump, 103
 i:RightAttack, 104
-i:RightFall, 106
-i:RightDying, 108
-i:RightSpawn, 110
-i:RightCrouch, 112
+i:RightFall, 105
+i:RightDying, 107
+i:RightSpawn, 109
+i:RightCrouch, 111
 
 
 //-----Left Movements-----
