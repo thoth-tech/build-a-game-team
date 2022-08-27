@@ -19,15 +19,67 @@ class HUD
 
         void update()
         {
-            //Whatever you put in here will draw to the front layer of the screen
-            //You can put things anywhere on the screen I just used to top as a small example
-            //Use option_to_screen() to glue things to the screen so they move with the camera
-            fill_rectangle(COLOR_BLACK, 0, 0, screen_width(), 40, option_to_screen());
+            
+            if(level_players.size() > 1 )
+            {
+                draw_bitmap("PinkEmptyBar", 400, 80, option_part_bmp(0, 0, 64, 32, option_to_screen()));
+                draw_bitmap("PinkHealthBar", 400, 80, option_part_bmp(0, 0, 64/3*level_players[0]->player_health, 32, option_to_screen()));
 
-            draw_text("P1 Lives: " + std::to_string(level_players[0]->player_lives) + " P1 Health: " + std::to_string(level_players[0]->player_health), COLOR_WHITE, 0, 0, option_to_screen());
-            if(level_players.size() > 1)
-                draw_text("P2 Lives: " + std::to_string(level_players[1]->player_lives) + " P2 Health: " + std::to_string(level_players[1]->player_health), COLOR_WHITE, 0, 10, option_to_screen());
-                
-            draw_text("Hello Lily :)", COLOR_WHITE, 0, 30, option_to_screen());
+                if(level_players[0]->player_lives==3)
+                {                
+                    draw_bitmap("PinkLive", 335, 80, option_to_screen());
+                    draw_bitmap("PinkLive", 300, 80, option_to_screen());
+                    draw_bitmap("PinkLive", 265, 80, option_to_screen());
+                }
+                if(level_players[0]->player_lives==2)
+                {
+                    draw_bitmap("PinkLive", 300, 80, option_to_screen());
+                    draw_bitmap("PinkLive", 265, 80, option_to_screen());
+                }
+                if(level_players[0]->player_lives==1)
+                {
+                    draw_bitmap("PinkLive", 265, 80, option_to_screen());
+                }
+
+                draw_bitmap("BlueEmptyBar", 400, 115, option_part_bmp(0, 0, 64, 32, option_to_screen()));
+                draw_bitmap("BlueHealthBar", 400, 115, option_part_bmp(0, 0, 64/3*level_players[1]->player_health, 32, option_to_screen()));
+
+                if(level_players[1]->player_lives==3)
+                {                
+                    draw_bitmap("BlueLive", 335, 115, option_to_screen());
+                    draw_bitmap("BlueLive", 300, 115, option_to_screen());
+                    draw_bitmap("BlueLive", 265, 115, option_to_screen());
+                }
+                if(level_players[1]->player_lives==2)
+                {
+                    draw_bitmap("BlueLive", 300, 115, option_to_screen());
+                    draw_bitmap("BlueLive", 265, 115, option_to_screen());
+                }
+                if(level_players[1]->player_lives==1)
+                {
+                    draw_bitmap("BlueLive", 265, 115, option_to_screen());
+                } 
+            }
+            else
+            {
+                draw_bitmap("PurpleEmptyBar", 400, 80, option_part_bmp(0, 0, 64, 32, option_to_screen()));
+                draw_bitmap("PurpleHealthBar", 400, 80, option_part_bmp(0, 0, 64/3*level_players[0]->player_health, 32, option_to_screen()));
+                   
+                if(level_players[0]->player_lives==3)
+                {                
+                    draw_bitmap("PurpleLive", 335, 80, option_to_screen());
+                    draw_bitmap("PurpleLive", 300, 80, option_to_screen());
+                    draw_bitmap("PurpleLive", 265, 80, option_to_screen());
+                }
+                if(level_players[0]->player_lives==2)
+                {
+                    draw_bitmap("PurpleLive", 300, 80, option_to_screen());
+                    draw_bitmap("PurpleLive", 265, 80, option_to_screen());
+                }
+                if(level_players[0]->player_lives==1)
+                {
+                    draw_bitmap("PurpleLive", 265, 80, option_to_screen());
+                }
+            }
         };
 };
