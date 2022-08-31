@@ -1,19 +1,35 @@
 SplashKit Animation
 //ID,CELL,DUR,NEXT
 
-//-----Right Movements-----
+//Left Idle
+f:200, 0, 4,
+//Left Bite
+f:[201-205], [1-5], 4,
+//Left Crawl
+f:[206-211], [6-11], 4,
+//Left Run
+f:[212-214], [12-14], 4,
 
-//Right Observe
-f:[0-3], [0-3], 4
+//Left Animation Identifiers
+i:LeftIdle,200
+i:LeftBite,201
+i:LeftCrawl,206
+i:LeftRun,212
+
+//Right Idle
+f:100, 16, 4,
 //Right Bite
-f:[4-7], [4-7], 4
+f:[101-105], [17-21], 4,
 //Right Crawl
-f:[8-11], [8-11], 4
+f:[106-111], [22-27], 4,
 //Right Run
-f:[12-15], [12-15], 4 
+f:[112-114], [28-30], 4, 
 
 //Right Animation Identifiers
-i:RightObserve,0 
-i:RightBite,4
-i:RightCrawl,8
-i:RightRun,12
+i:RightIdle,100 
+i:RightBite,101
+i:RightCrawl,106
+i:RightRun,112
+
+
+

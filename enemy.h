@@ -167,6 +167,23 @@ class Snake : public Enemy
         ~Snake(){};
 };
 
+class Rat : public Enemy
+{
+    public:
+        Rat(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        {
+            std::shared_ptr<Behaviour> ai(new RatBehaviour(enemy_sprite));
+            this->ai = ai;
+            point_2d pos = this->position;
+            pos.y = pos.y + 32;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~Rat(){};
+};
+
 class WaterRat : public Enemy
 {
     public:
