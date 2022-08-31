@@ -153,7 +153,11 @@ class Level
             background->draw();
 
             if (!music_playing())
+            {
                 play_music(this->level_music);
+                set_music_volume(0.5f);
+            }
+                
 
             draw_layers(1, 0);
 
