@@ -149,6 +149,9 @@ void check_ladder_collisions(vector<vector<shared_ptr<Ladder>>> ladders, vector<
                 if (!rect_on_screen(ladders[j][i]->get_block_hitbox()))
                     continue;
 
+                if(level_players[k]->get_state_type() == "Dying")
+                    continue;
+
                 collision = ladders[j][i]->test_collision(level_players[k]->get_player_hitbox());
 
                 if (collision != "None" && (key_typed(level_players[k]->input.jump_key) || key_typed(level_players[k]->input.crouch_key)))
