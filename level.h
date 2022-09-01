@@ -153,11 +153,7 @@ class Level
             background->draw();
 
             if (!music_playing())
-            {
                 play_music(this->level_music);
-                set_music_volume(0.5f);
-            }
-                
 
             draw_layers(1, 0);
 
@@ -211,7 +207,7 @@ class Level
                 }
 
                 //Player loses a life if they run out of health
-                if (level_players[i]->player_health < 1)
+                if (level_players[i]->player_health < 0)
                 {
                     level_players[i]->player_health = 3;
                     level_players[i]->player_lives -= 1;
@@ -222,7 +218,7 @@ class Level
                 if (level_players[i]->player_lives == 0 && level_players[i]->get_state_type() == "Spawn")
                 {
                     this->level_players[i]->set_dead(true);
-
+                    this->level_players[i]->change_state(new GameOverState, "GameOver");
                     if (i == 0)
                         is_player1_out_of_lives = true;
                     else

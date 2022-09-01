@@ -128,11 +128,11 @@ void check_door_block_collisions(shared_ptr<DoorBlock> door, vector<shared_ptr<P
         collision = door->test_collision(level_players[i]->get_player_hitbox());
 
         if (collision != "None" && level_players[i]->is_on_floor())
-            if (level_players[i]->get_state_type() != "Dance")
+            if (level_players[i]->get_state_type() != "Win")
             {
                 level_players[i]->set_player_won(true);
                 door->open_portal();
-                level_players[i]->change_state(new DanceState, "Dance");
+                level_players[i]->change_state(new DanceState, "Win");
             }
     }
 }
@@ -240,9 +240,6 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
         string collision = "None";
         for (int j = 0; j < level_players.size(); j++)
         {
-            if(level_players[j]->get_state_type() == "Dying" || level_players[j]->get_state_type() == "Spawn")
-                continue;
-
             collision = level_enemies[i]->test_collision(level_players[j]->get_player_hitbox());
 
             if (collision != "Top" && collision != "None")
@@ -332,9 +329,6 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<ToxicBlock>>> toxic, 
             for (int i = 0; i < toxic[j].size(); i++)
             {
                 if (!rect_on_screen(toxic[j][i]->get_block_hitbox()))
-                    continue;
-                
-                if(level_players[k]->get_state_type() == "Dying" || level_players[k]->get_state_type() == "Spawn")
                     continue;
 
                 collision = toxic[j][i]->test_collision(level_players[k]->get_player_hitbox());
@@ -762,8 +756,8 @@ void check_collectable_collisions(vector<vector<shared_ptr<Collectable>>> collec
 
                 if (collision != "None")
                 {
-                    collect[j][i]->set_collected(true);
                     collect[j][i]->effect(level_players[k]);
+                    collect[j][i]->set_collected(true);
                 }
             }
         }
