@@ -238,21 +238,20 @@ class LevelOjectsMap
                         ssnake->get_ai()->set_facing_left(true);
                         level_enemies.push_back(ssnake);
                     }
-
-/*                     if(this->map_array[i][j] == 1401)
+                    if(this->map_array[i][j] == 1405)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
                         shared_ptr<Rat> chubbyrat(new Rat(rat, position));
                         chubbyrat->get_ai()->set_facing_left(false);
                         level_enemies.push_back(chubbyrat);
                     }
-                    if(this->map_array[i][j] == 1402)
+                    if(this->map_array[i][j] == 1406)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
                         shared_ptr<Rat> chubbyrat(new Rat(rat, position));
                         chubbyrat->get_ai()->set_facing_left(true);
                         level_enemies.push_back(chubbyrat);
-                    } */
+                    }
                 }
 
             return level_enemies;
