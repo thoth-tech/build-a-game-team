@@ -116,6 +116,19 @@ vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, 
     return block;
 }
 
+vector<shared_ptr<EdgeBlock>> make_edges(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<EdgeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_edges(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
 vector<shared_ptr<Collectable>> make_level_collectables(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
     vector<shared_ptr<Collectable>> collect;

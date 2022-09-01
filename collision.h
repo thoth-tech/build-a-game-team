@@ -230,6 +230,44 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_
     }
 }
 
+void check_enemy_edge_block_collisions(vector<vector<shared_ptr<EdgeBlock>>> level_edges, vector<shared_ptr<Enemy>> level_enemies)
+{
+    for (int k = 0; k < level_enemies.size(); k++)
+    {
+        if (!rect_on_screen(level_enemies[k]->get_enemy_hitbox()))
+            continue;
+
+        string collision = "None";
+        for (int j = 0; j < level_edges.size(); j++)
+        {
+            for (int i = 0; i < level_edges[j].size(); i++)
+            {
+                // if(!rect_on_screen(layers[j][i]->get_block_hitbox()))
+                //     continue;
+
+                // if(!test_rectangle_collision(test_area, layers[j][i]->get_block_hitbox()))
+                //     continue;
+
+                collision = level_edges[j][i]->test_collision(level_enemies[k]->get_enemy_hitbox());
+
+                if (collision == "Left")
+                {
+                    level_enemies[k]->get_ai()->set_facing_left(false);
+                    break;
+                }
+                else if (collision == "Right")
+                {
+                    level_enemies[k]->get_ai()->set_facing_left(true);
+                    break;
+                }
+            }
+
+            if (collision != "None")
+                break;
+        }
+    }
+}
+
 void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vector<shared_ptr<Player>> level_players)
 {
     for (int i = 0; i < level_enemies.size(); i++)

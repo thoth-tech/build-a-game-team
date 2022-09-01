@@ -778,3 +778,46 @@ class EmptyMultiTurnBlock : public Block
                 return "None";
         };
 };
+
+class EdgeBlock : public Block
+{
+    public:
+        EdgeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->position = position;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        string test_collision(rectangle one) override
+        {
+            string collision = "None";
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if (abs(dx) <= width && abs(dy) <= height)
+            {
+                if (crossWidth >= crossHeight)
+                {
+                    if (crossWidth > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
+                else
+                {
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth - 200 > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
+            }
+
+            return collision;
+        };
+};
