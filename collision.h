@@ -240,6 +240,9 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
         string collision = "None";
         for (int j = 0; j < level_players.size(); j++)
         {
+            if(level_players[j]->get_state_type() == "Dying" || level_players[j]->get_state_type() == "Spawn")
+                continue;
+
             collision = level_enemies[i]->test_collision(level_players[j]->get_player_hitbox());
 
             if (collision != "Top" && collision != "None")
@@ -329,6 +332,9 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<ToxicBlock>>> toxic, 
             for (int i = 0; i < toxic[j].size(); i++)
             {
                 if (!rect_on_screen(toxic[j][i]->get_block_hitbox()))
+                    continue;
+                
+                if(level_players[k]->get_state_type() == "Dying" || level_players[k]->get_state_type() == "Spawn")
                     continue;
 
                 collision = toxic[j][i]->test_collision(level_players[k]->get_player_hitbox());
@@ -756,8 +762,8 @@ void check_collectable_collisions(vector<vector<shared_ptr<Collectable>>> collec
 
                 if (collision != "None")
                 {
-                    collect[j][i]->effect(level_players[k]);
                     collect[j][i]->set_collected(true);
+                    collect[j][i]->effect(level_players[k]);
                 }
             }
         }

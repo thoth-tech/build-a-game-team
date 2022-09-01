@@ -85,7 +85,10 @@ class HeartCollectable : public Collectable
         void effect(std::shared_ptr<Player> player)
         {
             //write_line("Heart Effect");
-            player->player_health += 1;
+            if(player->player_health < 3)
+                player->player_health += 1;
+            else
+                collected = false;
         };
 
         void make_hitbox() override
