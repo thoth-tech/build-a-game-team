@@ -72,6 +72,20 @@ class Level
         {
             this->door = make_level_door(files[0], this->tile_size, cell_sheets[5].cells);
 
+            if (players == 2)
+            {
+                for (int i = 1; i < players + 1; i++)
+                {
+                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
+                    this->level_players.push_back(player);
+                }
+            }
+            else
+            {
+                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
+                this->level_players.push_back(player);
+            }
+
             for (int i = 0; i < level_layers; i++)
             {
                 string file = files[i];
@@ -124,21 +138,7 @@ class Level
                 collect = make_level_collectables(file, this->tile_size, this->cell_sheets);
                 this->level_collectables.push_back(collect);
 
-                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
-            }
-
-            if (players == 2)
-            {
-                for (int i = 1; i < players + 1; i++)
-                {
-                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
-                    this->level_players.push_back(player);
-                }
-            }
-            else
-            {
-                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
-                this->level_players.push_back(player);
+                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size, this->level_players);
             }
 
             shared_ptr<HUD> hud(new HUD(level_players));

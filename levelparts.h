@@ -168,11 +168,11 @@ vector<shared_ptr<Block>> make_level_decoration(string file, int tile_size, vect
     return block;
 }
 
-vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size)
+vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size, vector<std::shared_ptr<Player>> level_players)
 {
     LevelOjectsMap map(file, tile_size);
 
-    level_enemy = map.get_enemies(level_enemy);
+    level_enemy = map.get_enemies(level_enemy, level_players);
 
     return level_enemy;
 }

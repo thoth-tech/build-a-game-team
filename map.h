@@ -199,7 +199,7 @@ class LevelOjectsMap
         };
         
 
-        vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies)
+        vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies, vector<std::shared_ptr<Player>> level_players)
         {
             point_2d position;
 
@@ -212,14 +212,14 @@ class LevelOjectsMap
                     if(this->map_array[i][j] == 1401)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
-                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        shared_ptr<Roach> cockroach(new Roach(roach, position, level_players));
                         cockroach->get_ai()->set_facing_left(false);
                         level_enemies.push_back(cockroach);
                     }
                     if(this->map_array[i][j] == 1402)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
-                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        shared_ptr<Roach> cockroach(new Roach(roach, position, level_players));
                         cockroach->get_ai()->set_facing_left(true);
                         level_enemies.push_back(cockroach);
                     }
@@ -227,28 +227,28 @@ class LevelOjectsMap
                     if(this->map_array[i][j] == 1403)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
-                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        shared_ptr<Snake> ssnake(new Snake(snake, position, level_players));
                         ssnake->get_ai()->set_facing_left(false);
                         level_enemies.push_back(ssnake);
                     }
                     if(this->map_array[i][j] == 1404)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
-                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        shared_ptr<Snake> ssnake(new Snake(snake, position, level_players));
                         ssnake->get_ai()->set_facing_left(true);
                         level_enemies.push_back(ssnake);
                     }
                     if(this->map_array[i][j] == 1405)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
-                        shared_ptr<Rat> chubbyrat(new Rat(rat, position));
+                        shared_ptr<Rat> chubbyrat(new Rat(rat, position, level_players));
                         chubbyrat->get_ai()->set_facing_left(false);
                         level_enemies.push_back(chubbyrat);
                     }
                     if(this->map_array[i][j] == 1406)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
-                        shared_ptr<Rat> chubbyrat(new Rat(rat, position));
+                        shared_ptr<Rat> chubbyrat(new Rat(rat, position, level_players));
                         chubbyrat->get_ai()->set_facing_left(true);
                         level_enemies.push_back(chubbyrat);
                     }
