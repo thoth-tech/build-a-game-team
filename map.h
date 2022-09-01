@@ -199,7 +199,7 @@ class LevelOjectsMap
         };
         
 
-        vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies)
+        vector<shared_ptr<Enemy>> get_enemies(vector<shared_ptr<Enemy>> level_enemies, vector<std::shared_ptr<Player>> level_players)
         {
             point_2d position;
 
@@ -212,14 +212,14 @@ class LevelOjectsMap
                     if(this->map_array[i][j] == 1401)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
-                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        shared_ptr<Roach> cockroach(new Roach(roach, position, level_players));
                         cockroach->get_ai()->set_facing_left(false);
                         level_enemies.push_back(cockroach);
                     }
                     if(this->map_array[i][j] == 1402)
                     {
                         sprite roach = create_sprite("Roach", "RoachAnim");
-                        shared_ptr<Roach> cockroach(new Roach(roach, position));
+                        shared_ptr<Roach> cockroach(new Roach(roach, position, level_players));
                         cockroach->get_ai()->set_facing_left(true);
                         level_enemies.push_back(cockroach);
                     }
@@ -227,28 +227,28 @@ class LevelOjectsMap
                     if(this->map_array[i][j] == 1403)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
-                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        shared_ptr<Snake> ssnake(new Snake(snake, position, level_players));
                         ssnake->get_ai()->set_facing_left(false);
                         level_enemies.push_back(ssnake);
                     }
                     if(this->map_array[i][j] == 1404)
                     {
                         sprite snake = create_sprite("Snake", "SnakeAnim");
-                        shared_ptr<Snake> ssnake(new Snake(snake, position));
+                        shared_ptr<Snake> ssnake(new Snake(snake, position, level_players));
                         ssnake->get_ai()->set_facing_left(true);
                         level_enemies.push_back(ssnake);
                     }
                     if(this->map_array[i][j] == 1405)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
-                        shared_ptr<Rat> chubbyrat(new Rat(rat, position));
+                        shared_ptr<Rat> chubbyrat(new Rat(rat, position, level_players));
                         chubbyrat->get_ai()->set_facing_left(false);
                         level_enemies.push_back(chubbyrat);
                     }
                     if(this->map_array[i][j] == 1406)
                     {
                         sprite rat = create_sprite("Rat", "RatAnim");
-                        shared_ptr<Rat> chubbyrat(new Rat(rat, position));
+                        shared_ptr<Rat> chubbyrat(new Rat(rat, position, level_players));
                         chubbyrat->get_ai()->set_facing_left(true);
                         level_enemies.push_back(chubbyrat);
                     }
@@ -299,6 +299,34 @@ class LevelOjectsMap
                 }
 
             return solid_blocks;
+        }
+
+        vector<shared_ptr<EdgeBlock>> get_edges(vector<shared_ptr<EdgeBlock>> edge_blocks, bitmap cell_sheet, int offset)
+        {
+            point_2d position;
+
+            for (int i = 0; i < this->map_height; i++)
+                for (int j = 0; j < this->map_width; j++)
+                {
+                    position.x = j * this->tile_size;
+                    position.y = i * this->tile_size;
+
+                    int cell = ((this->map_array[i][j]) - 1) - offset;
+
+                    if(this->map_array[i][j] > offset)
+                    {
+                        if(bitmap_name(cell_sheet) == "Edge")
+                        {
+                            if(this->map_array[i][j] < bitmap_cell_count(cell_sheet) + 1 + offset)
+                            {
+                                shared_ptr<EdgeBlock> block(new EdgeBlock(cell_sheet, position, cell));
+                                edge_blocks.push_back(block);
+                            }
+                        }
+                    }
+                }
+
+            return edge_blocks;
         }
 
         vector<shared_ptr<Block>> get_decoration(vector<shared_ptr<Block>> decoration_blocks, bitmap cell_sheet, int offset)

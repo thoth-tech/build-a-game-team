@@ -12,13 +12,15 @@ class Enemy
         rectangle hitbox;
         bool is_dead;
         std::shared_ptr<Behaviour> ai;
+        vector<std::shared_ptr<Player>> level_players;
 
     public:
-        Enemy(sprite enemy_sprite, point_2d position)
+        Enemy(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players)
         {
             this->is_dead = false;
             this->enemy_sprite = enemy_sprite;
             this->position = position;
+            this->level_players = level_players;
             sprite_set_position(enemy_sprite, this->position);
             make_hitbox();
         };
@@ -119,7 +121,7 @@ class Enemy
 class Roach : public Enemy
 {
     public:
-        Roach(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        Roach(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
             std::shared_ptr<Behaviour> ai(new RoachBehaviour(enemy_sprite));
             this->ai = ai;
@@ -136,7 +138,7 @@ class Roach : public Enemy
 class Blob : public Enemy
 {
     public:
-        Blob(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        Blob(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
             std::shared_ptr<Behaviour> ai(new BlobBehaviour(enemy_sprite));
             this->ai = ai;
@@ -153,9 +155,9 @@ class Blob : public Enemy
 class Snake : public Enemy
 {
     public:
-        Snake(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        Snake(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
-            std::shared_ptr<Behaviour> ai(new SnakeBehaviour(enemy_sprite));
+            std::shared_ptr<Behaviour> ai(new SnakeBehaviour(enemy_sprite, level_players));
             this->ai = ai;
             point_2d pos = this->position;
             pos.y = pos.y + 32;
@@ -170,9 +172,9 @@ class Snake : public Enemy
 class Rat : public Enemy
 {
     public:
-        Rat(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        Rat(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
-            std::shared_ptr<Behaviour> ai(new RatBehaviour(enemy_sprite));
+            std::shared_ptr<Behaviour> ai(new RatBehaviour(enemy_sprite, level_players));
             this->ai = ai;
             point_2d pos = this->position;
             pos.y = pos.y + 32;
@@ -187,7 +189,7 @@ class Rat : public Enemy
 class WaterRat : public Enemy
 {
     public:
-        WaterRat(sprite enemy_sprite, point_2d position) : Enemy (enemy_sprite, position)
+        WaterRat(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
             std::shared_ptr<Behaviour> ai(new WaterRatBehaviour(enemy_sprite));
             this->ai = ai;

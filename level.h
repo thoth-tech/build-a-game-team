@@ -24,6 +24,7 @@ class Level
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
         vector<vector<shared_ptr<Block>>> solid_blocks;
+        vector<vector<shared_ptr<EdgeBlock>>> level_edges;
         vector<vector<shared_ptr<Ladder>>> ladders;
         vector<vector<shared_ptr<Block>>> decoration;
         vector<vector<shared_ptr<WaterBlock>>> water;
@@ -71,6 +72,20 @@ class Level
         void make_level()
         {
             this->door = make_level_door(files[0], this->tile_size, cell_sheets[5].cells);
+
+            if (players == 2)
+            {
+                for (int i = 1; i < players + 1; i++)
+                {
+                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
+                    this->level_players.push_back(player);
+                }
+            }
+            else
+            {
+                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
+                this->level_players.push_back(player);
+            }
 
             for (int i = 0; i < level_layers; i++)
             {
@@ -124,21 +139,11 @@ class Level
                 collect = make_level_collectables(file, this->tile_size, this->cell_sheets);
                 this->level_collectables.push_back(collect);
 
-                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
-            }
+                vector<shared_ptr<EdgeBlock>> edges;
+                edges = make_edges(file, this->tile_size, this->cell_sheets);
+                this->level_edges.push_back(edges);
 
-            if (players == 2)
-            {
-                for (int i = 1; i < players + 1; i++)
-                {
-                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
-                    this->level_players.push_back(player);
-                }
-            }
-            else
-            {
-                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
-                this->level_players.push_back(player);
+                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size, this->level_players);
             }
 
             shared_ptr<HUD> hud(new HUD(level_players));
@@ -297,6 +302,10 @@ class Level
                 for(int i = 0; i < level_collectables[j].size(); i++)
                     if(rect_on_screen(level_collectables[j][i]->get_hitbox()))
                         level_collectables[j][i]->draw();
+
+                for(int i = 0; i < level_edges[j].size(); i++)
+                    if(rect_on_screen(level_edges[j][i]->get_block_hitbox()))
+                        level_edges[j][i]->draw_block();
             }
         }
 
@@ -313,6 +322,7 @@ class Level
             check_ladder_collisions(ladders, level_players);
             check_door_block_collisions(door, level_players);
             check_enemy_solid_block_collisions(solid_blocks, level_enemies);
+            check_enemy_edge_block_collisions(level_edges, level_enemies);
             check_enemy_player_collisions(level_enemies, level_players);
             check_water_block_collisions(water, level_players);
             check_toxic_block_collisions(toxic, level_players);
