@@ -189,6 +189,53 @@ class SnakeBehaviour : public Behaviour
 
 };
 
+class RatBehaviour : public Behaviour
+{
+    public:
+        RatBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        {
+            if(facing_left)
+                sprite_start_animation(enemy_sprite, "LeftRun");
+            else
+                sprite_start_animation(enemy_sprite, "RightRun");
+            
+        };
+        ~RatBehaviour()
+        {
+        };
+        void update() override
+        {
+            if(facing_left)
+            {
+                if(!once)
+                {
+                    update_animation("LeftRun", "RightRun");
+                    once = true;
+                }
+                sprite_set_dx(enemy_sprite, 3);
+            }
+            else
+            {
+                if(!once)
+                {
+                    update_animation("LeftRun", "RightRun");
+                    once = true;
+                }
+                sprite_set_dx(enemy_sprite, -3);
+            }
+
+            if(on_floor)
+            {
+                sprite_set_dy(enemy_sprite, 0);
+            }
+            else
+            {
+                sprite_set_dy(enemy_sprite, 10);
+            }
+        };
+
+};
+
 class WaterRatBehaviour : public Behaviour
 {
     public:
