@@ -43,7 +43,7 @@ class Behaviour
 
         void set_y_value(float val)
         {
-            sprite_set_y(enemy_sprite, val + 32);
+            sprite_set_y(enemy_sprite, val + (64 - sprite_height(enemy_sprite)));
         };
 
 };
