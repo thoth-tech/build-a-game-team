@@ -424,14 +424,18 @@ void LevelScreen::update()
                     this->screen->change_state(new PreLevelScreen, "Pre Level");
                 }
                 else
+                {
                     this->screen->change_state(new WinScreen, "Win");
+                }
             }
         }
-
-        if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
+        else
         {
-            write_line("Changing to game over");
-            this->screen->change_state(new GameOverScreen, "GameOver");
+            if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
+            {
+                write_line("Changing to game over");
+                this->screen->change_state(new GameOverScreen, "GameOver");
+            }
         }
     }
     else
