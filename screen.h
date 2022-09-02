@@ -43,7 +43,7 @@ class Screen
         
     public:
         int level_number = 1;
-        int max_levels = 3;
+        int max_levels = 4;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -176,6 +176,8 @@ class LevelScreen : public ScreenState
         {
             if(key_typed(M_KEY))
             {
+                this->screen->level_number = 1;
+                this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                 this->screen->change_state(new MenuScreen, "Menu");
             }
 
@@ -296,6 +298,7 @@ void MenuScreen::update()
 {
     set_camera_x(0);
     set_camera_y(0);
+
     if(!run_once)
     {
         for(int i = 0; i < num_buttons; i++)
@@ -437,6 +440,8 @@ void LevelScreen::update()
             {
                 write_line("Changing to game over");
                 this->screen->change_state(new GameOverScreen, "GameOver");
+                this->screen->level_number = 1;
+                this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
             }
         }
     }
@@ -474,6 +479,8 @@ void WinScreen::update()
 
     if(key_typed(RETURN_KEY))
     {
+        this->screen->level_number = 1;
+        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
         this->screen->change_state(new MenuScreen, "Menu");
     }
 }
