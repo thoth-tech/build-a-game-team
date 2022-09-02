@@ -2,6 +2,7 @@
 #include "level.h"
 #include "cellsheet.h"
 #include "get_level.h"
+#include "button.h"
 #include <memory>
 #include <vector>
 
@@ -127,6 +128,10 @@ class MenuScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        vector<shared_ptr<Button>> menu_buttons;
+        int offset = -80;
+        int num_buttons = 5;
+        int selection = 0;
 
     public:
         MenuScreen(){};
@@ -259,34 +264,114 @@ void TeamIntroScreen::update()
     }
 }
 
+string get_button_text(int id)
+{
+    string text = "";
+
+    switch(id)
+    {
+        case 1:
+            text = "1 PLAYER";
+            break;
+        case 2:
+            text = "2 PLAYER";
+            break;
+        case 3: 
+            text = "BACKSTORY";
+            break;
+        case 4:
+            text = "CREDITS";
+            break;
+        case 5:
+            text = "EXIT";
+            break;
+        default:
+            break;
+    }
+
+    return text;
+}
+
 void MenuScreen::update()
 {
+    if(!run_once)
+    {
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_button_text(i + 1);
+            shared_ptr<Button> test(new Button(bitmap_named("Button"), offset, i, text));
+            offset += 100;
+            menu_buttons.push_back(test);
+        }
+        run_once = true;
+    }
+
     if (!music_playing())
     {
         play_music("MenuMusic.mp3"); 
         set_music_volume(0.5f);
     }
-    
+
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Menu Screen", COLOR_WHITE, pt.x - 20, pt.y);
-    draw_text("Press 1 for 1P Game", COLOR_WHITE, pt.x - 20, pt.y + 10);
-    draw_text("Press 2 for 2P Game", COLOR_WHITE, pt.x - 20, pt.y + 20);
+    draw_bitmap("MenuBg", 0, 0, option_to_screen());
 
+    bitmap title = bitmap_named("Title");
+    drawing_options scale = option_scale_bmp(2, 2);
+    draw_bitmap(title, pt.x - bitmap_width(title)/2, 100, scale);
 
-    if(key_typed(NUM_1_KEY))
+    for(int i = 0; i < menu_buttons.size(); i++)
     {
-        play_sound_effect("Select");
-        this->screen->set_players(1);
-        stop_music();
-        this->screen->change_state(new PreLevelScreen, "Pre Level");
+        if(menu_buttons[i]->get_id() == selection)
+            menu_buttons[i]->set_selected(true); 
+        else
+            menu_buttons[i]->set_selected(false); 
+        
+        menu_buttons[i]->draw();
     }
-    if(key_typed(NUM_2_KEY))
+
+    if(key_typed(UP_KEY))
     {
-        play_sound_effect("Select");
-        this->screen->set_players(2);
-        stop_music();
-        this->screen->change_state(new PreLevelScreen, "Pre Level");
+        selection -= 1;
+
+        if(selection < 0)
+            selection = 0;
+    }
+    if(key_typed(DOWN_KEY))
+    {
+        selection += 1;
+
+        if(selection > num_buttons - 1)
+            selection = num_buttons - 1;
+    }
+    if(key_typed(RETURN_KEY))
+    {
+        switch(selection)
+        {
+            case 0:
+                {
+                    play_sound_effect("Select");
+                    this->screen->set_players(1);
+                    stop_music();
+                    this->screen->change_state(new PreLevelScreen, "Pre Level");
+                }
+                break;
+            case 1:
+                {
+                    play_sound_effect("Select");
+                    this->screen->set_players(2);
+                    stop_music();
+                    this->screen->change_state(new PreLevelScreen, "Pre Level");
+                }
+                break;
+            case 4:
+                {
+                    exit(0);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
 
