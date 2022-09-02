@@ -294,6 +294,8 @@ string get_button_text(int id)
 
 void MenuScreen::update()
 {
+    set_camera_x(0);
+    set_camera_y(0);
     if(!run_once)
     {
         for(int i = 0; i < num_buttons; i++)
