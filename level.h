@@ -392,6 +392,24 @@ class Level3 : public Level
         };
 };
 
+class FourCorners : public Level
+{
+    public:
+        FourCorners(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 4;
+            this->files.push_back("levels/4c_1.txt");
+            this->files.push_back("levels/4c_2.txt");
+            this->files.push_back("levels/4c_3.txt");
+            this->files.push_back("levels/4c_4.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "The 4 Trials of Thoth";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+        };
+};
+
 class BlankLevel : public Level
 {
     public:
