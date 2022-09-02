@@ -268,7 +268,7 @@ class Level
                         decoration[j][i]->draw_block();
 
                 for(int i = 0; i < water[j].size(); i++)
-                    if(rect_on_screen(water[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(water[j][i]->get_block_hitbox()))
                         water[j][i]->draw_block();
                 
                 for(int i = 0; i < toxic[j].size(); i++)
@@ -288,7 +288,7 @@ class Level
                         turn_pipes[j][i]->draw_block();
                 
                 for(int i = 0; i < empty_turn_pipes[j].size(); i++)
-                    if(rect_on_screen(empty_turn_pipes[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(empty_turn_pipes[j][i]->get_block_hitbox()))
                         empty_turn_pipes[j][i]->draw_block();
 
                 for(int i = 0; i < multi_turn_pipes[j].size(); i++)
@@ -296,7 +296,7 @@ class Level
                         multi_turn_pipes[j][i]->draw_block();
 
                 for(int i = 0; i < empty_multi_turn_pipes[j].size(); i++)
-                    if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
                         empty_multi_turn_pipes[j][i]->draw_block();
                 
                 for(int i = 0; i < level_collectables[j].size(); i++)
