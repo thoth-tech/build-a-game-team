@@ -43,7 +43,7 @@ class Screen
         
     public:
         int level_number = 1;
-        int max_levels = 4;
+        int max_levels = 5;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -439,9 +439,9 @@ void LevelScreen::update()
             if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
             {
                 write_line("Changing to game over");
-                this->screen->change_state(new GameOverScreen, "GameOver");
                 this->screen->level_number = 1;
                 this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                this->screen->change_state(new GameOverScreen, "GameOver");
             }
         }
     }
