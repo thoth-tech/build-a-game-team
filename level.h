@@ -342,10 +342,10 @@ class Level
         }
 };
 
-class Level1 : public Level
+class MultiPipe : public Level
 {
     public:
-        Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        MultiPipe(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 4;
             this->files.push_back("1.txt");
@@ -360,14 +360,14 @@ class Level1 : public Level
         };
 };
 
-class Level2 : public Level
+class TooManyRoach : public Level
 {
     public:
-        Level2(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        TooManyRoach(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 2;
-            this->files.push_back("levels/level1_1.txt");
-            this->files.push_back("levels/level1_2.txt");
+            this->files.push_back("levels/roach_1.txt");
+            this->files.push_back("levels/roach_2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
             this->level_name = "Too Many Roaches";
