@@ -34,4 +34,5 @@ SOUND, Select, Select.wav
 MUSIC, LevelOne, LevelOneTheme1.mp3
 
 BITMAP,GreyBackground,Background4.png
+BITMAP, DarkBackground, Background3.png
 BITMAP, MENUBackground, MENUBackground.png

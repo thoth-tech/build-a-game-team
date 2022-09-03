@@ -31,6 +31,12 @@ shared_ptr<Level> get_next_level(int level, vector<CellSheet> cell_sheets, int t
                 next_level = trials;
                 break;
             }
+        case 5:
+            {
+                shared_ptr<Level> surfin(new Surf(cell_sheets, tile_size, players));
+                next_level = surfin;
+                break;
+            }
         default:
             {
                 shared_ptr<Level> level1(new Level1(cell_sheets, tile_size, players));

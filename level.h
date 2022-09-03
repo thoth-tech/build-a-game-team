@@ -410,6 +410,22 @@ class FourCorners : public Level
         };
 };
 
+class Surf : public Level
+{
+    public:
+        Surf(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/surf_1.txt");
+            this->files.push_back("levels/surf_2.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Slime Surfin'";
+            shared_ptr<Background> backg(new DarkBackground);
+            this->background = backg;
+        };
+};
+
 class BlankLevel : public Level
 {
     public:
