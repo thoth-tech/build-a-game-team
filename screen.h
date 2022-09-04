@@ -460,9 +460,22 @@ void LevelScreen::update()
 
 void GameOverScreen::update()
 {
+    set_camera_x(0);
+    set_camera_y(0);
     clear_screen(COLOR_BLACK);
-    draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
-    draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 410, option_to_screen());
+    point_2d pt = screen_center();
+    string game_over_text = "Game Over";
+    font screen_font = font_named("TempFont");
+    int font_size = 80;
+    color font_color = COLOR_WHITE_SMOKE;
+
+    draw_text(game_over_text, font_color, screen_font, font_size, pt.x- text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
+    
+    //draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
+
+    bitmap game_over = bitmap_named("GameOver");
+    fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
+    draw_bitmap(game_over, pt.x - bitmap_width(game_over)/2, pt.y - bitmap_height(game_over)/2, option_to_screen());
 
     if(key_typed(RETURN_KEY))
     {
