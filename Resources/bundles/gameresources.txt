@@ -16,6 +16,7 @@ BITMAP, Decorative, decorative_blocks.png, 64, 64, 1, 1, 1
 BITMAP, MultiPipes, turn_pipes.png, 64, 64, 2, 6, 6
 BITMAP, EmptyMulti, multipipes_empty_clear.png, 64, 64, 2, 6, 12
 BITMAP, Collect, collectables.png, 64, 64, 3, 1, 3
+BITMAP, Edge, edge.png, 64, 64, 1, 1, 1
 
 BITMAP, BlueHealthBar, bluehb.png, 64, 32, 1, 1, 1
 BITMAP, BlueEmptyBar, blueehb.png, 64, 32, 1, 1, 1
@@ -33,4 +34,10 @@ SOUND, Select, Select.wav
 MUSIC, LevelOne, LevelOneTheme1.mp3
 
 BITMAP,GreyBackground,Background4.png
+BITMAP, DarkBackground, Background3.png
 BITMAP, MENUBackground, MENUBackground.png
+BITMAP, TeamLogo, teamlogo.png
+BITMAP, Company2, companylogo1.png
+BITMAP, Company1, companylogo2.png
+
+BITMAP,GameOver,gameover.png

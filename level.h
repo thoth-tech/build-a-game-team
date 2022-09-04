@@ -24,6 +24,7 @@ class Level
         shared_ptr<DoorBlock> door;
         vector<shared_ptr<Enemy>> level_enemies;
         vector<vector<shared_ptr<Block>>> solid_blocks;
+        vector<vector<shared_ptr<EdgeBlock>>> level_edges;
         vector<vector<shared_ptr<Ladder>>> ladders;
         vector<vector<shared_ptr<Block>>> decoration;
         vector<vector<shared_ptr<WaterBlock>>> water;
@@ -71,6 +72,20 @@ class Level
         void make_level()
         {
             this->door = make_level_door(files[0], this->tile_size, cell_sheets[5].cells);
+
+            if (players == 2)
+            {
+                for (int i = 1; i < players + 1; i++)
+                {
+                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
+                    this->level_players.push_back(player);
+                }
+            }
+            else
+            {
+                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
+                this->level_players.push_back(player);
+            }
 
             for (int i = 0; i < level_layers; i++)
             {
@@ -124,21 +139,11 @@ class Level
                 collect = make_level_collectables(file, this->tile_size, this->cell_sheets);
                 this->level_collectables.push_back(collect);
 
-                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size);
-            }
+                vector<shared_ptr<EdgeBlock>> edges;
+                edges = make_edges(file, this->tile_size, this->cell_sheets);
+                this->level_edges.push_back(edges);
 
-            if (players == 2)
-            {
-                for (int i = 1; i < players + 1; i++)
-                {
-                    shared_ptr<Player> player = make_level_player(files[0], this->tile_size, i);
-                    this->level_players.push_back(player);
-                }
-            }
-            else
-            {
-                shared_ptr<Player> player = make_level_player(files[0], this->tile_size, 3);
-                this->level_players.push_back(player);
+                this->level_enemies = make_layer_enemies(this->level_enemies, file, this->tile_size, this->level_players);
             }
 
             shared_ptr<HUD> hud(new HUD(level_players));
@@ -259,7 +264,7 @@ class Level
                         decoration[j][i]->draw_block();
 
                 for(int i = 0; i < water[j].size(); i++)
-                    if(rect_on_screen(water[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(water[j][i]->get_block_hitbox()))
                         water[j][i]->draw_block();
                 
                 for(int i = 0; i < toxic[j].size(); i++)
@@ -279,7 +284,7 @@ class Level
                         turn_pipes[j][i]->draw_block();
                 
                 for(int i = 0; i < empty_turn_pipes[j].size(); i++)
-                    if(rect_on_screen(empty_turn_pipes[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(empty_turn_pipes[j][i]->get_block_hitbox()))
                         empty_turn_pipes[j][i]->draw_block();
 
                 for(int i = 0; i < multi_turn_pipes[j].size(); i++)
@@ -287,12 +292,16 @@ class Level
                         multi_turn_pipes[j][i]->draw_block();
 
                 for(int i = 0; i < empty_multi_turn_pipes[j].size(); i++)
-                    if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
+                    //if(rect_on_screen(empty_multi_turn_pipes[j][i]->get_block_hitbox()))
                         empty_multi_turn_pipes[j][i]->draw_block();
                 
                 for(int i = 0; i < level_collectables[j].size(); i++)
                     if(rect_on_screen(level_collectables[j][i]->get_hitbox()))
                         level_collectables[j][i]->draw();
+
+                for(int i = 0; i < level_edges[j].size(); i++)
+                    if(rect_on_screen(level_edges[j][i]->get_block_hitbox()))
+                        level_edges[j][i]->draw_block();
             }
         }
 
@@ -309,6 +318,7 @@ class Level
             check_ladder_collisions(ladders, level_players);
             check_door_block_collisions(door, level_players);
             check_enemy_solid_block_collisions(solid_blocks, level_enemies);
+            check_enemy_edge_block_collisions(level_edges, level_enemies);
             check_enemy_player_collisions(level_enemies, level_players);
             check_water_block_collisions(water, level_players);
             check_toxic_block_collisions(toxic, level_players);
@@ -328,10 +338,10 @@ class Level
         }
 };
 
-class Level1 : public Level
+class MultiPipe : public Level
 {
     public:
-        Level1(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        MultiPipe(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 4;
             this->files.push_back("1.txt");
@@ -346,14 +356,14 @@ class Level1 : public Level
         };
 };
 
-class Level2 : public Level
+class TooManyRoach : public Level
 {
     public:
-        Level2(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        TooManyRoach(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 2;
-            this->files.push_back("levels/level1_1.txt");
-            this->files.push_back("levels/level1_2.txt");
+            this->files.push_back("levels/roach_1.txt");
+            this->files.push_back("levels/roach_2.txt");
             make_level();
             this->level_music = music_named("LevelOne");
             this->level_name = "Too Many Roaches";
@@ -374,6 +384,40 @@ class Level3 : public Level
             this->level_music = music_named("LevelOne");
             this->level_name = "Turn and Climb Time";
             shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+        };
+};
+
+class FourCorners : public Level
+{
+    public:
+        FourCorners(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 4;
+            this->files.push_back("levels/4c_1.txt");
+            this->files.push_back("levels/4c_2.txt");
+            this->files.push_back("levels/4c_3.txt");
+            this->files.push_back("levels/4c_4.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "The 4 Trials of Thoth";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+        };
+};
+
+class Surf : public Level
+{
+    public:
+        Surf(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/surf_1.txt");
+            this->files.push_back("levels/surf_2.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Slime Surfin'";
+            shared_ptr<Background> backg(new DarkBackground);
             this->background = backg;
         };
 };

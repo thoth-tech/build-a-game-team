@@ -13,14 +13,7 @@ class Block
         string type;
         rectangle hitbox;
         rectangle special_hitbox;
-        bool is_solid = false;
-        bool is_door = false;
-        bool is_water = false;
-        bool is_ladder = false;
-        bool is_toxic = false;
-        bool is_holdable = false;
         bool is_turnable = false;
-        bool is_empty = false;
         bool is_picked_up = false;
         bool is_flowing = false;
         bool is_stopped = false;
@@ -75,53 +68,9 @@ class Block
             return this->hitbox;
         };
 
-        bool is_block_solid()
-        {
-            return this->is_solid;
-        };
-
-        bool is_block_door()
-        {
-            return this->is_door;
-        };
-
-        bool is_block_ladder()
-        {
-            return this->is_ladder;
-        };
-
-        bool is_block_water()
-        {
-            return this->is_water;
-        };
-
-        bool is_block_toxic()
-        {
-            return this->is_toxic;
-        };
-        bool is_holdable_pipe()
-        {
-            return this->is_holdable;
-        };
-
-        bool is_turnable_pipe()
-        {
-            return this->is_turnable;
-        };
-
-        bool is_empty_pipe()
-        {
-            return this->is_empty;
-        };
-
         bool get_is_flowing()
         {
             return this->is_flowing;
-        };
-
-        void set_empty_pipe(bool new_value)
-        {
-            this->is_empty = new_value;
         };
 
         int get_cell()
@@ -132,11 +81,6 @@ class Block
         void set_picked_up(bool new_value)
         {
             this->is_picked_up = new_value;
-        };
-
-        void set_water(bool new_value)
-        {
-            this->is_water = new_value;
         };
 
         bool picked_up()
@@ -190,7 +134,6 @@ class SolidBlock : public Block
     public:
         SolidBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         };
@@ -234,7 +177,6 @@ class HalfSolidBlockTop : public Block
         HalfSolidBlockTop(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
             this->top = position.y - 64;
-            this->is_solid = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         };
@@ -280,7 +222,6 @@ class HalfSolidBlockBottom : public Block
             this->top = position.y - 32;
             position.y += 32;
             this->position = position;
-            this->is_solid = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
             make_hitbox();
@@ -324,8 +265,6 @@ class Ladder : public Block
     public:
         Ladder(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
-            this->is_ladder = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         };
@@ -348,7 +287,6 @@ class PipeBlock : public Block
     public:
         PipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
@@ -361,7 +299,6 @@ class DecorativeBlock : public Block
     public:
         DecorativeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
@@ -378,8 +315,7 @@ class WaterBlock : public Block
     public:
         WaterBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
-            this->is_water = true;
+            //this->is_water = true;
             this->is_flowing = true;
             this->position = position;
             this->cell = cell;
@@ -509,8 +445,6 @@ class ToxicBlock : public Block
     public:
         ToxicBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
-            this->is_toxic = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
 
@@ -551,8 +485,6 @@ class DoorBlock : public Block
     public:
         DoorBlock(bitmap cell_sheet, point_2d position) : Block(cell_sheet, position)
         {
-            this->is_solid = false;
-            this->is_door = true;
             this->opts.draw_cell = this->cell;
 
             animation_script door_script = animation_script_named("CellAnim");
@@ -610,7 +542,6 @@ class HoldablePipeBlock : public Block
     public:
         HoldablePipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_holdable = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
         }
@@ -685,7 +616,6 @@ class EmptyPipeBlock : public Block
     public:
         EmptyPipeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_empty = true;
             this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
@@ -734,7 +664,6 @@ class EmptyTurnBlock : public Block
     public:
         EmptyTurnBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_empty = true;
             this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
@@ -759,7 +688,6 @@ class EmptyMultiTurnBlock : public Block
     public:
         EmptyMultiTurnBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
         {
-            this->is_empty = true;
             this->is_flowing = true;
             this->cell = cell;
             this->opts.draw_cell = this->cell;
@@ -776,5 +704,48 @@ class EmptyMultiTurnBlock : public Block
                 return "Collision";
             else
                 return "None";
+        };
+};
+
+class EdgeBlock : public Block
+{
+    public:
+        EdgeBlock(bitmap cell_sheet, point_2d position, int cell) : Block(cell_sheet, position)
+        {
+            this->position = position;
+            this->cell = cell;
+            this->opts.draw_cell = this->cell;
+        }
+
+        string test_collision(rectangle one) override
+        {
+            string collision = "None";
+            double dx = (one.x + one.width / 2) - (this->hitbox.x + this->hitbox.width / 2);
+            double dy = (one.y + one.height / 2) - (this->hitbox.y + this->hitbox.height / 2);
+            double width = (one.width + this->hitbox.width) / 2;
+            double height = (one.height + this->hitbox.height) / 2;
+            double crossWidth = width * dy;
+            double crossHeight = height * dx;
+
+            if (abs(dx) <= width && abs(dy) <= height)
+            {
+                if (crossWidth >= crossHeight)
+                {
+                    if (crossWidth > (-crossHeight))
+                        collision = "Bottom";
+                    else
+                        collision = "Left";
+                }
+                else
+                {
+                    // Gave a bias to top collision to avoid right edge stopping player during movement
+                    if (crossWidth - 200 > -(crossHeight))
+                        collision = "Right";
+                    else
+                        collision = "Top";
+                }
+            }
+
+            return collision;
         };
 };

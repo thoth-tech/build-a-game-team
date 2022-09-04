@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
     load_resource_bundle("roach", "roachbundle.txt");
     load_resource_bundle("snake", "snakebundle.txt");
     load_resource_bundle("rat", "ratbundle.txt");
+    load_resource_bundle("menu", "menubundle.txt");
 
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
     
@@ -63,6 +64,7 @@ int main(int argc, char *argv[])
     cell_sheet_names.push_back("MultiPipes"); //1500
     cell_sheet_names.push_back("EmptyMulti"); //1600
     cell_sheet_names.push_back("Collect"); //1700
+    cell_sheet_names.push_back("Edge"); //1800
 
     // Timers
     create_timer("Dying");
@@ -132,6 +134,7 @@ int main(int argc, char *argv[])
     free_resource_bundle("roach");
     free_resource_bundle("snake");
     free_resource_bundle("rat");
+    free_resource_bundle("menu");
     free_all_timers();
     return 0;
 }

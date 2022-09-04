@@ -43,7 +43,7 @@ class Behaviour
 
         void set_y_value(float val)
         {
-            sprite_set_y(enemy_sprite, val + 32);
+            sprite_set_y(enemy_sprite, val + (64 - sprite_height(enemy_sprite)));
         };
 
 };
@@ -144,20 +144,27 @@ class BlobBehaviour : public Behaviour
 
 class SnakeBehaviour : public Behaviour
 {
+    private:
+        vector<std::shared_ptr<Player>> level_players;
+
     public:
-        SnakeBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        SnakeBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
+            this->level_players = level_players;
             if(facing_left)
                 sprite_start_animation(enemy_sprite, "LeftRun");
             else
                 sprite_start_animation(enemy_sprite, "RightRun");
-            
         };
         ~SnakeBehaviour()
         {
         };
         void update() override
         {
+            for(int i = 0; i < level_players.size(); i++)
+            {
+                
+            }
             if(facing_left)
             {
                 if(!once)
@@ -191,9 +198,13 @@ class SnakeBehaviour : public Behaviour
 
 class RatBehaviour : public Behaviour
 {
+    private:
+        vector<std::shared_ptr<Player>> level_players;
+
     public:
-        RatBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        RatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
+            this->level_players = level_players;
             if(facing_left)
                 sprite_start_animation(enemy_sprite, "LeftRun");
             else
@@ -205,6 +216,10 @@ class RatBehaviour : public Behaviour
         };
         void update() override
         {
+            for(int i = 0; i < level_players.size(); i++)
+            {
+                
+            }
             if(facing_left)
             {
                 if(!once)

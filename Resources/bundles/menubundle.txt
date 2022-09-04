@@ -1,0 +1,6 @@
+BITMAP, MenuBg, menubackground.png
+BITMAP, Pink, pink.png
+BITMAP, Blue, blue.png
+BITMAP, Title, title.png
+BITMAP, Button, button.png
+FONT, TempFont, TempFont.ttf

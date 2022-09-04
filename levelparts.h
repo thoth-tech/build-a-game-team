@@ -116,6 +116,19 @@ vector<shared_ptr<EmptyPipeBlock>> make_holdable_pipe_empty_spaces(string file, 
     return block;
 }
 
+vector<shared_ptr<EdgeBlock>> make_edges(string file, int tile_size, vector<CellSheet> cell_sheets)
+{
+    vector<shared_ptr<EdgeBlock>> block;
+    LevelOjectsMap map(file, tile_size);
+
+    for (int i = 0; i < cell_sheets.size(); i++)
+    {
+        block = map.get_edges(block, cell_sheets[i].cells, cell_sheets[i].offset);
+    }
+
+    return block;
+}
+
 vector<shared_ptr<Collectable>> make_level_collectables(string file, int tile_size, vector<CellSheet> cell_sheets)
 {
     vector<shared_ptr<Collectable>> collect;
@@ -168,11 +181,11 @@ vector<shared_ptr<Block>> make_level_decoration(string file, int tile_size, vect
     return block;
 }
 
-vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size)
+vector<shared_ptr<Enemy>> make_layer_enemies(vector<shared_ptr<Enemy>> level_enemy, string file, int tile_size, vector<std::shared_ptr<Player>> level_players)
 {
     LevelOjectsMap map(file, tile_size);
 
-    level_enemy = map.get_enemies(level_enemy);
+    level_enemy = map.get_enemies(level_enemy, level_players);
 
     return level_enemy;
 }

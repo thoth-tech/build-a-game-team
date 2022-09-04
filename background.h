@@ -27,3 +27,12 @@ class GreyBackground : public Background
             images.push_back(bitmap_named("GreyBackground"));
         }
 };
+
+class DarkBackground : public Background
+{
+    public:
+        DarkBackground()
+        {
+            images.push_back(bitmap_named("DarkBackground"));
+        }
+};
