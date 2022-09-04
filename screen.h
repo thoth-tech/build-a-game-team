@@ -270,7 +270,26 @@ void TeamIntroScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Test Screen", COLOR_WHITE, pt.x, pt.y);
+
+    bitmap logo = bitmap_named("TeamLogo");
+    font screen_font = font_named("TempFont");
+    int font_size = 30;
+    color font_color = COLOR_WHITE;
+    string text = "Morgaine Barter";
+    string text2 = "Daniel Agbay, Lily Lan, Robert Osbourne";
+    string text3 = "Jiahao Zheng, Roy Chen";
+    string text4 = "And";
+    string text5 = "Lachlan Morgan";
+    string text6 = "Present";
+
+    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
+
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 150, option_to_screen());
+    draw_text(text2, font_color, screen_font, font_size, pt.x- text_width(text2, screen_font, font_size)/2, (pt.y - text_height(text2, screen_font, font_size)/2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
+    draw_text(text3, font_color, screen_font, font_size, pt.x- text_width(text3, screen_font, font_size)/2, (pt.y - text_height(text3, screen_font, font_size)/2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
+    draw_text(text4, font_color, screen_font, font_size, pt.x- text_width(text4, screen_font, font_size)/2, (pt.y - text_height(text4, screen_font, font_size)/2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
+    draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
+    draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
     if(key_typed(RETURN_KEY))
     {
