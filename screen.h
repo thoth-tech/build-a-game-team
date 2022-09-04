@@ -246,8 +246,20 @@ void CompanyIntroScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Company Intro Screen", COLOR_WHITE, pt.x, pt.y);
 
+    bitmap title = bitmap_named("Company1");
+    bitmap title2 = bitmap_named("Company2");
+    font screen_font = font_named("TempFont");
+    int font_size = 80;
+    color font_color = COLOR_WHITE;
+    string text = "Games";
+
+    draw_bitmap(title2, pt.x - bitmap_width(title2)/2 + 5, pt.y - bitmap_height(title2)/2 - 5, option_to_screen());
+    draw_bitmap(title, pt.x - bitmap_width(title)/2, pt.y - bitmap_height(title)/2, option_to_screen());
+
+    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
+    
     if(key_typed(RETURN_KEY))
     {
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
@@ -258,7 +270,26 @@ void TeamIntroScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Test Screen", COLOR_WHITE, pt.x, pt.y);
+
+    bitmap logo = bitmap_named("TeamLogo");
+    font screen_font = font_named("TempFont");
+    int font_size = 30;
+    color font_color = COLOR_WHITE;
+    string text = "Morgaine Barter";
+    string text2 = "Daniel Agbay, Lily Lan, Robert Osbourne";
+    string text3 = "Jiahao Zheng, Roy Chen";
+    string text4 = "And";
+    string text5 = "Lachlan Morgan";
+    string text6 = "Present";
+
+    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
+
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 150, option_to_screen());
+    draw_text(text2, font_color, screen_font, font_size, pt.x- text_width(text2, screen_font, font_size)/2, (pt.y - text_height(text2, screen_font, font_size)/2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
+    draw_text(text3, font_color, screen_font, font_size, pt.x- text_width(text3, screen_font, font_size)/2, (pt.y - text_height(text3, screen_font, font_size)/2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
+    draw_text(text4, font_color, screen_font, font_size, pt.x- text_width(text4, screen_font, font_size)/2, (pt.y - text_height(text4, screen_font, font_size)/2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
+    draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
+    draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
     if(key_typed(RETURN_KEY))
     {
@@ -463,6 +494,7 @@ void GameOverScreen::update()
     set_camera_x(0);
     set_camera_y(0);
     clear_screen(COLOR_BLACK);
+
     point_2d pt = screen_center();
     string game_over_text = "Game Over";
     font screen_font = font_named("TempFont");
@@ -470,8 +502,6 @@ void GameOverScreen::update()
     color font_color = COLOR_WHITE_SMOKE;
 
     draw_text(game_over_text, font_color, screen_font, font_size, pt.x- text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
-    
-    //draw_text("Game Over", COLOR_WHITE, 800, 400, option_to_screen());
 
     bitmap game_over = bitmap_named("GameOver");
     fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
