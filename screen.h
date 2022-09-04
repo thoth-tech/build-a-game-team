@@ -246,8 +246,20 @@ void CompanyIntroScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Company Intro Screen", COLOR_WHITE, pt.x, pt.y);
 
+    bitmap title = bitmap_named("Company1");
+    bitmap title2 = bitmap_named("Company2");
+    font screen_font = font_named("TempFont");
+    int font_size = 80;
+    color font_color = COLOR_WHITE;
+    string text = "Games";
+
+    draw_bitmap(title2, pt.x - bitmap_width(title2)/2 + 5, pt.y - bitmap_height(title2)/2 - 5, option_to_screen());
+    draw_bitmap(title, pt.x - bitmap_width(title)/2, pt.y - bitmap_height(title)/2, option_to_screen());
+
+    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
+    
     if(key_typed(RETURN_KEY))
     {
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
@@ -463,7 +475,7 @@ void GameOverScreen::update()
     set_camera_x(0);
     set_camera_y(0);
     clear_screen(COLOR_BLACK);
-    
+
     point_2d pt = screen_center();
     string game_over_text = "Game Over";
     font screen_font = font_named("TempFont");
