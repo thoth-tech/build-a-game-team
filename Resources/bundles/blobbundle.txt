@@ -1,2 +1,2 @@
 ANIM,BlobAnim,blob.txt
-BITMAP,Blob,Blob.png,32,32,3,5,15 
+BITMAP,Blob,Blob.png,64,64,3,5,15 

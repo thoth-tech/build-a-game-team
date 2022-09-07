@@ -97,6 +97,9 @@ class RoachBehaviour : public Behaviour
 
 class BlobBehaviour : public Behaviour
 {
+    private:
+        vector<std::shared_ptr<Player>> level_players;
+
     public:
         BlobBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
         {
@@ -104,11 +107,12 @@ class BlobBehaviour : public Behaviour
                 sprite_start_animation(enemy_sprite, "LeftRun");
             else
                 sprite_start_animation(enemy_sprite, "RightRun");
-            
         };
+        
         ~BlobBehaviour()
         {
         };
+
         void update() override
         {
             if(facing_left)
@@ -139,7 +143,6 @@ class BlobBehaviour : public Behaviour
                 sprite_set_dy(enemy_sprite, 10);
             }
         };
-
 };
 
 class SnakeBehaviour : public Behaviour
