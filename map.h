@@ -252,6 +252,20 @@ class LevelOjectsMap
                         chubbyrat->get_ai()->set_facing_left(true);
                         level_enemies.push_back(chubbyrat);
                     }
+                    if(this->map_array[i][j] == 1407)
+                    {
+                        sprite blob = create_sprite("Blob", "BlobAnim");
+                        shared_ptr<Blob> bblob(new Blob(blob, position, level_players));
+                        bblob->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(bblob);
+                    }
+                    if(this->map_array[i][j] == 1408)
+                    {
+                        sprite blob = create_sprite("Blob", "BlobAnim");
+                        shared_ptr<Blob> bblob(new Blob(blob, position, level_players));
+                        bblob->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(bblob);
+                    }
                 }
 
             return level_enemies;
