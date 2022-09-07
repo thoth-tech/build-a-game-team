@@ -10,237 +10,232 @@ class Screen;
 
 class ScreenState
 {
-    protected:
-        Screen *screen;
-        string screen_state;
-    
-    public:
-        virtual ~ScreenState()
-        {};
+protected:
+    Screen *screen;
+    string screen_state;
 
-        void set_state(Screen *screen, string screen_state)
-        {
-            this->screen = screen;
-            this->screen_state = screen_state;
-        };
+public:
+    virtual ~ScreenState(){};
 
-        string get_type()
-        {
-            return this->screen_state;
-        };
+    void set_state(Screen *screen, string screen_state)
+    {
+        this->screen = screen;
+        this->screen_state = screen_state;
+    };
 
-        virtual void update() = 0;
+    string get_type()
+    {
+        return this->screen_state;
+    };
+
+    virtual void update() = 0;
 };
 
 class Screen
 {
-    private:
-        ScreenState *state;
-        int tile_size;
-        int players = 1;
-        vector<CellSheet> cell_sheets;
-        vector<string> files;
-        
-    public:
-        int level_number = 1;
-        int max_levels = 5;
-        shared_ptr<Level> current_level;
+private:
+    ScreenState *state;
+    int tile_size;
+    int players = 1;
+    vector<CellSheet> cell_sheets;
+    vector<string> files;
 
-        Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
-        {
-            this->cell_sheets = cell_sheets;
-            this->tile_size = tile_size;
-            this->files = files;
-            this->change_state(state, "Initial");
-        };
+public:
+    int level_number = 1;
+    int max_levels = 6;
+    shared_ptr<Level> current_level;
 
-        ~Screen()
-        {
-            delete state;
-        };
+    Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
+    {
+        this->cell_sheets = cell_sheets;
+        this->tile_size = tile_size;
+        this->files = files;
+        this->change_state(state, "Initial");
+    };
 
-        void change_state(ScreenState *new_state, string type)
-        {
-            if(this->state != nullptr)
-                delete this->state;
-            this->state = new_state;
-            this->state->set_state(this, type);
-        };
+    ~Screen()
+    {
+        delete state;
+    };
 
-        void update()
-        {
-            this->state->update();
-        };
+    void change_state(ScreenState *new_state, string type)
+    {
+        if (this->state != nullptr)
+            delete this->state;
+        this->state = new_state;
+        this->state->set_state(this, type);
+    };
 
-        int get_tile_size()
-        {
-            return this->tile_size;
-        };
+    void update()
+    {
+        this->state->update();
+    };
 
-        int get_players()
-        {
-            return this->players;
-        };
+    int get_tile_size()
+    {
+        return this->tile_size;
+    };
 
-        void set_players(int num)
-        {
-            this->players = num;
-        };
+    int get_players()
+    {
+        return this->players;
+    };
 
-        vector<CellSheet> get_cell_sheets()
-        {
-            return this->cell_sheets;
-        };
+    void set_players(int num)
+    {
+        this->players = num;
+    };
 
-        vector<string> get_files()
-        {
-            return this->files;
-        };
+    vector<CellSheet> get_cell_sheets()
+    {
+        return this->cell_sheets;
+    };
+
+    vector<string> get_files()
+    {
+        return this->files;
+    };
 };
 
 class CompanyIntroScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
+private:
+    bool run_once = false;
 
-    public:
-        CompanyIntroScreen(){};
+public:
+    CompanyIntroScreen(){};
 
-        ~CompanyIntroScreen(){};
+    ~CompanyIntroScreen(){};
 
-        void update() override;
+    void update() override;
 };
 
 class TeamIntroScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
+private:
+    bool run_once = false;
 
-    public:
-        TeamIntroScreen(){};
+public:
+    TeamIntroScreen(){};
 
-        ~TeamIntroScreen(){};
+    ~TeamIntroScreen(){};
 
-        void update() override;
+    void update() override;
 };
 
 class MenuScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
-        vector<shared_ptr<Button>> menu_buttons;
-        int offset = -80;
-        int num_buttons = 5;
-        int selection = 0;
+private:
+    bool run_once = false;
+    vector<shared_ptr<Button>> menu_buttons;
+    int offset = -80;
+    int num_buttons = 5;
+    int selection = 0;
 
-    public:
-        MenuScreen(){};
+public:
+    MenuScreen(){};
 
-        ~MenuScreen(){};
+    ~MenuScreen(){};
 
-        void update() override;
+    void update() override;
 };
 
 class PreLevelScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
+private:
+    bool run_once = false;
 
-    public:
-        PreLevelScreen(){};
+public:
+    PreLevelScreen(){};
 
-        ~PreLevelScreen(){};
+    ~PreLevelScreen(){};
 
-        void update() override;
+    void update() override;
 };
 
 class LevelScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
-        bool pause = false;
-        bool pause_run_once;
-        
+private:
+    bool run_once = false;
+    bool pause = false;
+    bool pause_run_once;
 
-    public:
-        LevelScreen(){};
+public:
+    LevelScreen(){};
 
-        ~LevelScreen()
+    ~LevelScreen(){};
+
+    void update() override;
+
+    // Inputs for testing functions
+    void testing_input()
+    {
+        if (key_typed(M_KEY))
         {
-        };
+            this->screen->level_number = 1;
+            this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
+            this->screen->change_state(new MenuScreen, "Menu");
+        }
 
-        void update() override;
-
-        //Inputs for testing functions
-        void testing_input()
+        if (!pause)
         {
-            if(key_typed(M_KEY))
+            if (key_typed(NUM_1_KEY))
             {
-                this->screen->level_number = 1;
-                this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-                this->screen->change_state(new MenuScreen, "Menu");
-            }
-
-            if(!pause)
-            {
-                if(key_typed(NUM_1_KEY))
+                if (this->screen->level_number < this->screen->max_levels)
                 {
-                    if(this->screen->level_number < this->screen->max_levels)
-                    {
-                        this->screen->level_number += 1;
-                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-                    }
-                }
-
-                if(key_typed(NUM_2_KEY))
-                {
-                    if(this->screen->level_number > 1)
-                    {
-                        this->screen->level_number -= 1;
-                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-                    }
+                    this->screen->level_number += 1;
+                    this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                 }
             }
 
-            if(key_typed(RETURN_KEY))
+            if (key_typed(NUM_2_KEY))
             {
-                if(pause)
-                    pause = false;
-                else
+                if (this->screen->level_number > 1)
                 {
-                    pause_run_once = false;
-                    pause = true;
+                    this->screen->level_number -= 1;
+                    this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                 }
             }
-        };
+        }
+
+        if (key_typed(RETURN_KEY))
+        {
+            if (pause)
+                pause = false;
+            else
+            {
+                pause_run_once = false;
+                pause = true;
+            }
+        }
+    };
 };
 
 class GameOverScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
+private:
+    bool run_once = false;
 
-    public:
-        GameOverScreen(){};
+public:
+    GameOverScreen(){};
 
-        ~GameOverScreen(){};
+    ~GameOverScreen(){};
 
-        void update() override;
+    void update() override;
 };
 
 class WinScreen : public ScreenState
 {
-    private:
-        bool run_once = false;
+private:
+    bool run_once = false;
 
-    public:
-        WinScreen(){};
+public:
+    WinScreen(){};
 
-        ~WinScreen(){};
+    ~WinScreen(){};
 
-        void update() override;
+    void update() override;
 };
-
 
 void CompanyIntroScreen::update()
 {
@@ -254,13 +249,13 @@ void CompanyIntroScreen::update()
     color font_color = COLOR_WHITE;
     string text = "Games";
 
-    draw_bitmap(title2, pt.x - bitmap_width(title2)/2 + 5, pt.y - bitmap_height(title2)/2 - 5, option_to_screen());
-    draw_bitmap(title, pt.x - bitmap_width(title)/2, pt.y - bitmap_height(title)/2, option_to_screen());
+    draw_bitmap(title2, pt.x - bitmap_width(title2) / 2 + 5, pt.y - bitmap_height(title2) / 2 - 5, option_to_screen());
+    draw_bitmap(title, pt.x - bitmap_width(title) / 2, pt.y - bitmap_height(title) / 2, option_to_screen());
 
-    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
-    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
-    
-    if(key_typed(RETURN_KEY))
+    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x - text_width(text, screen_font, font_size) / 2 + 5, (pt.y - text_height(text, screen_font, font_size) / 2) + 200 - 5, option_to_screen());
+    draw_text(text, font_color, screen_font, font_size, pt.x - text_width(text, screen_font, font_size) / 2, (pt.y - text_height(text, screen_font, font_size) / 2) + 200, option_to_screen());
+
+    if (key_typed(RETURN_KEY))
     {
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
     }
@@ -282,16 +277,16 @@ void TeamIntroScreen::update()
     string text5 = "Lachlan Morgan";
     string text6 = "Present";
 
-    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
+    draw_bitmap(logo, pt.x - bitmap_width(logo) / 2, pt.y - bitmap_height(logo) / 2 - 150, option_to_screen());
 
-    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 150, option_to_screen());
-    draw_text(text2, font_color, screen_font, font_size, pt.x- text_width(text2, screen_font, font_size)/2, (pt.y - text_height(text2, screen_font, font_size)/2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
-    draw_text(text3, font_color, screen_font, font_size, pt.x- text_width(text3, screen_font, font_size)/2, (pt.y - text_height(text3, screen_font, font_size)/2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
-    draw_text(text4, font_color, screen_font, font_size, pt.x- text_width(text4, screen_font, font_size)/2, (pt.y - text_height(text4, screen_font, font_size)/2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
-    draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
-    draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
+    draw_text(text, font_color, screen_font, font_size, pt.x - text_width(text, screen_font, font_size) / 2, (pt.y - text_height(text, screen_font, font_size) / 2) + 150, option_to_screen());
+    draw_text(text2, font_color, screen_font, font_size, pt.x - text_width(text2, screen_font, font_size) / 2, (pt.y - text_height(text2, screen_font, font_size) / 2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
+    draw_text(text3, font_color, screen_font, font_size, pt.x - text_width(text3, screen_font, font_size) / 2, (pt.y - text_height(text3, screen_font, font_size) / 2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
+    draw_text(text4, font_color, screen_font, font_size, pt.x - text_width(text4, screen_font, font_size) / 2, (pt.y - text_height(text4, screen_font, font_size) / 2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
+    draw_text(text5, font_color, screen_font, font_size, pt.x - text_width(text5, screen_font, font_size) / 2, (pt.y - text_height(text5, screen_font, font_size) / 2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
+    draw_text(text6, font_color, screen_font, font_size, pt.x - text_width(text6, screen_font, font_size) / 2, (pt.y - text_height(text6, screen_font, font_size) / 2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if (key_typed(RETURN_KEY))
     {
         this->screen->change_state(new MenuScreen, "Menu");
     }
@@ -301,25 +296,25 @@ string get_button_text(int id)
 {
     string text = "";
 
-    switch(id)
+    switch (id)
     {
-        case 1:
-            text = "1 PLAYER";
-            break;
-        case 2:
-            text = "2 PLAYER";
-            break;
-        case 3: 
-            text = "BACKSTORY";
-            break;
-        case 4:
-            text = "CREDITS";
-            break;
-        case 5:
-            text = "EXIT";
-            break;
-        default:
-            break;
+    case 1:
+        text = "1 PLAYER";
+        break;
+    case 2:
+        text = "2 PLAYER";
+        break;
+    case 3:
+        text = "BACKSTORY";
+        break;
+    case 4:
+        text = "CREDITS";
+        break;
+    case 5:
+        text = "EXIT";
+        break;
+    default:
+        break;
     }
 
     return text;
@@ -330,9 +325,9 @@ void MenuScreen::update()
     set_camera_x(0);
     set_camera_y(0);
 
-    if(!run_once)
+    if (!run_once)
     {
-        for(int i = 0; i < num_buttons; i++)
+        for (int i = 0; i < num_buttons; i++)
         {
             string text = get_button_text(i + 1);
             shared_ptr<Button> test(new Button(bitmap_named("Button"), offset, i, text));
@@ -344,7 +339,7 @@ void MenuScreen::update()
 
     if (!music_playing())
     {
-        play_music("MenuMusic.mp3"); 
+        play_music("MenuMusic.mp3");
         set_music_volume(0.5f);
     }
 
@@ -354,68 +349,68 @@ void MenuScreen::update()
 
     bitmap title = bitmap_named("Title");
     drawing_options scale = option_scale_bmp(2, 2);
-    draw_bitmap(title, pt.x - bitmap_width(title)/2, 100, scale);
+    draw_bitmap(title, pt.x - bitmap_width(title) / 2, 100, scale);
 
-    for(int i = 0; i < menu_buttons.size(); i++)
+    for (int i = 0; i < menu_buttons.size(); i++)
     {
-        if(menu_buttons[i]->get_id() == selection)
-            menu_buttons[i]->set_selected(true); 
+        if (menu_buttons[i]->get_id() == selection)
+            menu_buttons[i]->set_selected(true);
         else
-            menu_buttons[i]->set_selected(false); 
-        
+            menu_buttons[i]->set_selected(false);
+
         menu_buttons[i]->draw();
     }
 
-    if(key_typed(UP_KEY))
+    if (key_typed(UP_KEY))
     {
         selection -= 1;
 
-        if(selection < 0)
+        if (selection < 0)
             selection = 0;
     }
-    if(key_typed(DOWN_KEY))
+    if (key_typed(DOWN_KEY))
     {
         selection += 1;
 
-        if(selection > num_buttons - 1)
+        if (selection > num_buttons - 1)
             selection = num_buttons - 1;
     }
-    if(key_typed(RETURN_KEY))
+    if (key_typed(RETURN_KEY))
     {
-        switch(selection)
+        switch (selection)
         {
-            case 0:
-                {
-                    play_sound_effect("Select");
-                    this->screen->set_players(1);
-                    stop_music();
-                    this->screen->change_state(new PreLevelScreen, "Pre Level");
-                }
-                break;
-            case 1:
-                {
-                    play_sound_effect("Select");
-                    this->screen->set_players(2);
-                    stop_music();
-                    this->screen->change_state(new PreLevelScreen, "Pre Level");
-                }
-                break;
-            case 4:
-                {
-                    exit(0);
-                }
-                break;
-            default:
-                break;
+        case 0:
+        {
+            play_sound_effect("Select");
+            this->screen->set_players(1);
+            stop_music();
+            this->screen->change_state(new PreLevelScreen, "Pre Level");
+        }
+        break;
+        case 1:
+        {
+            play_sound_effect("Select");
+            this->screen->set_players(2);
+            stop_music();
+            this->screen->change_state(new PreLevelScreen, "Pre Level");
+        }
+        break;
+        case 4:
+        {
+            exit(0);
+        }
+        break;
+        default:
+            break;
         }
     }
 }
 
 void PreLevelScreen::update()
 {
-    if(!run_once)
+    if (!run_once)
     {
-        if(this->screen->get_files().size() != 0)
+        if (this->screen->get_files().size() != 0)
         {
             shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
             this->screen->current_level = custom_level;
@@ -423,7 +418,7 @@ void PreLevelScreen::update()
         }
         else
         {
-            this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+            this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
         }
 
         run_once = true;
@@ -434,7 +429,7 @@ void PreLevelScreen::update()
     draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, pt.x, pt.y);
     draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, pt.x, pt.y + 10);
 
-    if(key_typed(RETURN_KEY))
+    if (key_typed(RETURN_KEY))
     {
         this->screen->change_state(new LevelScreen, "Level");
     }
@@ -442,19 +437,19 @@ void PreLevelScreen::update()
 
 void LevelScreen::update()
 {
-    if(!pause)
+    if (!pause)
     {
         this->screen->current_level->update();
 
-        if(this->screen->current_level->player1_complete && this->screen->current_level->player2_complete)
+        if (this->screen->current_level->player1_complete && this->screen->current_level->player2_complete)
         {
-            if(!timer_started("DanceTime"))
+            if (!timer_started("DanceTime"))
                 start_timer("DanceTime");
-            int time = timer_ticks("DanceTime")/1000; // Changed to int, was u_int
-            if(time > 2)
+            int time = timer_ticks("DanceTime") / 1000; // Changed to int, was u_int
+            if (time > 2)
             {
                 stop_timer("DanceTime");
-                if(this->screen->level_number < this->screen->max_levels)
+                if (this->screen->level_number < this->screen->max_levels)
                 {
                     this->screen->level_number += 1;
                     this->screen->change_state(new PreLevelScreen, "Pre Level");
@@ -467,20 +462,20 @@ void LevelScreen::update()
         }
         else
         {
-            if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
+            if (this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
             {
                 write_line("Changing to game over");
                 this->screen->level_number = 1;
-                this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                 this->screen->change_state(new GameOverScreen, "GameOver");
             }
         }
     }
     else
     {
-        if(!pause_run_once)
+        if (!pause_run_once)
         {
-            fill_rectangle(rgba_color(0,0,0,50), screen_rectangle());
+            fill_rectangle(rgba_color(0, 0, 0, 50), screen_rectangle());
             pause_run_once = true;
         }
         draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
@@ -501,13 +496,13 @@ void GameOverScreen::update()
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
-    draw_text(game_over_text, font_color, screen_font, font_size, pt.x- text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
+    draw_text(game_over_text, font_color, screen_font, font_size, pt.x - text_width(game_over_text, screen_font, font_size) / 2, (pt.y - text_height(game_over_text, screen_font, font_size) / 2) - 300, option_to_screen());
 
     bitmap game_over = bitmap_named("GameOver");
-    fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
-    draw_bitmap(game_over, pt.x - bitmap_width(game_over)/2, pt.y - bitmap_height(game_over)/2, option_to_screen());
+    fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over) / 2 - 10, pt.y - bitmap_height(game_over) / 2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
+    draw_bitmap(game_over, pt.x - bitmap_width(game_over) / 2, pt.y - bitmap_height(game_over) / 2, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if (key_typed(RETURN_KEY))
     {
         this->screen->change_state(new MenuScreen, "Menu");
     }
@@ -520,10 +515,10 @@ void WinScreen::update()
     draw_text("Good Job", COLOR_WHITE, 800, 410, option_to_screen());
     draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 420, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if (key_typed(RETURN_KEY))
     {
         this->screen->level_number = 1;
-        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+        this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
         this->screen->change_state(new MenuScreen, "Menu");
     }
 }
