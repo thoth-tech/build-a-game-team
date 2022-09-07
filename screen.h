@@ -249,7 +249,7 @@ void CompanyIntroScreen::update()
 
     bitmap title = bitmap_named("Company1");
     bitmap title2 = bitmap_named("Company2");
-    font screen_font = font_named("TempFont");
+    font screen_font = font_named("DefaultFont");
     int font_size = 80;
     color font_color = COLOR_WHITE;
     string text = "Games";
@@ -272,7 +272,7 @@ void TeamIntroScreen::update()
     clear_screen(COLOR_BLACK);
 
     bitmap logo = bitmap_named("TeamLogo");
-    font screen_font = font_named("TempFont");
+    font screen_font = font_named("DefaultFont");
     int font_size = 30;
     color font_color = COLOR_WHITE;
     string text = "Morgaine Barter";
@@ -497,7 +497,7 @@ void GameOverScreen::update()
 
     point_2d pt = screen_center();
     string game_over_text = "Game Over";
-    font screen_font = font_named("TempFont");
+    font screen_font = font_named("DefaultFont");
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
