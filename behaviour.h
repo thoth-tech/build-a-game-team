@@ -9,6 +9,7 @@ class Behaviour
         bool on_floor = true;
         bool is_flying = false;
         bool once = false;
+        
 
     public:
         Behaviour(sprite enemy_sprite)
@@ -17,6 +18,7 @@ class Behaviour
         };
         ~Behaviour(){};
         virtual void update() = 0;
+
         void update_animation(string left_anim, string right_anim)
         {
             if(facing_left)

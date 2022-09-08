@@ -316,9 +316,16 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
             else if (collision != "None" && !level_players[j]->is_on_floor())
             {
                 // Jumped on enemy
+                if (level_enemies[i]->get_hp() == 0) // If HP is not 0, then take damage.
+                {
+                    level_enemies[i]->set_dead(true);
+                }
+                else 
+                {
+                    level_enemies[i]->take_damage(1); // By 1 hp.
+                }
                 level_players[j]->change_state(new JumpRiseState, "JumpRise");
                 level_players[j]->set_player_dx(0);
-                level_enemies[i]->set_dead(true);
             }
         }
         if (collision != "None")
