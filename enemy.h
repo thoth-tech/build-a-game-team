@@ -11,6 +11,7 @@ class Enemy
         point_2d position;
         rectangle hitbox;
         bool is_dead;
+        int hp; // Can set HP on any enemy if you choose to. Only set value at child class.
         std::shared_ptr<Behaviour> ai;
         vector<std::shared_ptr<Player>> level_players;
 
@@ -18,6 +19,7 @@ class Enemy
         Enemy(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players)
         {
             this->is_dead = false;
+            this->hp = 0;
             this->enemy_sprite = enemy_sprite;
             this->position = position;
             this->level_players = level_players;
@@ -85,6 +87,18 @@ class Enemy
             return this->is_dead;
         };
 
+        // Returns current enemy hp.
+        int get_hp()
+        {
+            return this->hp;
+        }
+
+        // Decrements enemy hp. 
+        void take_damage(int decrement)
+        {
+            this->hp -= decrement;
+        }
+
         string test_collision(rectangle one)
         {
             string collision = "None";
@@ -142,6 +156,7 @@ class Blob : public Enemy
         {
             std::shared_ptr<Behaviour> ai(new BlobBehaviour(enemy_sprite));
             this->ai = ai;
+            this->hp = 3; // Blob has 3 hit points. If blob gets jumped on 3 times. It dies.
             point_2d pos = this->position;
             pos.y = pos.y + 32;
             sprite_set_position(enemy_sprite, pos);
