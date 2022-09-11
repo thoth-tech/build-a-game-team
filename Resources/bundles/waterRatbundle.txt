@@ -1,0 +1,2 @@
+ANIM,WaterRatAnim,waterRat.txt
+BITMAP,WaterRat,waterRat.png, 128, 128, 4, 11, 44
