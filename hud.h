@@ -10,6 +10,11 @@ class HUD
         //Added the current level players so you have easy access to them
         vector<std::shared_ptr<Player>> level_players;
 
+        void high_score()
+        {
+            // To Be Done.
+        }
+
     public:
         HUD(vector<std::shared_ptr<Player>> level_players)
         {
@@ -19,8 +24,8 @@ class HUD
 
         void update()
         {
-            draw_text("HEALTH: ", COLOR_WHITE, "TempFont", 13, 60, 100, option_to_screen());
-            draw_text("LIVE: ", COLOR_WHITE, "TempFont", 13, 60, 70, option_to_screen());
+            draw_text("HEALTH: ", COLOR_WHITE, "DefaultFont", 9, 60, 100, option_to_screen());
+            draw_text("LIVES: ", COLOR_WHITE, "DefaultFont", 9, 60, 70, option_to_screen());
 
             if(level_players.size() > 1 )
             {
