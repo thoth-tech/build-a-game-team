@@ -49,7 +49,7 @@ Header file responsible for displaying the game onto the screen.
 Header file responsible for testing functions.
  
 ## Level Text Files
-Within folder **levels** there are text files filled with block id. These ids are the what represents the levels that you see within the game. And you can create one by using the level editor. Just make sure to add them in the folder once you've created it. **DO NOT CHANGE THE VALUES INSIDE THE TEXT FILES**. Otherwise, the levels will be modified. If you want to test out the level you have created. Place them outside of the **levels** folder, compile the game, and write the following code.
+Within folder **levels** there are text files filled with block id. These ids are the what represents the levels that you see within the game. And you can create one by using the level editor. Just make sure to add them in the folder once you've created it. **DO NOT CHANGE THE VALUES INSIDE THE TEXT FILES**. Otherwise, the levels will be modified. If you want to test out the level you have created, write the following code.
 
 ### Format
 ```
