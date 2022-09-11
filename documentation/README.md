@@ -53,7 +53,7 @@ Within folder **levels** there are text files filled with block id. These ids ar
 
 ### Format
 ```
-./test -l {amount of layers} {layer0.txt} {layer1.txt} {name of the level}
+./test -l {amount of layers} levels/{layer0.txt} levels/{layer1.txt} {name of the level}
 ```
 
 ### Example
