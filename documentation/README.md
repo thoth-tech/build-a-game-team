@@ -7,7 +7,7 @@ This is a collaborative effort to create an **exceptional game** to be implement
 
 ## Header Files
 
-In this game there here are the following header files that you should be aware of while developing this game. (To add more detail later)
+Here are the following header files that you should be aware of while developing this game. 
 
 **player.h** 
 Header file containing the player class, its attributes, functions, and states.
