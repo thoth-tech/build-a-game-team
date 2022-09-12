@@ -241,6 +241,18 @@ class WinScreen : public ScreenState
         void update() override;
 };
 
+class CreditsScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        CreditsScreen(){};
+
+        ~CreditsScreen(){};
+
+        void update() override;
+};
 
 void CompanyIntroScreen::update()
 {
@@ -400,6 +412,12 @@ void MenuScreen::update()
                     this->screen->change_state(new PreLevelScreen, "Pre Level");
                 }
                 break;
+            case 3:
+                {
+                    play_sound_effect("Select");
+                    this->screen->change_state(new CreditsScreen, "Credits");
+                }
+                break;
             case 4:
                 {
                     exit(0);
@@ -519,6 +537,19 @@ void WinScreen::update()
     draw_text("You Won", COLOR_WHITE, 800, 400, option_to_screen());
     draw_text("Good Job", COLOR_WHITE, 800, 410, option_to_screen());
     draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 420, option_to_screen());
+
+    if(key_typed(RETURN_KEY))
+    {
+        this->screen->level_number = 1;
+        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
+}
+
+void CreditsScreen::update()
+{
+    clear_screen(COLOR_BLACK);
+    draw_text("Test", COLOR_WHITE, 800, 400, option_to_screen());
 
     if(key_typed(RETURN_KEY))
     {
