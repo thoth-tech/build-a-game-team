@@ -5,4 +5,4 @@ BITMAP, Title, title.png
 BITMAP, Button, button.png
 FONT, TempFont, TempFont.ttf
 FONT, BossFont, BossFont.ttf
-FONT, DefaultFont, DefaultFont.otf
+FONT, DefaultFont, DefaultFont.ttf

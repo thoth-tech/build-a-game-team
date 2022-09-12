@@ -8,7 +8,7 @@ class Button
         int id;
         string text;
         font button_font;
-        int font_size = 40;
+        int font_size = 25;
         bool selected = false;
         color font_color = COLOR_BLACK;
     
@@ -18,7 +18,7 @@ class Button
             this->button_bmp = button_bmp;
             this->id = id;
             this->text = text;
-            this->button_font = font_named("TempFont");
+            this->button_font = font_named("DefaultFont");
             point_2d pt = screen_center();
             position.x = pt.x - bitmap_width(this->button_bmp)/2;
             position.y = pt.y - bitmap_height(this->button_bmp)/2 + offset;
