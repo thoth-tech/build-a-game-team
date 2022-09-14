@@ -81,10 +81,10 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks
 
                     if (!sound_effect_playing("HeadHit"))
                         play_sound_effect("HeadHit");
+
                     level_players[k]->set_player_dy(0);
-                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                     level_players[k]->set_on_floor(false);
-                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
+                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 5);
                     level_players[k]->change_state(new JumpFallState, "JumpFall");
                     break;
                 }
@@ -159,6 +159,8 @@ void check_ladder_collisions(vector<vector<shared_ptr<Ladder>>> ladders, vector<
                     if (!level_players[k]->is_on_ladder())
                     {
                         level_players[k]->set_on_ladder(true);
+                        sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) - 5);
+                        level_players[k]->set_on_floor(false);
                         level_players[k]->change_state(new ClimbState, "Climb");
                     }
                     break;

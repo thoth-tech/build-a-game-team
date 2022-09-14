@@ -791,14 +791,8 @@ void ClimbState::update()
         is_moving = true;
         sprite_set_dx(player->get_player_sprite(), 0);
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
         sprite_start_animation(this->player->get_player_sprite(), "Climb");
         run_once = true;
-    }
-
-    if (player->is_on_floor())
-    {
-        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
     }
 
     player_draw_pipe(player);
@@ -812,75 +806,55 @@ void ClimbState::get_input()
     {
         this->player->change_state(new IdleState, "Idle");
     }
-    else if (key_typed(player->input.left_key) || key_typed(player->input.right_key))
-    {
-        if (!player->is_on_ladder())
-        {
-            player->set_on_floor(true);
-            this->player->change_state(new IdleState, "Idle");
-        }
-        else if (key_typed(player->input.left_key))
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
-        }
-        else if (key_typed(player->input.right_key))
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
-        }
-    }
-
-    // Added release checks before key down checks so the program will acknowledge this first, making the climbing state responsive to player input.
-    else if (key_released(player->input.jump_key) || key_released(player->input.crouch_key) || key_released(player->input.left_key) || key_released(player->input.right_key))
-    {
-        is_moving = false;
-        sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
-        sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_dx(player->get_player_sprite(), 0);
-    }
-    else if (key_down(player->input.jump_key))
-    {
-        if (!is_moving)
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
-        }
-        sprite_set_dy(player->get_player_sprite(), -CLIMB_SPEED);
-    }
-    else if (key_down(player->input.crouch_key))
-    {
-        if (!is_moving)
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
-        }
-        sprite_set_dy(player->get_player_sprite(), CLIMB_SPEED);
-    }
-    else if (key_down(player->input.left_key))
-    {
-        if (!is_moving)
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
-        }
-        sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
-    }
-    else if (key_down(player->input.right_key))
-    {
-        if (!is_moving)
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
-        }
-        sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
-    }
     else
     {
-        // This will just change the state to JumpFallState if the player is off the ladder.
-        if (!player->is_on_ladder())
+        if (key_down(player->input.left_key))
         {
-            this->player->change_state(new JumpFallState, "JumpFall");
+            if (!is_moving)
+            {
+                sprite_start_animation(this->player->get_player_sprite(), "Climb");
+                is_moving = true;
+            }
+            sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
+        }
+        else if (key_down(player->input.right_key))
+        {
+            if (!is_moving)
+            {
+                sprite_start_animation(this->player->get_player_sprite(), "Climb");
+                is_moving = true;
+            }
+            sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
+        }
+        else if (key_down(player->input.jump_key))
+        {
+            if (!is_moving)
+            {
+                sprite_start_animation(this->player->get_player_sprite(), "Climb");
+                is_moving = true;
+            }
+            sprite_set_dy(player->get_player_sprite(), -CLIMB_SPEED);
+        }
+        else if (key_down(player->input.crouch_key))
+        {
+            if (!is_moving)
+            {
+                sprite_start_animation(this->player->get_player_sprite(), "Climb");
+                is_moving = true;
+            }
+            sprite_set_dy(player->get_player_sprite(), CLIMB_SPEED);
+        }
+        if (key_released(player->input.jump_key) || key_released(player->input.crouch_key))
+        {
+            is_moving = false;
+            sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
+            sprite_set_dy(player->get_player_sprite(), 0);
+        }
+        if(key_released(player->input.left_key) || key_released(player->input.right_key))
+        {
+            is_moving = false;
+            sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
+            sprite_set_dx(player->get_player_sprite(), 0);
         }
     }
 }
