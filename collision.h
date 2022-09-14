@@ -54,8 +54,6 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks
                     {
                         level_players[k]->set_player_dy(0);
                         level_players[k]->set_on_floor(true);
-                        sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
-                        level_players[k]->change_state(new IdleState, "Idle");
                         break;
                     }
                     level_players[k]->set_on_floor(true);
@@ -67,24 +65,21 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks
                     if (level_players[k]->is_on_floor())
                         break;
 
+                    if (!sound_effect_playing("HeadHit"))
+                        play_sound_effect("HeadHit");
+
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
                     {
-                        if (!sound_effect_playing("HeadHit"))
-                            play_sound_effect("HeadHit");
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
                         level_players[k]->set_player_dy(0);
-                        level_players[k]->set_on_floor(false);
                         sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                         break;
                     }
 
-                    if (!sound_effect_playing("HeadHit"))
-                        play_sound_effect("HeadHit");
                     level_players[k]->set_player_dy(0);
-                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
                     level_players[k]->set_on_floor(false);
-                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 1);
+                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) + 5);
                     level_players[k]->change_state(new JumpFallState, "JumpFall");
                     break;
                 }
@@ -92,8 +87,13 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks
                 {
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
+                    {
+                        level_players[k]->set_player_dx(0);
+                        sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 1);
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
-
+                        break;
+                    }
+                        
                     level_players[k]->set_player_dx(0);
                     level_players[k]->set_on_floor(false);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
@@ -103,7 +103,12 @@ void check_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_blocks
                 {
                     // Checks if the player is on ladder, if yes then it will go to ClimbIdle
                     if (level_players[k]->is_on_ladder())
+                    {
+                        level_players[k]->set_player_dx(0);
                         sprite_start_animation(level_players[k]->get_player_sprite(), "ClimbIdle");
+                        sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 1);
+                        break;
+                    }
 
                     level_players[k]->set_player_dx(0);
                     level_players[k]->set_on_floor(false);
@@ -156,18 +161,13 @@ void check_ladder_collisions(vector<vector<shared_ptr<Ladder>>> ladders, vector<
 
                 if (collision != "None" && (key_typed(level_players[k]->input.jump_key) || key_typed(level_players[k]->input.crouch_key)))
                 {
-                    if (!level_players[k]->is_on_ladder())
-                    {
-                        level_players[k]->set_on_ladder(true);
-                        level_players[k]->change_state(new ClimbState, "Climb");
-                    }
+                    level_players[k]->set_on_ladder(true);
+                    sprite_set_y(level_players[k]->get_player_sprite(), sprite_y(level_players[k]->get_player_sprite()) - 1);
+                    level_players[k]->change_state(new ClimbState, "Climb");
                     break;
                 }
                 else if (collision != "None" && level_players[k]->get_state_type() == "Climb")
-                {
-                    level_players[k]->set_on_ladder(true);
                     break;
-                }
             }
 
             if (collision == "None")

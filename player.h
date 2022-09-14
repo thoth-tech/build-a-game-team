@@ -791,53 +791,39 @@ void ClimbState::update()
         is_moving = true;
         sprite_set_dx(player->get_player_sprite(), 0);
         sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
         sprite_start_animation(this->player->get_player_sprite(), "Climb");
         run_once = true;
     }
 
-    if (player->is_on_floor())
-    {
-        sprite_set_y(player->get_player_sprite(), sprite_y(player->get_player_sprite()) - 5);
-    }
-
     player_draw_pipe(player);
     sprite_update_routine_continuous(this->player->get_player_sprite());
+
+    if (!player->is_on_ladder())
+    {
+        this->player->change_state(new IdleState, "Idle");
+    }
 }
 
 // ClimbState Get Input Checks
 void ClimbState::get_input()
 {
-    if (!player->is_on_ladder())
+    if (key_down(player->input.left_key))
     {
-        this->player->change_state(new IdleState, "Idle");
-    }
-    else if (key_typed(player->input.left_key) || key_typed(player->input.right_key))
-    {
-        if (!player->is_on_ladder())
-        {
-            player->set_on_floor(true);
-            this->player->change_state(new IdleState, "Idle");
-        }
-        else if (key_typed(player->input.left_key))
+        if (!is_moving)
         {
             sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
+            is_moving = true;
         }
-        else if (key_typed(player->input.right_key))
+        sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
+    }
+    else if (key_down(player->input.right_key))
+    {
+        if (!is_moving)
         {
             sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
+            is_moving = true;
         }
-    }
-
-    // Added release checks before key down checks so the program will acknowledge this first, making the climbing state responsive to player input.
-    else if (key_released(player->input.jump_key) || key_released(player->input.crouch_key) || key_released(player->input.left_key) || key_released(player->input.right_key))
-    {
-        is_moving = false;
-        sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
-        sprite_set_dy(player->get_player_sprite(), 0);
-        sprite_set_dx(player->get_player_sprite(), 0);
+        sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
     }
     else if (key_down(player->input.jump_key))
     {
@@ -856,32 +842,23 @@ void ClimbState::get_input()
             is_moving = true;
         }
         sprite_set_dy(player->get_player_sprite(), CLIMB_SPEED);
-    }
-    else if (key_down(player->input.left_key))
-    {
-        if (!is_moving)
+
+        if(player->is_on_floor())
         {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
+            this->player->change_state(new IdleState, "Idle");
         }
-        sprite_set_dx(player->get_player_sprite(), -CLIMB_SPEED);
     }
-    else if (key_down(player->input.right_key))
+    if (key_released(player->input.jump_key) || key_released(player->input.crouch_key))
     {
-        if (!is_moving)
-        {
-            sprite_start_animation(this->player->get_player_sprite(), "Climb");
-            is_moving = true;
-        }
-        sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
+        is_moving = false;
+        sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
+        sprite_set_dy(player->get_player_sprite(), 0);
     }
-    else
+    if(key_released(player->input.left_key) || key_released(player->input.right_key))
     {
-        // This will just change the state to JumpFallState if the player is off the ladder.
-        if (!player->is_on_ladder())
-        {
-            this->player->change_state(new JumpFallState, "JumpFall");
-        }
+        is_moving = false;
+        sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
+        sprite_set_dx(player->get_player_sprite(), 0);
     }
 }
 
