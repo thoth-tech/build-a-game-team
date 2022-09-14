@@ -42,7 +42,6 @@ class Level
         int tile_size;
         int level_layers;
         int players;
-        bool hitbox = false;
         string level_name = "";
         music level_music;
 
@@ -167,8 +166,6 @@ class Level
             draw_layers(1, 0);
 
             door->draw_block();
-            if (hitbox)
-                draw_hitbox(door->get_block_hitbox());
 
             // Player functions
             for (int i = 0; i < level_players.size(); i++)
@@ -179,9 +176,6 @@ class Level
                     level_players[i]->get_input();
                     level_players[i]->update_hitbox();
                 }
-                // For testing hitboxes
-                if (hitbox)
-                    draw_hitbox(level_players[i]->get_player_hitbox());
 
                 if (level_players[i]->has_player_won())
                 {
@@ -242,19 +236,6 @@ class Level
             }
 
             level_hud->update();
-
-            check_test_input();
-        }
-
-        void check_test_input()
-        {
-            if (key_typed(H_KEY))
-            {
-                if (hitbox)
-                    hitbox = false;
-                else
-                    hitbox = true;
-            }
         }
 
         void draw_layers(int num_layers, int start)
