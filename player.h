@@ -690,6 +690,8 @@ void DanceState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        if (!sound_effect_playing("Dance"))
+            play_sound_effect("Dance");
         sprite_set_dx(player_sprite, 0);
         sprite_set_dy(player_sprite, 0);
         sprite_start_animation(player->get_player_sprite(), "Dance");
@@ -712,6 +714,8 @@ void AttackState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        if (!sound_effect_playing("Attack"))
+            play_sound_effect("Attack");
         sprite_set_dx(player_sprite, 0);
         sprite_set_dy(player_sprite, 0);
         animation_routine(player, "LeftAttack", "RightAttack");
@@ -763,6 +767,8 @@ void HurtState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        if (!sound_effect_playing("Hurt"))
+            play_sound_effect("Hurt");
         sprite_set_dx(player_sprite, 0);
         animation_routine(player, "LeftFall", "RightFall");
         run_once = true;
@@ -873,6 +879,8 @@ void DyingState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        if (!sound_effect_playing("Dead"))
+            play_sound_effect("Dead");
         this->player->player_lives -= 1;
         start_timer(dying_timer);
         sprite_set_dx(player_sprite, 0);

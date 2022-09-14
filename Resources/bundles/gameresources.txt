@@ -31,6 +31,9 @@ BITMAP, PurpleEmptyBar, purpleehb.png, 64, 32, 1, 1, 1
 BITMAP, PurpleLive, purplecap.png, 64, 64, 1, 1, 1
 
 SOUND, Select, Select.wav
+SOUND, GameOver, Gameover.wav
+SOUND, GameWin, GameWin.wav
+
 MUSIC, LevelOne, LevelOneTheme1.mp3
 
 BITMAP,GreyBackground,Background4.png
