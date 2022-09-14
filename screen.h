@@ -13,7 +13,7 @@ class ScreenState
     protected:
         Screen *screen;
         string screen_state;
-    
+
     public:
         virtual ~ScreenState()
         {};
@@ -40,8 +40,7 @@ class Screen
         int players = 1;
         vector<CellSheet> cell_sheets;
         vector<string> files;
-        
-        
+
     public:
         key_code input_key = F_KEY;
         int level_number = 1;
@@ -63,7 +62,7 @@ class Screen
 
         void change_state(ScreenState *new_state, string type)
         {
-            if(this->state != nullptr)
+            if (this->state != nullptr)
                 delete this->state;
             this->state = new_state;
             this->state->set_state(this, type);
@@ -162,56 +161,57 @@ class LevelScreen : public ScreenState
         bool run_once = false;
         bool pause = false;
         bool pause_run_once;
-        
 
     public:
         LevelScreen(){};
 
-        ~LevelScreen()
-        {
-        };
+        ~LevelScreen(){};
 
         void update() override;
 
-        //Inputs for testing functions
+        // Inputs for testing functions
         void testing_input()
         {
-            if(key_typed(M_KEY))
+            if (key_typed(M_KEY))
             {
                 this->screen->level_number = 1;
-                this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                 this->screen->change_state(new MenuScreen, "Menu");
             }
-
-            if(!pause)
+        
+            if (!pause)
             {
-                if(key_typed(NUM_1_KEY))
+                if (key_typed(NUM_1_KEY))
                 {
-                    if(this->screen->level_number < this->screen->max_levels)
+                    if (this->screen->level_number < this->screen->max_levels)
                     {
                         this->screen->level_number += 1;
-                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                        this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                     }
                 }
 
-                if(key_typed(NUM_2_KEY))
+                if (key_typed(NUM_2_KEY))
                 {
-                    if(this->screen->level_number > 1)
+                    if (this->screen->level_number > 1)
                     {
                         this->screen->level_number -= 1;
-                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+                        this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
                     }
                 }
             }
 
-            if(key_typed(RETURN_KEY))
+            if (key_typed(RETURN_KEY))
             {
-                if(pause)
+                if (pause)
+                {
                     pause = false;
+                    resume_music();
+                }
                 else
                 {
                     pause_run_once = false;
                     pause = true;
+                    pause_music();
                 }
             }
         };
@@ -315,7 +315,7 @@ string get_button_text(int id)
 {
     string text = "";
 
-    switch(id)
+    switch (id)
     {
         case 1:
             text = "1 PLAYER";
@@ -323,7 +323,7 @@ string get_button_text(int id)
         case 2:
             text = "2 PLAYER";
             break;
-        case 3: 
+        case 3:
             text = "BACKSTORY";
             break;
         case 4:
@@ -376,7 +376,7 @@ void MenuScreen::update()
             menu_buttons[i]->set_selected(true); 
         else
             menu_buttons[i]->set_selected(false); 
-        
+
         menu_buttons[i]->draw();
     }
 
@@ -419,8 +419,8 @@ void MenuScreen::update()
                     play_sound_effect("Select");
                     this->screen->change_state(new CreditsScreen, "Credits");
                 }
-                break;
-            case 4:
+            break;
+                case 4:
                 {
                     exit(0);
                 }
@@ -433,26 +433,30 @@ void MenuScreen::update()
 
 void PreLevelScreen::update()
 {
+    font screen_font = font_named("DefaultFont");
+    point_2d pt = screen_center();
+    int font_size = 10;
+
     if(!run_once)
     {
         if(this->screen->get_files().size() != 0)
         {
-            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players(), this->screen->get_files().size(), this->screen->get_files()));
+            shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players(),this->screen->get_files().size(),this->screen->get_files()));
             this->screen->current_level = custom_level;
             this->screen->max_levels = 1;
         }
         else
         {
-            this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
+            this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
         }
 
         run_once = true;
     }
-
+    
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
-    draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, pt.x, pt.y);
-    draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, pt.x, pt.y + 10);
+    draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y);
+    draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y + 10);
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
@@ -521,7 +525,7 @@ void GameOverScreen::update()
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
-    draw_text(game_over_text, font_color, screen_font, font_size, pt.x- text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
+    draw_text(game_over_text, font_color, screen_font, font_size, pt.x - text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
 
     bitmap game_over = bitmap_named("GameOver");
     fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
@@ -535,10 +539,15 @@ void GameOverScreen::update()
 
 void WinScreen::update()
 {
+    string game_over_text = "Game Over";
+    font screen_font = font_named("DefaultFont");
+    int font_size = 15;
+    color font_color = COLOR_WHITE_SMOKE;
+
     clear_screen(COLOR_BLACK);
-    draw_text("You Won", COLOR_WHITE, 800, 400, option_to_screen());
-    draw_text("Good Job", COLOR_WHITE, 800, 410, option_to_screen());
-    draw_text("Press Enter to go to Menu", COLOR_WHITE, 740, 420, option_to_screen());
+    draw_text("You Won", font_color, screen_font, font_size, 800, 400, option_to_screen());
+    draw_text("Good Job", font_color, screen_font, font_size, 800, 410, option_to_screen());
+    draw_text("Press Enter to go to Menu", font_color, screen_font, font_size, 740, 420, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
@@ -550,8 +559,14 @@ void WinScreen::update()
 
 void CreditsScreen::update()
 {
+    // point_2d pt = screen_center();
+    string game_over_text = "Game Over";
+    font screen_font = font_named("DefaultFont");
+    int font_size = 80;
+    color font_color = COLOR_WHITE_SMOKE;
+
     clear_screen(COLOR_BLACK);
-    draw_text("Test", COLOR_WHITE, 800, 400, option_to_screen());
+    draw_text("Test", font_color, screen_font, font_size, 800, 400, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
