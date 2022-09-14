@@ -896,6 +896,7 @@ void DyingState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        this->player->player_lives -= 1;
         start_timer(dying_timer);
         sprite_set_dx(player_sprite, 0);
         animation_routine(player, "LeftDying", "RightDying");
@@ -913,7 +914,6 @@ void DyingState::update()
          sprite_update_routine_continuous(player_sprite);
     else
     {
-        sprite_set_position(player_sprite, this->player->get_player_position());
         stop_timer(dying_timer);
         this->player->change_state(new SpawningState, "Spawn");
     }
@@ -934,6 +934,8 @@ void SpawningState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        sprite_set_position(player_sprite, this->player->get_player_position());
+        this->player->player_health = 3;
         start_timer(spawn_timer);
         this->player->set_facing_left(false);
         sprite_set_dx(player_sprite, 0);

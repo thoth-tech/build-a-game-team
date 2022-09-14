@@ -42,7 +42,6 @@ class Level
         int tile_size;
         int level_layers;
         int players;
-        bool hitbox = false;
         string level_name = "";
         music level_music;
 
@@ -167,8 +166,6 @@ class Level
             draw_layers(1, 0);
 
             door->draw_block();
-            if (hitbox)
-                draw_hitbox(door->get_block_hitbox());
 
             // Player functions
             for (int i = 0; i < level_players.size(); i++)
@@ -179,9 +176,6 @@ class Level
                     level_players[i]->get_input();
                     level_players[i]->update_hitbox();
                 }
-                // For testing hitboxes
-                if (hitbox)
-                    draw_hitbox(level_players[i]->get_player_hitbox());
 
                 if (level_players[i]->has_player_won())
                 {
@@ -207,20 +201,26 @@ class Level
             {
                 point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
 
-                // Player Will lose a life when they fall off the bottom of the screen
-                if (!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
+                if(level_players[i]->get_player_id() == 2 && level_players[i]->get_state_type() == "Spawn")
                 {
-                    this->level_players[i]->player_lives -= 1;
-                    sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
-                    this->level_players[i]->change_state(new SpawningState, "Spawn");
+                    if(!point_on_screen(to_screen(player_pos)))
+                    {
+                        sprite_set_position(level_players[i]->get_player_sprite(), sprite_position(level_players[0]->get_player_sprite()));
+                        player_pos = sprite_position(level_players[i]->get_player_sprite());
+                    }
+                }
+
+                if(!point_on_screen(to_screen(player_pos)) && level_players[i]->get_state_type() != "Dying")
+                {
+                    if(level_players[i]->get_state_type() != "Spawn")
+                        this->level_players[i]->change_state(new DyingState, "Dying");
                 }
 
                 //Player loses a life if they run out of health
-                if (level_players[i]->player_health < 1)
+                if (level_players[i]->player_health < 1 && level_players[i]->get_state_type() != "Dying")
                 {
-                    level_players[i]->player_health = 3;
-                    level_players[i]->player_lives -= 1;
-                    this->level_players[i]->change_state(new DyingState, "Dying");
+                    if(level_players[i]->get_state_type() != "Spawn")
+                        this->level_players[i]->change_state(new DyingState, "Dying");
                 }
 
                 //If players sets out of lives
@@ -236,19 +236,6 @@ class Level
             }
 
             level_hud->update();
-
-            check_test_input();
-        }
-
-        void check_test_input()
-        {
-            if (key_typed(H_KEY))
-            {
-                if (hitbox)
-                    hitbox = false;
-                else
-                    hitbox = true;
-            }
         }
 
         void draw_layers(int num_layers, int start)

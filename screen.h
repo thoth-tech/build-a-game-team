@@ -42,6 +42,7 @@ class Screen
         vector<string> files;
 
     public:
+        key_code input_key = F_KEY;
         int level_number = 1;
         int max_levels = 5;
         shared_ptr<Level> current_level;
@@ -270,10 +271,10 @@ void CompanyIntroScreen::update()
     draw_bitmap(title2, pt.x - bitmap_width(title2)/2 + 5, pt.y - bitmap_height(title2)/2 - 5, option_to_screen());
     draw_bitmap(title, pt.x - bitmap_width(title)/2, pt.y - bitmap_height(title)/2, option_to_screen());
 
-    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x - text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
-    draw_text(text, font_color, screen_font, font_size, pt.x - text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
-
-    if(key_typed(RETURN_KEY))
+    draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
+    
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
     }
@@ -304,7 +305,7 @@ void TeamIntroScreen::update()
     draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
     draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->change_state(new MenuScreen, "Menu");
     }
@@ -379,21 +380,21 @@ void MenuScreen::update()
         menu_buttons[i]->draw();
     }
 
-    if(key_typed(UP_KEY))
+    if(key_typed(UP_KEY) || key_typed(W_KEY))
     {
         selection -= 1;
 
         if(selection < 0)
             selection = 0;
     }
-    if(key_typed(DOWN_KEY))
+    if(key_typed(DOWN_KEY) || key_typed(S_KEY))
     {
         selection += 1;
 
         if(selection > num_buttons - 1)
             selection = num_buttons - 1;
     }
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         switch(selection)
         {
@@ -457,7 +458,7 @@ void PreLevelScreen::update()
     draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y);
     draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y + 10);
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->change_state(new LevelScreen, "Level");
     }
@@ -530,7 +531,7 @@ void GameOverScreen::update()
     fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
     draw_bitmap(game_over, pt.x - bitmap_width(game_over)/2, pt.y - bitmap_height(game_over)/2, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->change_state(new MenuScreen, "Menu");
     }
@@ -548,7 +549,7 @@ void WinScreen::update()
     draw_text("Good Job", font_color, screen_font, font_size, 800, 410, option_to_screen());
     draw_text("Press Enter to go to Menu", font_color, screen_font, font_size, 740, 420, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->level_number = 1;
         this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
@@ -567,7 +568,7 @@ void CreditsScreen::update()
     clear_screen(COLOR_BLACK);
     draw_text("Test", font_color, screen_font, font_size, 800, 400, option_to_screen());
 
-    if(key_typed(RETURN_KEY))
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->level_number = 1;
         this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
