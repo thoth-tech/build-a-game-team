@@ -298,6 +298,7 @@ class Level
 
         void check_collisions()
         {
+            check_ladder_collisions(ladders, level_players);
             check_solid_block_collisions(solid_blocks, level_players);
 
             // check for player to pick up a holdable pipe
@@ -306,7 +307,6 @@ class Level
 
             // check for player to place it's pipe on th empty pipe
             check_empty_pipe_block_collisions(empty_pipes, level_players);
-            check_ladder_collisions(ladders, level_players);
             check_door_block_collisions(door, level_players);
             check_enemy_solid_block_collisions(solid_blocks, level_enemies);
             check_enemy_edge_block_collisions(level_edges, level_enemies);
