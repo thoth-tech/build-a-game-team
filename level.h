@@ -207,20 +207,26 @@ class Level
             {
                 point_2d player_pos = sprite_position(level_players[i]->get_player_sprite());
 
-                // Player Will lose a life when they fall off the bottom of the screen
-                if (!point_on_screen(to_screen(player_pos)) && (to_screen(player_pos).y > rectangle_bottom(screen_rectangle())))
+                if(level_players[i]->get_player_id() == 2 && level_players[i]->get_state_type() == "Spawn")
                 {
-                    this->level_players[i]->player_lives -= 1;
-                    sprite_set_position(level_players[i]->get_player_sprite(), level_players[i]->get_player_position());
-                    this->level_players[i]->change_state(new SpawningState, "Spawn");
+                    if(!point_on_screen(to_screen(player_pos)))
+                    {
+                        sprite_set_position(level_players[i]->get_player_sprite(), sprite_position(level_players[0]->get_player_sprite()));
+                        player_pos = sprite_position(level_players[i]->get_player_sprite());
+                    }
+                }
+
+                if(!point_on_screen(to_screen(player_pos)) && level_players[i]->get_state_type() != "Dying")
+                {
+                    if(level_players[i]->get_state_type() != "Spawn")
+                        this->level_players[i]->change_state(new DyingState, "Dying");
                 }
 
                 //Player loses a life if they run out of health
-                if (level_players[i]->player_health < 1)
+                if (level_players[i]->player_health < 1 && level_players[i]->get_state_type() != "Dying")
                 {
-                    level_players[i]->player_health = 3;
-                    level_players[i]->player_lives -= 1;
-                    this->level_players[i]->change_state(new DyingState, "Dying");
+                    if(level_players[i]->get_state_type() != "Spawn")
+                        this->level_players[i]->change_state(new DyingState, "Dying");
                 }
 
                 //If players sets out of lives
