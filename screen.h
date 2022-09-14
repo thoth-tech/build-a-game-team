@@ -453,7 +453,6 @@ void PreLevelScreen::update()
         run_once = true;
     }
     
-    point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
     draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y);
     draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y + 10);
