@@ -318,6 +318,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 // Jumped on enemy
                 if (level_enemies[i]->get_hp() == 0) // If HP is not 0, then take damage.
                 {
+                    if (!sound_effect_playing("EnemyDead"))
+                        play_sound_effect("EnemyDead");
                     level_enemies[i]->set_dead(true);
                 }
                 else 
@@ -352,12 +354,16 @@ void check_water_block_collisions(vector<vector<shared_ptr<WaterBlock>>> water, 
 
                 if (collision == "Left")
                 {
+                    if (!sound_effect_playing("Water"))
+                        play_sound_effect("Water");
                     level_players[k]->set_player_dx(0);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) - 3);
                     break;
                 }
                 else if (collision == "Right")
                 {
+                    if (!sound_effect_playing("Water"))
+                        play_sound_effect("Water");
                     level_players[k]->set_player_dx(0);
                     sprite_set_x(level_players[k]->get_player_sprite(), sprite_x(level_players[k]->get_player_sprite()) + 3);
                     break;
@@ -431,6 +437,9 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
 
                 if (collision != "None")
                 {
+                    if (!sound_effect_playing("Pickup"))
+                            play_sound_effect("Pickup");
+                            
                     // Pink and purple can interact with these pipes
                     if (pipes[j][i]->get_cell() < 6)
                     {

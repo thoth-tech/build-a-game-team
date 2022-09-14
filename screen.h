@@ -518,6 +518,14 @@ void GameOverScreen::update()
     set_camera_y(0);
     clear_screen(COLOR_BLACK);
 
+   if (!run_once)
+    {
+        if (!sound_effect_playing("GameOver"))
+            play_sound_effect("GameOver");    
+        stop_music();
+        run_once = true;
+    }
+
     point_2d pt = screen_center();
     string game_over_text = "Game Over";
     font screen_font = font_named("DefaultFont");
@@ -538,6 +546,13 @@ void GameOverScreen::update()
 
 void WinScreen::update()
 {
+    if (!run_once)
+    {
+        if (!sound_effect_playing("GameWin"))
+            play_sound_effect("GameWin");    
+        stop_music();
+        run_once = true;
+    }
     string game_over_text = "Game Over";
     font screen_font = font_named("DefaultFont");
     int font_size = 15;
@@ -547,7 +562,7 @@ void WinScreen::update()
     draw_text("You Won", font_color, screen_font, font_size, 800, 400, option_to_screen());
     draw_text("Good Job", font_color, screen_font, font_size, 800, 410, option_to_screen());
     draw_text("Press Enter to go to Menu", font_color, screen_font, font_size, 740, 420, option_to_screen());
-
+    
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->level_number = 1;
