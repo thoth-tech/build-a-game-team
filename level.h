@@ -39,6 +39,8 @@ class Level
         shared_ptr<Camera> camera;
         shared_ptr<Background> background;
         shared_ptr<HUD> level_hud;
+        vector<string> pre_level_side_text;
+        string password;
         int tile_size;
         int level_layers;
         int players;
@@ -326,7 +328,17 @@ class Level
         string get_level_name()
         {
             return this->level_name;
-        }
+        };
+
+        string get_level_password()
+        {
+            return this->password;
+        };
+
+        vector<string> get_pre_level_text()
+        {
+            return pre_level_side_text;
+        };
 };
 
 class MultiPipe : public Level
@@ -344,6 +356,10 @@ class MultiPipe : public Level
             this->level_name = "Multi-Pipe Madness";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
+            this->password = "MultiPM";
+            this->pre_level_side_text.push_back("Into The Sewers..");
+            this->pre_level_side_text.push_back("Hoping To Find..");
+            this->pre_level_side_text.push_back("The Answers..");
         };
 };
 
@@ -360,6 +376,8 @@ class TooManyRoach : public Level
             this->level_name = "Too Many Roaches";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
+            this->password = "Password";
+            this->pre_level_side_text.push_back("Never Too Many");
         };
 };
 
@@ -376,6 +394,7 @@ class Level3 : public Level
             this->level_name = "Turn and Climb Time";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
+            this->password = "Password";
         };
 };
 
@@ -394,6 +413,7 @@ class FourCorners : public Level
             this->level_name = "The 4 Trials of Thoth";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
+            this->password = "Password";
         };
 };
 
@@ -410,6 +430,7 @@ class Surf : public Level
             this->level_name = "Slime Surfin'";
             shared_ptr<Background> backg(new DarkBackground);
             this->background = backg;
+            this->password = "Password";
         };
 };
 
@@ -430,5 +451,6 @@ class BlankLevel : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             make_level();
+            this->password = "";
         };
 };

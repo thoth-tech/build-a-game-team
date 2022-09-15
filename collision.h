@@ -492,7 +492,7 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            write_line("Turned");
+                            //write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
                         }
@@ -502,7 +502,7 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
-                            write_line("Turned");
+                            //write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
                         }
@@ -510,7 +510,7 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     // Everyone can interact with these pipes
                     else
                     {
-                        write_line("Turned");
+                        //write_line("Turned");
                         pipes[j][i]->set_turnable(false);
                         break;
                     }
