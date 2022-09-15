@@ -314,7 +314,6 @@ void CompanyIntroScreen::update()
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
     
-
     bitmap title = bitmap_named("Company1");
     bitmap title2 = bitmap_named("Company2");
     font screen_font = font_named("DefaultFont");
@@ -368,7 +367,7 @@ void TeamIntroScreen::update()
         this->screen->change_state(new MenuScreen, "Menu");
 
     bool time_up = screen_timer(5, "ScreenTimer");
-    
+
     alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
     if(time_up)
