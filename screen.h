@@ -2,6 +2,7 @@
 #include "level.h"
 #include "cellsheet.h"
 #include "get_level.h"
+#include "texteffect.h"
 #include "button.h"
 #include <memory>
 #include <vector>
@@ -150,6 +151,7 @@ class PreLevelScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        shared_ptr<TextEffect> text_effect;
 
     public:
         PreLevelScreen(){};
@@ -498,8 +500,12 @@ void PreLevelScreen::update()
 {
     font screen_font = font_named("DefaultFont");
     point_2d pt = screen_center();
-    int font_size = 10;
-
+    int font_size = 40;
+    int font_size_password = 15;
+    int font_size_side_text = 20;
+    bitmap test = bitmap_named("temp");
+    string chapter_text = "Chapter " + std::to_string(this->screen->level_number);
+    
     if(!run_once)
     {
         if(this->screen->get_files().size() != 0)
@@ -513,17 +519,34 @@ void PreLevelScreen::update()
             this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
         }
 
+        vector<string> side_text = this->screen->current_level->get_pre_level_text();
+
+        shared_ptr<TextEffect> temp(new TextEffect(side_text, screen_center().x - bitmap_width(test)/2, 730, screen_font, font_size_side_text));
+        text_effect = temp;
+
         run_once = true;
     }
 
-    clear_screen(COLOR_BLACK);
-    draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y);
-    draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y + 10);
+    string level_text = "- " + this->screen->current_level->get_level_name() + " -";
+    string password = "Password: " + this->screen->current_level->get_level_password();
 
-    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-        this->screen->change_state(new LevelScreen, "Level");
+    clear_screen(COLOR_BLACK);
+    draw_text(chapter_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(chapter_text, screen_font, font_size)/2, 20);
+    draw_text(level_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(level_text, screen_font, font_size)/2, 80);
+    draw_text(password, COLOR_WHITE, screen_font, font_size_password, pt.x - text_width(password, screen_font, font_size_password)/2, screen_height() - 30);
+
+    draw_bitmap(test, pt.x - bitmap_width(test)/2, pt.y - bitmap_height(test)/2 - 30, option_to_screen());
+
+    text_effect->update();
 
     bool time_up = screen_timer(5, "ScreenTimer");
+
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+    {
+        stop_timer("ScreenTimer");
+        reset_timer("ScreenTimer");
+        this->screen->change_state(new LevelScreen, "Level");
+    }
 
     if(time_up)
         this->screen->change_state(new LevelScreen, "Level");
