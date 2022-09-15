@@ -103,6 +103,8 @@ class CompanyIntroScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        double alpha = 1.0;
+        int screen_time = 5;
 
     public:
         CompanyIntroScreen(){};
@@ -116,6 +118,8 @@ class TeamIntroScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        double alpha = 1.0;
+        int screen_time = 5;
 
     public:
         TeamIntroScreen(){};
@@ -256,6 +260,38 @@ class CreditsScreen : public ScreenState
         void update() override;
 };
 
+double fade_in(double alpha, double fade_length)
+{ 
+    if(alpha > 0)
+        alpha -= (fade_length/180);
+    
+    fill_rectangle(rgba_color(0.0,0.0,0.0,alpha),0,0,1600,896,option_to_screen());
+
+    return alpha;
+}
+
+double fade_out(double alpha, double fade_length)
+{ 
+    if(alpha < 1)
+        alpha += (fade_length/150);
+    
+    fill_rectangle(rgba_color(0.0,0.0,0.0,alpha),0,0,1600,896,option_to_screen());
+
+    return alpha;
+}
+
+double screen_effect(double alpha, int time_length, string timer_name, double fade_length)
+{
+    int time = timer_ticks(timer_name) / 1000;
+
+    if(time < fade_length)
+        alpha = fade_in(alpha, fade_length);
+    else if(time > (time_length - fade_length))
+        alpha = fade_out(alpha, fade_length);
+
+    return alpha;
+}
+
 bool screen_timer(int time_length, string timer_name)
 {
     if(!timer_started(timer_named(timer_name)))
@@ -277,6 +313,7 @@ void CompanyIntroScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
+    
 
     bitmap title = bitmap_named("Company1");
     bitmap title2 = bitmap_named("Company2");
@@ -290,11 +327,13 @@ void CompanyIntroScreen::update()
 
     draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
     draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
-    
+
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
 
-    bool time_up = screen_timer(5, "ScreenTimer");
+    bool time_up = screen_timer(screen_time, "ScreenTimer");
+
+    alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
     if(time_up)
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
@@ -329,6 +368,8 @@ void TeamIntroScreen::update()
         this->screen->change_state(new MenuScreen, "Menu");
 
     bool time_up = screen_timer(5, "ScreenTimer");
+    
+    alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
     if(time_up)
         this->screen->change_state(new MenuScreen, "Menu");
