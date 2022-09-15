@@ -40,7 +40,6 @@ class TextEffect
                     max = text_width(text[i], text_font, font_size)/4;
                     
                 int random_pos = (rand() % 200 + 1) - 100;
-                write_line(random_pos);
                 random_pos = x_position + random_pos;
                 positions.push_back(random_pos);
 
