@@ -256,6 +256,23 @@ class CreditsScreen : public ScreenState
         void update() override;
 };
 
+bool screen_timer(int time_length, string timer_name)
+{
+    if(!timer_started(timer_named(timer_name)))
+        start_timer(timer_name);
+    
+    int time = timer_ticks(timer_name) / 1000;
+
+    if(time > time_length)
+    {
+        stop_timer(timer_name);
+        reset_timer(timer_name);
+        return true;
+    }
+    else
+        return false;
+}
+
 void CompanyIntroScreen::update()
 {
     point_2d pt = screen_center();
@@ -275,9 +292,12 @@ void CompanyIntroScreen::update()
     draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
     
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-    {
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
-    }
+
+    bool time_up = screen_timer(5, "ScreenTimer");
+
+    if(time_up)
+        this->screen->change_state(new TeamIntroScreen, "TeamIntro");
 }
 
 void TeamIntroScreen::update()
@@ -306,9 +326,12 @@ void TeamIntroScreen::update()
     draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-    {
         this->screen->change_state(new MenuScreen, "Menu");
-    }
+
+    bool time_up = screen_timer(5, "ScreenTimer");
+
+    if(time_up)
+        this->screen->change_state(new MenuScreen, "Menu");
 }
 
 string get_button_text(int id)
@@ -452,15 +475,18 @@ void PreLevelScreen::update()
 
         run_once = true;
     }
-    
+
     clear_screen(COLOR_BLACK);
     draw_text("Level " + std::to_string(this->screen->level_number), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y);
     draw_text(this->screen->current_level->get_level_name(), COLOR_WHITE, screen_font, font_size, pt.x - 5, pt.y + 10);
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-    {
         this->screen->change_state(new LevelScreen, "Level");
-    }
+
+    bool time_up = screen_timer(5, "ScreenTimer");
+
+    if(time_up)
+        this->screen->change_state(new LevelScreen, "Level");
 }
 
 void LevelScreen::update()
