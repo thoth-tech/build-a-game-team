@@ -470,10 +470,15 @@ void player_draw_pipe(Player *player)
 {
     if(player->with_pipe())
     {
-        point_2d position = sprite_position(player->get_player_sprite());
+        point_2d position = center_point(player->get_player_sprite());
         bitmap pipe = player->get_held_pipe()->get_bitmap();
         drawing_options opts = option_defaults();
         opts.draw_cell = player->get_held_pipe()->get_cell();
+        opts.scale_x = 0.7;
+        opts.scale_y = 0.7;
+        point_2d pipe_center = bitmap_cell_center(pipe);
+        position.x = position.x - pipe_center.x;
+        position.y = position.y - pipe_center.y;
         draw_bitmap(pipe, position.x, position.y, opts);
     }
 }
@@ -721,6 +726,7 @@ void AttackState::update()
         animation_routine(player, "LeftAttack", "RightAttack");
         run_once = true;
     }
+    player_draw_pipe(player);
     draw_sprite(player_sprite);
     if (sprite_animation_has_ended(player_sprite))
         this->player->change_state(new IdleState, "Idle");
