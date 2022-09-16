@@ -188,7 +188,7 @@ class Password
                 }
             }
 
-            if(key_typed(F_KEY))
+            if(key_typed(F_KEY) || key_typed(RETURN_KEY))
             {
                 string select = "";
                 for(int i = 0; i < keyboard.size(); i++)
@@ -198,7 +198,6 @@ class Password
                         select = keyboard[i]->get_value();
                     }
                 }
-
                 if(select == "DEL")
                 {
                     if(letter > 0)
