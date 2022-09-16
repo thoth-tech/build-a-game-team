@@ -10,12 +10,23 @@ class Letter
         string val;
         point_2d pos;
         bool selected = false;
+        font font_type;
+        int font_size = 25;
+        color font_color;
+        color select_color;
+        int letter_width;
+        int letter_height;
 
     public:
         Letter(string val, point_2d pos)
         {
             this->val = val;
             this->pos = pos;
+            this->font_type = font_named("DefaultFont");
+            this->font_color = COLOR_WHITE;
+            this->select_color = COLOR_RED;
+            this->letter_width = text_width(val, font_type, font_size);
+            this->letter_height = text_height(val, font_type, font_size);
         };
         ~Letter(){};
 
@@ -23,11 +34,11 @@ class Letter
         {
             if(selected)
             {
-                draw_text(val, COLOR_RED, pos.x, pos.y);
+                draw_text(val, select_color, font_type, font_size, pos.x, pos.y);
             }
             else
             {
-                draw_text(val, COLOR_WHITE, pos.x, pos.y);
+                draw_text(val, font_color, font_type, font_size, pos.x, pos.y);
             }
         };
 
@@ -50,6 +61,16 @@ class Letter
         {
             return this->selected;
         };
+
+        int get_letter_width()
+        {
+            return this->letter_width;
+        }; 
+
+        int get_letter_height()
+        {
+            return this->letter_height;
+        };   
 };
 
 class Password
@@ -81,63 +102,83 @@ class Password
             string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ<~`";
             int row = 0;
             int col = 0;
+            int letter_width = 0;
+            int letter_height = 0;
+            bool retest = true;
 
             for(int i = 0; i < alphabet.size(); i++)
+            {
+                if(i == 0){}
+                else if(i % 6 == 0)
                 {
-                    if(i == 0){}
-                    else if(i % 6 == 0)
-                    {
-                        row += 1;
-                        col = 0;
-                    }
-
-                    char c = alphabet.at(i);
-                    string str(1, c);
-
-                    point_2d pos = screen_center();
-                    pos.x += col * 30;
-                    pos.y += row * 15;
-
-                    if(str == "~")
-                    {
-                        str = "ENTER";
-                        pos.x += 20;
-                        pos.y += 20;
-                    }
-                    if(str == "<")
-                    {
-                        str = "DEL";
-                        pos.x += 20;
-                        pos.y += 20;
-                    }
-                    if(str == "`")
-                    {
-                        str = "EXIT";
-                        pos.x += 40;
-                        pos.y += 20;
-                    }
-
-                    std::shared_ptr<Letter> alpha(new Letter(str, pos));
-                    keyboard.push_back(alpha);
-
-                    col += 1;
+                    row += 1;
+                    col = 0;
                 }
+
+                char c = alphabet.at(i);
+                string str(1, c);
+
+                point_2d pos = screen_center();
+                pos.x = pos.x*0.7;
+                pos.y = pos.x*0.75;
+                pos.x += col * letter_width * 3;
+                pos.y += row * letter_height * 2;
+
+                if(str == "<")
+                {
+                    str = "DEL";
+                    pos.y += letter_height * 2;
+                }
+                if(str == "~")
+                {
+                    str = "ENTER";
+                    pos.x -= col * letter_width * 3;
+                    pos.x += col * letter_width * 4;
+                    pos.y += letter_height * 2;
+                }
+                if(str == "`")
+                {
+                    str = "EXIT";
+                    pos.x -= col * letter_width * 3;
+                    pos.x += col * letter_width * 5;
+                    pos.y += letter_height *2;
+                }
+
+                std::shared_ptr<Letter> alpha(new Letter(str, pos));
+                if(retest)
+                {
+                    letter_height = alpha->get_letter_height();
+                    letter_width = alpha->get_letter_width();
+                    retest = false;
+                }
+                keyboard.push_back(alpha);
+
+                col += 1;
+            }
         };
 
         void process_underscore()
         {
             string letters = "_ _ _ _ _";
 
+            int letter_width = 0;
+            bool retest = true;
             for(int i = 0; i < letters.size(); i++)
             {
                 char c = letters.at(i);
                 string str(1, c);
                 
                 point_2d pos = screen_center();
-                pos.x += (i * 10);
-                pos.y += 100;
+                pos.x = pos.x*0.8;
+                pos.x += (i * letter_width);
+                pos.y -= 200;
 
                 std::shared_ptr<Letter> alpha(new Letter(str, pos));
+                if(retest)
+                {
+                    letter_width = alpha->get_letter_width();
+                    retest = false;
+                }
                 underscore.push_back(alpha);
             }
         };
