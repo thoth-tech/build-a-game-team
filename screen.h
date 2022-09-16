@@ -4,6 +4,7 @@
 #include "get_level.h"
 #include "texteffect.h"
 #include "button.h"
+#include "password.h"
 #include <memory>
 #include <vector>
 
@@ -157,6 +158,20 @@ class PreLevelScreen : public ScreenState
         PreLevelScreen(){};
 
         ~PreLevelScreen(){};
+
+        void update() override;
+};
+
+class PasswordScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+        shared_ptr<Password> password_screen;
+
+    public:
+        PasswordScreen(){};
+
+        ~PasswordScreen(){};
 
         void update() override;
 };
@@ -329,15 +344,19 @@ void CompanyIntroScreen::update()
     draw_text(text, COLOR_BROWN, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2 + 5, (pt.y - text_height(text, screen_font, font_size)/2) + 200 - 5, option_to_screen());
     draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 200, option_to_screen());
 
-    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-        this->screen->change_state(new TeamIntroScreen, "TeamIntro");
-
     bool time_up = screen_timer(screen_time, "ScreenTimer");
 
     alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
     if(time_up)
         this->screen->change_state(new TeamIntroScreen, "TeamIntro");
+
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+    {
+        stop_timer("ScreenTimer");
+        reset_timer("ScreenTimer");
+        this->screen->change_state(new TeamIntroScreen, "TeamIntro");
+    }
 }
 
 void TeamIntroScreen::update()
@@ -350,7 +369,7 @@ void TeamIntroScreen::update()
     int font_size = 30;
     color font_color = COLOR_WHITE;
     string text = "Morgaine Barter";
-    string text2 = "Daniel Agbay, Lily Lan, Robert Osbourne";
+    string text2 = "Daniel Agbay, Lily Lan, Robert Osborne";
     string text3 = "Jiahao Zheng, Roy Chen";
     string text4 = "And";
     string text5 = "Lachlan Morgan";
@@ -365,15 +384,19 @@ void TeamIntroScreen::update()
     draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
     draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-        this->screen->change_state(new MenuScreen, "Menu");
-
     bool time_up = screen_timer(5, "ScreenTimer");
 
     alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
     if(time_up)
         this->screen->change_state(new MenuScreen, "Menu");
+
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+    {
+        stop_timer("ScreenTimer");
+        reset_timer("ScreenTimer");
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
 }
 
 string get_button_text(int id)
@@ -389,10 +412,10 @@ string get_button_text(int id)
             text = "2 PLAYER";
             break;
         case 3:
-            text = "BACKSTORY";
+            text = "PASSWORD";
             break;
         case 4:
-            text = "CREDITS";
+            text = "EXTRAS";
             break;
         case 5:
             text = "EXIT";
@@ -479,10 +502,10 @@ void MenuScreen::update()
                     this->screen->change_state(new PreLevelScreen, "Pre Level");
                 }
                 break;
-            case 3:
+            case 2:
                 {
                     play_sound_effect("Select");
-                    this->screen->change_state(new CreditsScreen, "Credits");
+                    this->screen->change_state(new PasswordScreen, "Password");
                 }
             break;
                 case 4:
@@ -675,5 +698,32 @@ void CreditsScreen::update()
         this->screen->level_number = 1;
         this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
         this->screen->change_state(new MenuScreen, "Menu");
+    }
+}
+
+void PasswordScreen::update()
+{
+    if(!run_once)
+    {
+        shared_ptr<Password> pass(new Password);
+        password_screen = pass;
+        run_once = true;
+    }
+
+    string password = password_screen->update();
+
+    if(password == "EXITEXITEXIT")
+    {
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
+    else if(password == "ROACH")
+    {
+        this->screen->level_number = 2;
+        this->screen->change_state(new PreLevelScreen, "Pre Level");
+    }
+    else if(password == "SURFN")
+    {
+        this->screen->level_number = 5;
+        this->screen->change_state(new PreLevelScreen, "Pre Level");
     }
 }
