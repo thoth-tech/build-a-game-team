@@ -160,7 +160,7 @@ class Level
             if (!music_playing())
             {
                 play_music(this->level_music);
-                set_music_volume(0.5f);
+                set_music_volume(0.2f);
             }
                 
 
@@ -403,7 +403,7 @@ class FourCorners : public Level
             this->files.push_back("levels/4c_3.txt");
             this->files.push_back("levels/4c_4.txt");
             make_level();
-            this->level_music = music_named("LevelOne");
+            this->level_music = music_named("ThothTemple.mp3");
             this->level_name = "The 4 Trials of Thoth";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
