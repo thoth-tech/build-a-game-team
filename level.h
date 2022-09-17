@@ -347,6 +347,24 @@ class Level
         };
 };
 
+class Level0 : public Level
+{
+    public:
+        Level0(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/level0_1.txt");
+            this->files.push_back("levels/level0_2.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Fix those leaks!";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "Password";
+            this->pre_level_image = bitmap_named("temp");
+        };
+};
+
 class MultiPipe : public Level
 {
     public:
