@@ -35,7 +35,7 @@ i:RightAttack, 112
 i:RightDecend, 118
 i:RightDying, 121
 
-//-----Right Movements-----
+//-----Left Movements-----
 
 //Left Run
 f:[200-202], [23-25], 4, 
