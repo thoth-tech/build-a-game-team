@@ -266,6 +266,20 @@ class LevelOjectsMap
                         bblob->get_ai()->set_facing_left(false);
                         level_enemies.push_back(bblob);
                     }
+                    if(this->map_array[i][j] == 1409)
+                    {
+                        sprite waterRat = create_sprite("WaterRat", "WaterRatAnim");
+                        shared_ptr<WaterRat> WaterRatBoss(new WaterRat(waterRat, position, level_players));
+                        WaterRatBoss->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(WaterRatBoss);
+                    }
+                    if(this->map_array[i][j] == 1410)
+                    {
+                        sprite waterRat = create_sprite("WaterRat", "WaterRatAnim");
+                        shared_ptr<WaterRat> WaterRatBoss(new WaterRat(waterRat, position, level_players));
+                        WaterRatBoss->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(WaterRatBoss);
+                    }
                 }
 
             return level_enemies;
