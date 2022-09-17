@@ -39,6 +39,7 @@ MUSIC, LevelOne, LevelOneTheme1.mp3
 BITMAP,GreyBackground,Background4.png
 BITMAP, DarkBackground, Background3.png
 BITMAP, MENUBackground, MENUBackground.png
+BITMAP, MENUBackgroundDark, MENUBackgroundDark.png
 BITMAP, TeamLogo, teamlogo.png
 BITMAP, Company2, companylogo1.png
 BITMAP, Company1, companylogo2.png
