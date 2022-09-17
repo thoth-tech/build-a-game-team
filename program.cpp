@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     
     bool test_screen = false;
     bool window_border = true;
+    int refresh_rate = 60;
 
     vector<string> cell_sheet_names;
 
@@ -99,6 +100,10 @@ int main(int argc, char *argv[])
             {
                 window_border = false;
             }
+            if(args[i] == "-r")
+            {
+                refresh_rate = std::stoi(args[i + i]);
+            }
         }
     }
     catch (const std::exception &e)
@@ -128,7 +133,7 @@ int main(int argc, char *argv[])
     {
         screen->update();
         process_events();
-        refresh_screen(60);
+        refresh_screen(refresh_rate);
     }
 
     free_resource_bundle("player");
