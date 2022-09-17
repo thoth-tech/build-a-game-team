@@ -46,3 +46,4 @@ BITMAP, Company1, companylogo2.png
 BITMAP,GameOver,gameover.png
 
 BITMAP, temp, temp540.png
+BITMAP, SlimeSurf, slimesurfin.png

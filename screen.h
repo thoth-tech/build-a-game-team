@@ -153,6 +153,7 @@ class PreLevelScreen : public ScreenState
     private:
         bool run_once = false;
         shared_ptr<TextEffect> text_effect;
+        bitmap image;
 
     public:
         PreLevelScreen(){};
@@ -526,7 +527,6 @@ void PreLevelScreen::update()
     int font_size = 40;
     int font_size_password = 15;
     int font_size_side_text = 20;
-    bitmap test = bitmap_named("temp");
     string chapter_text = "Chapter " + std::to_string(this->screen->level_number);
     
     if(!run_once)
@@ -542,9 +542,11 @@ void PreLevelScreen::update()
             this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
         }
 
+        image = this->screen->current_level->get_pre_level_image();
+
         vector<string> side_text = this->screen->current_level->get_pre_level_text();
 
-        shared_ptr<TextEffect> temp(new TextEffect(side_text, screen_center().x - bitmap_width(test)/2, 730, screen_font, font_size_side_text));
+        shared_ptr<TextEffect> temp(new TextEffect(side_text, screen_center().x - bitmap_width(image)/2, 730, screen_font, font_size_side_text));
         text_effect = temp;
 
         run_once = true;
@@ -558,7 +560,7 @@ void PreLevelScreen::update()
     draw_text(level_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(level_text, screen_font, font_size)/2, 80);
     draw_text(password, COLOR_WHITE, screen_font, font_size_password, pt.x - text_width(password, screen_font, font_size_password)/2, screen_height() - 30);
 
-    draw_bitmap(test, pt.x - bitmap_width(test)/2, pt.y - bitmap_height(test)/2 - 30, option_to_screen());
+    draw_bitmap(image, pt.x - bitmap_width(image)/2, pt.y - bitmap_height(image)/2 - 30, option_to_screen());
 
     text_effect->update();
 
