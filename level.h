@@ -46,6 +46,7 @@ class Level
         int players;
         string level_name = "";
         music level_music;
+        bitmap pre_level_image;
 
     public:
         bool is_player1_out_of_lives = false;
@@ -339,6 +340,11 @@ class Level
         {
             return pre_level_side_text;
         };
+
+        bitmap get_pre_level_image()
+        {
+            return pre_level_image;
+        };
 };
 
 class MultiPipe : public Level
@@ -360,6 +366,7 @@ class MultiPipe : public Level
             this->pre_level_side_text.push_back("Into The Sewers..");
             this->pre_level_side_text.push_back("Hoping To Find..");
             this->pre_level_side_text.push_back("The Answers..");
+            this->pre_level_image = bitmap_named("temp");
         };
 };
 
@@ -378,6 +385,7 @@ class TooManyRoach : public Level
             this->background = backg;
             this->password = "Password";
             this->pre_level_side_text.push_back("Never Too Many");
+            this->pre_level_image = bitmap_named("temp");
         };
 };
 
@@ -395,6 +403,7 @@ class Level3 : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "Password";
+            this->pre_level_image = bitmap_named("temp");
         };
 };
 
@@ -414,6 +423,7 @@ class FourCorners : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "Password";
+            this->pre_level_image = bitmap_named("temp");
         };
 };
 
@@ -430,7 +440,10 @@ class Surf : public Level
             this->level_name = "Slime Surfin'";
             shared_ptr<Background> backg(new DarkBackground);
             this->background = backg;
-            this->password = "Password";
+            this->password = "SURFN";
+            this->pre_level_side_text.push_back("Surfin' through the");
+            this->pre_level_side_text.push_back("Slime");
+            this->pre_level_image = bitmap_named("SlimeSurf");
         };
 };
 
@@ -452,5 +465,6 @@ class BlankLevel : public Level
             this->background = backg;
             make_level();
             this->password = "";
+            this->pre_level_image = bitmap_named("SlimeSurf");
         };
 };
