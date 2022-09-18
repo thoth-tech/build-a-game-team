@@ -5,10 +5,12 @@ BITMAP,pinkGirl,PinkGirl.png, 32, 64, 4, 8, 32
 
 SOUND, Jump, Jump.wav
 SOUND, HeadHit, HeadHit.wav
-SOUND, Attack, TurnPipe.mp3
+SOUND, Attack, TurnPipe.wav
 SOUND, Dead, Dead.wav
 SOUND, Hurt, Hurt.wav
 SOUND, Water, Water.wav
 SOUND, Pickup, Pickup.wav
 SOUND, EnemyDead, EnemyDead.wav
-SOUND, Dance, LevelCompleted.wav
+SOUND, Toxic, Toxic.mp3
+SOUND, PickHeart, PickHeart.wav
+SOUND, Jumpfall, Jumpfall.wav

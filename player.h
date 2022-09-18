@@ -643,6 +643,8 @@ void JumpFallState::update()
 {
     if (!run_once)
     {
+        if (!sound_effect_playing("Jumpfall"))
+            play_sound_effect("Jumpfall");
         sprite_set_dy(player->get_player_sprite(), 0);
         run_once = true;
     }
@@ -695,8 +697,6 @@ void DanceState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
-        if (!sound_effect_playing("Dance"))
-            play_sound_effect("Dance");
         sprite_set_dx(player_sprite, 0);
         sprite_set_dy(player_sprite, 0);
         sprite_start_animation(player->get_player_sprite(), "Dance");
