@@ -395,6 +395,8 @@ void check_toxic_block_collisions(vector<vector<shared_ptr<ToxicBlock>>> toxic, 
 
                 if (collision != "None")
                 {
+                    if (!sound_effect_playing("Toxic"))
+                        play_sound_effect("Toxic");
                     string damage_timer = "DamageTimerP" + std::to_string(k + 1);
                     if (!timer_started(timer_named(damage_timer)))
                     {

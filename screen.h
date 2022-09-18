@@ -634,7 +634,7 @@ void GameOverScreen::update()
    if (!run_once)
     {
         if (!sound_effect_playing("GameOver"))
-            play_sound_effect("GameOver");    
+            play_sound_effect("GameOver"); 
         stop_music();
         run_once = true;
     }
