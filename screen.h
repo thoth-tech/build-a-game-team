@@ -337,7 +337,7 @@ void CompanyIntroScreen::update()
     font screen_font = font_named("DefaultFont");
     int font_size = 80;
     color font_color = COLOR_WHITE;
-    string text = "Games";
+    string text = "Thoth Tech presents";
 
     draw_bitmap(title2, pt.x - bitmap_width(title2)/2 + 5, pt.y - bitmap_height(title2)/2 - 5, option_to_screen());
     draw_bitmap(title, pt.x - bitmap_width(title)/2, pt.y - bitmap_height(title)/2, option_to_screen());
