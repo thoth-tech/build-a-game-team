@@ -286,8 +286,6 @@ class CreditsScreen : public ScreenState
 {
     private:
         bool run_once = false;
-        double alpha = 1.0;
-        int screen_time = 10;
 
     public:
         CreditsScreen(){};
@@ -849,7 +847,7 @@ void CreditsScreen::update()
     string text3 = "Jiahao Zheng, Roy Chen";
     string text4 = "And";
     string text5 = "Lachlan Morgan";
-//more detail to be added on roles
+// more detail to be added on roles
 
     draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
 
@@ -860,17 +858,8 @@ void CreditsScreen::update()
     draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
     //draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    bool time_up = screen_timer(5, "ScreenTimer");
-
-    alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
-
-    if(time_up)
-        this->screen->change_state(new MenuScreen, "Menu");
-
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
-        stop_timer("ScreenTimer");
-        reset_timer("ScreenTimer");
         this->screen->change_state(new MenuScreen, "Menu");
     }
 
