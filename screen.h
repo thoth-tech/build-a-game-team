@@ -417,7 +417,7 @@ void TeamIntroScreen::update()
     draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
     draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    bool time_up = screen_timer(5, "ScreenTimer");
+    bool time_up = screen_timer(screen_time, "ScreenTimer");
 
     alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
