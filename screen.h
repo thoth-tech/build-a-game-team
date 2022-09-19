@@ -532,6 +532,7 @@ void PreLevelScreen::update()
     
     if(!run_once)
     {
+        stop_music();
         if(this->screen->get_files().size() != 0)
         {
             shared_ptr<Level> custom_level(new BlankLevel(this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players(),this->screen->get_files().size(),this->screen->get_files()));
