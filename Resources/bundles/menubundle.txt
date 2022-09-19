@@ -1,4 +1,5 @@
 BITMAP, MenuBg, menubackground.png
+BITMAP, MenubgDark, MENUBackgroundDark.png
 BITMAP, Pink, pink.png
 BITMAP, Blue, blue.png
 BITMAP, Title, title.png

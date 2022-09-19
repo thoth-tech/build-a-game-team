@@ -121,7 +121,7 @@ class TeamIntroScreen : public ScreenState
     private:
         bool run_once = false;
         double alpha = 1.0;
-        int screen_time = 5;
+        int screen_time = 7;
 
     public:
         TeamIntroScreen(){};
@@ -144,6 +144,23 @@ class MenuScreen : public ScreenState
         MenuScreen(){};
 
         ~MenuScreen(){};
+
+        void update() override;
+};
+
+class ExtraScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+        vector<shared_ptr<Button>> menu_buttons;
+        int offset = -40;
+        int num_buttons = 3;
+        int selection = 0;
+
+    public:
+        ExtraScreen(){};
+
+        ~ExtraScreen(){};
 
         void update() override;
 };
@@ -276,6 +293,19 @@ class CreditsScreen : public ScreenState
         CreditsScreen(){};
 
         ~CreditsScreen(){};
+
+        void update() override;
+};
+
+class BackstoryScreen : public ScreenState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BackstoryScreen(){};
+
+        ~BackstoryScreen(){};
 
         void update() override;
 };
@@ -430,6 +460,28 @@ string get_button_text(int id)
     return text;
 }
 
+string get_extras_button_text(int id)
+{
+    string text = "";
+
+    switch (id)
+    {
+        case 1:
+            text = "BACKSTORY";
+            break;
+        case 2:
+            text = "CREDITS";
+            break;
+        case 3:
+            text = "EXIT";
+            break;
+        default:
+            break;
+    }
+
+    return text;
+}
+
 void MenuScreen::update()
 {
     set_camera_x(0);
@@ -512,9 +564,101 @@ void MenuScreen::update()
                     this->screen->change_state(new PasswordScreen, "Password");
                 }
             break;
+            case 3:
+                {
+                    play_sound_effect("Select");
+                    this->screen->change_state(new ExtraScreen, "Extras");
+                }
+            break;
                 case 4:
                 {
                     exit(0);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void ExtraScreen::update()
+{
+    set_camera_x(0);
+    set_camera_y(0);
+
+    if(!run_once)
+    {
+        //stop_music();
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_extras_button_text(i + 1);
+            shared_ptr<Button> test(new Button(bitmap_named("Button"), offset, i, text));
+            offset += 100;
+            menu_buttons.push_back(test);
+        }
+        run_once = true;
+    }
+
+    if (!music_playing())
+    {
+        play_music("MenuMusic.mp3"); 
+        set_music_volume(0.2f);
+    }
+
+    point_2d pt = screen_center();
+    clear_screen(COLOR_BLACK);
+    draw_bitmap("MenuBg", 0, 0, option_to_screen());
+
+    bitmap title = bitmap_named("Title");
+    drawing_options scale = option_scale_bmp(2, 2);
+    draw_bitmap(title, pt.x - bitmap_width(title)/2, 100, scale);
+
+    for(int i = 0; i < menu_buttons.size(); i++)
+    {
+        if(menu_buttons[i]->get_id() == selection)
+            menu_buttons[i]->set_selected(true); 
+        else
+            menu_buttons[i]->set_selected(false); 
+
+        menu_buttons[i]->draw();
+    }
+
+    if(key_typed(UP_KEY) || key_typed(W_KEY))
+    {
+        selection -= 1;
+
+        if(selection < 0)
+            selection = 0;
+    }
+    if(key_typed(DOWN_KEY) || key_typed(S_KEY))
+    {
+        selection += 1;
+
+        if(selection > num_buttons - 1)
+            selection = num_buttons - 1;
+    }
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+    {
+        switch(selection)
+        {
+            case 0:
+                {
+                    play_sound_effect("Select");
+                    stop_music();
+                    this->screen->change_state(new BackstoryScreen, "Backstory");
+                }
+                break;
+            case 1:
+                {
+                    play_sound_effect("Select");
+                    this->screen->change_state(new CreditsScreen, "Credits");
+                }
+                break;
+
+            case 2:
+                {
+                    play_sound_effect("Select");
+                    this->screen->change_state(new MenuScreen, "Main Menu");
                 }
                 break;
             default:
@@ -690,19 +834,51 @@ void WinScreen::update()
 
 void CreditsScreen::update()
 {
-    // point_2d pt = screen_center();
-    string game_over_text = "Game Over";
+    point_2d pt = screen_center();
+    clear_screen(COLOR_BLACK);
+
+    bitmap logo = bitmap_named("TeamLogo");
+    font screen_font = font_named("DefaultFont");
+    color font_color = COLOR_WHITE;
+
+    //draw_text("Credits", font_color, screen_font, 80, 600, 200, option_to_screen());
+
+    int font_size = 30;
+    string text = "Morgaine Barter";
+    string text2 = "Daniel Agbay, Lily Lan, Robert Osborne";
+    string text3 = "Jiahao Zheng, Roy Chen";
+    string text4 = "And";
+    string text5 = "Lachlan Morgan";
+// more detail to be added on roles
+
+    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
+
+    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 150, option_to_screen());
+    draw_text(text2, font_color, screen_font, font_size, pt.x- text_width(text2, screen_font, font_size)/2, (pt.y - text_height(text2, screen_font, font_size)/2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
+    draw_text(text3, font_color, screen_font, font_size, pt.x- text_width(text3, screen_font, font_size)/2, (pt.y - text_height(text3, screen_font, font_size)/2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
+    draw_text(text4, font_color, screen_font, font_size, pt.x- text_width(text4, screen_font, font_size)/2, (pt.y - text_height(text4, screen_font, font_size)/2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
+    draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
+    //draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
+
+    if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+    {
+        this->screen->change_state(new MenuScreen, "Menu");
+    }
+
+}
+
+void BackstoryScreen::update()
+{
     font screen_font = font_named("DefaultFont");
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
     clear_screen(COLOR_BLACK);
-    draw_text("Test", font_color, screen_font, font_size, 800, 400, option_to_screen());
+    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
+    draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
-        this->screen->level_number = 1;
-        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
         this->screen->change_state(new MenuScreen, "Menu");
     }
 }
