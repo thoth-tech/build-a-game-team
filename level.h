@@ -380,7 +380,7 @@ class MultiPipe : public Level
             this->level_name = "Multi-Pipe Madness";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "MultiPM";
+            this->password = "MULTI";
             this->pre_level_side_text.push_back("Into The Sewers..");
             this->pre_level_side_text.push_back("Hoping To Find..");
             this->pre_level_side_text.push_back("The Answers..");
@@ -401,7 +401,7 @@ class TooManyRoach : public Level
             this->level_name = "Too Many Roaches";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "Password";
+            this->password = "ROACH";
             this->pre_level_side_text.push_back("Never Too Many");
             this->pre_level_image = bitmap_named("temp");
         };
@@ -440,7 +440,7 @@ class FourCorners : public Level
             this->level_name = "The 4 Trials of Thoth";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "Password";
+            this->password = "TEMPL";
             this->pre_level_image = bitmap_named("temp");
         };
 };
