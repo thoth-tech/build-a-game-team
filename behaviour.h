@@ -1,4 +1,5 @@
 #include "splashkit.h"
+#include "snakemachine.h"
 #pragma once
 
 class Behaviour
@@ -48,6 +49,13 @@ class Behaviour
             sprite_set_y(enemy_sprite, val + (64 - sprite_height(enemy_sprite)));
         };
 
+        void fall_to_ground()
+        {
+            if(on_floor)
+                sprite_set_dy(enemy_sprite, 0);
+            else
+                sprite_set_dy(enemy_sprite, 8);
+        };
 };
 
 class RoachBehaviour : public Behaviour
@@ -85,14 +93,7 @@ class RoachBehaviour : public Behaviour
                 sprite_set_dx(enemy_sprite, -3);
             }
 
-            if(on_floor)
-            {
-                sprite_set_dy(enemy_sprite, 0);
-            }
-            else
-            {
-                sprite_set_dy(enemy_sprite, 10);
-            }
+            fall_to_ground();
         };
 
 };
@@ -136,14 +137,7 @@ class BlobBehaviour : public Behaviour
                 sprite_set_dx(enemy_sprite, -3);
             }
 
-            if(on_floor)
-            {
-                sprite_set_dy(enemy_sprite, 0);
-            }
-            else
-            {
-                sprite_set_dy(enemy_sprite, 10);
-            }
+            fall_to_ground();
         };
 };
 
@@ -151,51 +145,59 @@ class SnakeBehaviour : public Behaviour
 {
     private:
         vector<std::shared_ptr<Player>> level_players;
+        std::shared_ptr<SnakeMachine> snake_machine;
 
     public:
         SnakeBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
             this->level_players = level_players;
-            if(facing_left)
-                sprite_start_animation(enemy_sprite, "LeftRun");
-            else
-                sprite_start_animation(enemy_sprite, "RightRun");
+            this->on_floor = false;
+            std::shared_ptr<SnakeMachine> machine(new SnakeMachine(new SnakeIdle, enemy_sprite, level_players));
+            this->snake_machine = machine;
         };
         ~SnakeBehaviour()
         {
         };
         void update() override
         {
+            if(this->snake_machine->get_state_type() == "Idle")
+                face_player();
+            
+            this->snake_machine->set_facing_left(facing_left);
+
+            fall_to_ground();
+            this->snake_machine->update();
+        };
+        
+        void face_player()
+        {
+            bool change_direction = false;
             for(int i = 0; i < level_players.size(); i++)
             {
-                
-            }
-            if(facing_left)
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, 3);
-            }
-            else
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, -3);
-            }
+                if(change_direction)
+                    continue;
+                    
+                point_2d player_center = to_screen(center_point(level_players[i]->get_player_sprite()));
+                point_2d enemy_center = to_screen(center_point(enemy_sprite));
 
-            if(on_floor)
-            {
-                sprite_set_dy(enemy_sprite, 0);
-            }
-            else
-            {
-                sprite_set_dy(enemy_sprite, 10);
+                double dist = player_center.x - enemy_center.x;
+
+                if(abs(dist) < 256)
+                {
+                    if(enemy_center.x < player_center.x)
+                        facing_left = true;
+                    else
+                        facing_left = false;
+                }
+                else if(abs(dist) < 300)
+                {
+                    if(enemy_center.x < player_center.x)
+                        facing_left = true;
+                    else
+                        facing_left = false;
+
+                    change_direction = true;
+                }
             }
         };
 
@@ -244,14 +246,7 @@ class RatBehaviour : public Behaviour
                 sprite_set_dx(enemy_sprite, -3);
             }
 
-            if(on_floor)
-            {
-                sprite_set_dy(enemy_sprite, 0);
-            }
-            else
-            {
-                sprite_set_dy(enemy_sprite, 10);
-            }
+            fall_to_ground();
         };
 
 };
@@ -291,14 +286,7 @@ class WaterRatBehaviour : public Behaviour
                 sprite_set_dx(enemy_sprite, -3);
             }
 
-            if(on_floor)
-            {
-                sprite_set_dy(enemy_sprite, 0);
-            }
-            else
-            {
-                sprite_set_dy(enemy_sprite, 10);
-            }
+            fall_to_ground();
         };
 
 };
