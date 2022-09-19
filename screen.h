@@ -435,6 +435,7 @@ void MenuScreen::update()
 
     if(!run_once)
     {
+        stop_music();
         for(int i = 0; i < num_buttons; i++)
         {
             string text = get_button_text(i + 1);
@@ -703,6 +704,20 @@ void CreditsScreen::update()
     }
 }
 
+void play_sounds()
+{
+    if (!sound_effect_playing("Select"))
+        play_sound_effect("Select");
+    stop_music();
+}
+
+void enter_level(int level_number, Screen* screen)
+{
+    screen->level_number = level_number;
+    play_sounds();
+    screen->change_state(new PreLevelScreen, "Pre Level");
+}
+
 void PasswordScreen::update()
 {
     if(!run_once)
@@ -720,12 +735,18 @@ void PasswordScreen::update()
     }
     else if(password == "ROACH")
     {
-        this->screen->level_number = 2;
-        this->screen->change_state(new PreLevelScreen, "Pre Level");
+        enter_level(2, screen);
     }
     else if(password == "SURFN")
     {
-        this->screen->level_number = 5;
-        this->screen->change_state(new PreLevelScreen, "Pre Level");
+        enter_level(5, screen);
+    }
+    else if(password == "TEMPL")
+    {
+        enter_level(4, screen);
+    }
+    else if(password == "MULTI")
+    {
+        enter_level(1, screen);
     }
 }

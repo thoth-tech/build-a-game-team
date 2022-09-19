@@ -241,6 +241,8 @@ class Password
                 }
                 if(select == "DEL")
                 {
+                    if (!sound_effect_playing("EnemyDead"))
+                        play_sound_effect("EnemyDead");
                     if(letter > 0)
                         letter -= 2;
                     underscore[letter]->set_value("_");
@@ -259,6 +261,8 @@ class Password
                 }
                 else if(letter < 10)
                 {
+                    if (!sound_effect_playing("Jump"))
+                        play_sound_effect("Jump");
                     underscore[letter]->set_value(select);
                     letter += 2;
                 }
