@@ -209,6 +209,7 @@ class LevelScreen : public ScreenState
                     {
                         this->screen->level_number += 1;
                         this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
+                        this->screen->change_state(new PreLevelScreen, "Pre Level");
                     }
                 }
 
@@ -218,6 +219,7 @@ class LevelScreen : public ScreenState
                     {
                         this->screen->level_number -= 1;
                         this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
+                        this->screen->change_state(new PreLevelScreen, "Pre Level");
                     }
                 }
             }
