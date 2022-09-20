@@ -119,7 +119,6 @@ class BlobBehaviour : public Behaviour
 
         void update() override
         {
-
             this->blob_machine->set_facing_left(facing_left);
             fall_to_ground();
             this->blob_machine->update();
