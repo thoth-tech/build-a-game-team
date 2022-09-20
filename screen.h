@@ -852,7 +852,7 @@ void GameOverScreen::update()
     set_camera_y(0);
     clear_screen(COLOR_BLACK);
     draw_bitmap("MenubgDark", 0, 0, option_to_screen());
-
+    
     if (!run_once)
     {
         stop_music();
@@ -863,7 +863,7 @@ void GameOverScreen::update()
             offset += 60;
             menu_buttons.push_back(test);
         }
-
+        play_sound_effect("Rain");
         if (!sound_effect_playing("GameOver"))
             play_sound_effect("GameOver");
         
