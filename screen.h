@@ -783,14 +783,14 @@ void LevelScreen::update()
     }
     else
     {
-        point_2d pt = screen_center();
+        point_2d pt = to_screen(screen_center());
         string text = "-Game Paused-";
         color font_color = COLOR_WHITE;
         font screen_font = font_named("DefaultFont");
         int font_size = 40;
         if(!pause_run_once)
         {
-            fill_rectangle(rgba_color(0,0,0,50), screen_rectangle());
+            fill_rectangle(rgba_color(0,0,0,50), 0, 0, screen_width(), screen_height(), option_to_screen());
             pause_run_once = true;
         }
         draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, 300, option_to_screen());
@@ -811,6 +811,8 @@ void LevelScreen::update()
                 case 1:
                     {
                         stop_music();
+                        this->screen->level_number = 1;
+                        this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                         this->screen->change_state(new MenuScreen, "Menu");
                         break;
                     }
