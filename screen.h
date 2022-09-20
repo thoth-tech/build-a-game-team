@@ -202,7 +202,7 @@ class LevelScreen : public ScreenState
         bool pause = false;
         bool pause_run_once;
         int num_buttons = 2;
-        int offset = 300;
+        int offset = 0;
         vector<shared_ptr<Button>> menu_buttons;
         int selection = 0;
 
@@ -732,7 +732,7 @@ void LevelScreen::update()
         {
             string text = get_pause_text(i + 1);
             shared_ptr<Button> test(new SmallButton(bitmap_named("ButtonSmall"), offset, i, text, 20, COLOR_BLACK, COLOR_RED));
-            offset += 60;
+            offset += 80;
             menu_buttons.push_back(test);
         }
 
@@ -783,12 +783,18 @@ void LevelScreen::update()
     }
     else
     {
+        point_2d pt = screen_center();
+        string text = "-Game Paused-";
+        color font_color = COLOR_WHITE;
+        font screen_font = font_named("DefaultFont");
+        int font_size = 40;
         if(!pause_run_once)
         {
             fill_rectangle(rgba_color(0,0,0,50), screen_rectangle());
             pause_run_once = true;
         }
-        draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
+        draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, 300, option_to_screen());
+        //draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
         draw_buttons(menu_buttons, selection);
         selection = button_selection(selection, num_buttons);
         
