@@ -1,5 +1,6 @@
 #include "splashkit.h"
 #include "player.h"
+#include "machinehelper.h"
 #include <memory>
 
 class SnakeMachine;
@@ -90,14 +91,6 @@ class SnakeMachine
         };
 };
 
-void start_animation(bool facing_left, sprite enemy_sprite,string left_anim, string right_anim)
-{
-    if(facing_left)
-        sprite_start_animation(enemy_sprite, left_anim);
-    else
-        sprite_start_animation(enemy_sprite, right_anim);
-}
-
 class SnakeIdle : public SnakeMachineState
 {
     private:
@@ -124,13 +117,6 @@ class SnakeCharge : public SnakeMachineState
 
         void update() override;
 };
-
-void set_proper_direction(sprite sprite, string animation)
-{
-    string lower = to_lowercase(animation);
-    if(sprite_animation_name(sprite) != lower)
-        sprite_start_animation(sprite, animation);
-}
 
 void SnakeIdle::update()
 {

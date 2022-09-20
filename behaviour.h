@@ -1,5 +1,6 @@
 #include "splashkit.h"
 #include "snakemachine.h"
+#include "blobmachine.h"
 #pragma once
 
 class Behaviour
@@ -102,14 +103,14 @@ class BlobBehaviour : public Behaviour
 {
     private:
         vector<std::shared_ptr<Player>> level_players;
+        std::shared_ptr<BlobMachine> blob_machine;
 
     public:
-        BlobBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        BlobBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
-            if(facing_left)
-                sprite_start_animation(enemy_sprite, "LeftRun");
-            else
-                sprite_start_animation(enemy_sprite, "RightRun");
+            this->level_players = level_players;
+            std::shared_ptr<BlobMachine> machine(new BlobMachine(new BlobMove, enemy_sprite, level_players));
+            this->blob_machine = machine;
         };
         
         ~BlobBehaviour()
@@ -118,26 +119,10 @@ class BlobBehaviour : public Behaviour
 
         void update() override
         {
-            if(facing_left)
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, 3);
-            }
-            else
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, -3);
-            }
 
+            this->blob_machine->set_facing_left(facing_left);
             fall_to_ground();
+            this->blob_machine->update();
         };
 };
 
