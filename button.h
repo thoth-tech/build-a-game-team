@@ -32,9 +32,9 @@ class Button
             point_2d center = bitmap_center(this->button_bmp);
             draw_bitmap(button_bmp, position.x, position.y, option_to_screen());
             if(!selected)
-                text_color = COLOR_BLACK;
+                text_color = font_color;
             else
-                text_color = COLOR_RED;
+                text_color = selected_color;
 
             draw_text(text, text_color, button_font, font_size, (center.x + position.x) - text_width(text, button_font, font_size)/2, (center.y + position.y) - text_height(text, button_font, font_size)/2, option_to_screen());
         };
