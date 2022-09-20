@@ -45,6 +45,7 @@ class Screen
 
     public:
         key_code input_key = F_KEY;
+        key_code pause_key = H_KEY;
         int level_number = 1;
         int max_levels = 5;
         shared_ptr<Level> current_level;
@@ -200,6 +201,10 @@ class LevelScreen : public ScreenState
         bool run_once = false;
         bool pause = false;
         bool pause_run_once;
+        int num_buttons = 2;
+        int offset = 300;
+        vector<shared_ptr<Button>> menu_buttons;
+        int selection = 0;
 
     public:
         LevelScreen(){};
@@ -211,13 +216,6 @@ class LevelScreen : public ScreenState
         // Inputs for testing functions
         void testing_input()
         {
-            if (key_typed(M_KEY))
-            {
-                this->screen->level_number = 1;
-                this->screen->current_level = get_next_level(this->screen->level_number, this->screen->get_cell_sheets(), this->screen->get_tile_size(), this->screen->get_players());
-                this->screen->change_state(new MenuScreen, "Menu");
-            }
-        
             if (!pause)
             {
                 if (key_typed(NUM_1_KEY))
@@ -240,21 +238,6 @@ class LevelScreen : public ScreenState
                     }
                 }
             }
-
-            if (key_typed(RETURN_KEY))
-            {
-                if (pause)
-                {
-                    pause = false;
-                    resume_music();
-                }
-                else
-                {
-                    pause_run_once = false;
-                    pause = true;
-                    pause_music();
-                }
-            }
         };
 };
 
@@ -262,6 +245,10 @@ class GameOverScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        int num_buttons = 2;
+        int offset = 300;
+        vector<shared_ptr<Button>> menu_buttons;
+        int selection = 0;
 
     public:
         GameOverScreen(){};
@@ -275,6 +262,10 @@ class WinScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        int num_buttons = 2;
+        int offset = 300;
+        vector<shared_ptr<Button>> menu_buttons;
+        int selection = 0;
 
     public:
         WinScreen(){};
@@ -359,6 +350,39 @@ bool screen_timer(int time_length, string timer_name)
         return false;
 }
 
+void draw_buttons(vector<shared_ptr<Button>> menu_buttons, int selection)
+{
+    for(int i = 0; i < menu_buttons.size(); i++)
+    {
+        if(menu_buttons[i]->get_id() == selection)
+            menu_buttons[i]->set_selected(true); 
+        else
+            menu_buttons[i]->set_selected(false); 
+
+        menu_buttons[i]->draw();
+    }
+}
+
+int button_selection(int selection, int num_buttons)
+{
+    if(key_typed(UP_KEY) || key_typed(W_KEY))
+    {
+        selection -= 1;
+
+        if(selection < 0)
+            selection = 0;
+    }
+    if(key_typed(DOWN_KEY) || key_typed(S_KEY))
+    {
+        selection += 1;
+
+        if(selection > num_buttons - 1)
+            selection = num_buttons - 1;
+    }
+
+    return selection;
+}
+
 void CompanyIntroScreen::update()
 {
     point_2d pt = screen_center();
@@ -417,7 +441,7 @@ void TeamIntroScreen::update()
     draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
     draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
 
-    bool time_up = screen_timer(5, "ScreenTimer");
+    bool time_up = screen_timer(screen_time, "ScreenTimer");
 
     alpha = screen_effect(alpha, screen_time, "ScreenTimer", 2);
 
@@ -473,7 +497,7 @@ string get_extras_button_text(int id)
             text = "CREDITS";
             break;
         case 3:
-            text = "EXIT";
+            text = "BACK";
             break;
         default:
             break;
@@ -489,7 +513,7 @@ void MenuScreen::update()
 
     if(!run_once)
     {
-        stop_music();
+        //stop_music();
         for(int i = 0; i < num_buttons; i++)
         {
             string text = get_button_text(i + 1);
@@ -514,30 +538,9 @@ void MenuScreen::update()
     drawing_options scale = option_scale_bmp(2, 2);
     draw_bitmap(title, pt.x - bitmap_width(title)/2, 100, scale);
 
-    for(int i = 0; i < menu_buttons.size(); i++)
-    {
-        if(menu_buttons[i]->get_id() == selection)
-            menu_buttons[i]->set_selected(true); 
-        else
-            menu_buttons[i]->set_selected(false); 
+    draw_buttons(menu_buttons, selection);
+    selection = button_selection(selection, num_buttons);
 
-        menu_buttons[i]->draw();
-    }
-
-    if(key_typed(UP_KEY) || key_typed(W_KEY))
-    {
-        selection -= 1;
-
-        if(selection < 0)
-            selection = 0;
-    }
-    if(key_typed(DOWN_KEY) || key_typed(S_KEY))
-    {
-        selection += 1;
-
-        if(selection > num_buttons - 1)
-            selection = num_buttons - 1;
-    }
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         switch(selection)
@@ -588,7 +591,6 @@ void ExtraScreen::update()
 
     if(!run_once)
     {
-        //stop_music();
         for(int i = 0; i < num_buttons; i++)
         {
             string text = get_extras_button_text(i + 1);
@@ -612,31 +614,9 @@ void ExtraScreen::update()
     bitmap title = bitmap_named("Title");
     drawing_options scale = option_scale_bmp(2, 2);
     draw_bitmap(title, pt.x - bitmap_width(title)/2, 100, scale);
+    draw_buttons(menu_buttons, selection);
+    selection = button_selection(selection, num_buttons);
 
-    for(int i = 0; i < menu_buttons.size(); i++)
-    {
-        if(menu_buttons[i]->get_id() == selection)
-            menu_buttons[i]->set_selected(true); 
-        else
-            menu_buttons[i]->set_selected(false); 
-
-        menu_buttons[i]->draw();
-    }
-
-    if(key_typed(UP_KEY) || key_typed(W_KEY))
-    {
-        selection -= 1;
-
-        if(selection < 0)
-            selection = 0;
-    }
-    if(key_typed(DOWN_KEY) || key_typed(S_KEY))
-    {
-        selection += 1;
-
-        if(selection > num_buttons - 1)
-            selection = num_buttons - 1;
-    }
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         switch(selection)
@@ -644,7 +624,6 @@ void ExtraScreen::update()
             case 0:
                 {
                     play_sound_effect("Select");
-                    stop_music();
                     this->screen->change_state(new BackstoryScreen, "Backstory");
                 }
                 break;
@@ -704,6 +683,7 @@ void PreLevelScreen::update()
     string password = "Password: " + this->screen->current_level->get_level_password();
 
     clear_screen(COLOR_BLACK);
+    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
     draw_text(chapter_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(chapter_text, screen_font, font_size)/2, 20);
     draw_text(level_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(level_text, screen_font, font_size)/2, 80);
     draw_text(password, COLOR_WHITE, screen_font, font_size_password, pt.x - text_width(password, screen_font, font_size_password)/2, screen_height() - 30);
@@ -725,8 +705,39 @@ void PreLevelScreen::update()
         this->screen->change_state(new LevelScreen, "Level");
 }
 
+string get_pause_text(int id)
+{
+    string text = "";
+
+    switch (id)
+    {
+        case 1:
+            text = "CONTINUE";
+            break;
+        case 2:
+            text = "MENU";
+            break;
+        default:
+            break;
+    }
+
+    return text;
+}
+
 void LevelScreen::update()
 {
+    if(!run_once)
+    {
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_pause_text(i + 1);
+            shared_ptr<Button> test(new SmallButton(bitmap_named("ButtonSmall"), offset, i, text, 20, COLOR_BLACK, COLOR_RED));
+            offset += 60;
+            menu_buttons.push_back(test);
+        }
+
+        run_once = true;
+    }
     if(!pause)
     {
         this->screen->current_level->update();
@@ -741,11 +752,13 @@ void LevelScreen::update()
                 stop_timer("DanceTime");
                 if(this->screen->level_number < this->screen->max_levels)
                 {
+                    stop_music();
                     this->screen->level_number += 1;
                     this->screen->change_state(new PreLevelScreen, "Pre Level");
                 }
                 else
                 {
+                    stop_music();
                     this->screen->change_state(new WinScreen, "Win");
                 }
             }
@@ -754,10 +767,18 @@ void LevelScreen::update()
         {
             if(this->screen->current_level->is_player1_out_of_lives || this->screen->current_level->is_player2_out_of_lives)
             {
+                stop_music();
                 this->screen->level_number = 1;
                 this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
                 this->screen->change_state(new GameOverScreen, "GameOver");
             }
+        }
+
+        if(key_typed(RETURN_KEY) || key_typed(screen->pause_key))
+        {
+            pause_run_once = false;
+            pause = true;
+            pause_music();
         }
     }
     else
@@ -768,9 +789,53 @@ void LevelScreen::update()
             pause_run_once = true;
         }
         draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
+        draw_buttons(menu_buttons, selection);
+        selection = button_selection(selection, num_buttons);
+        
+        if(key_typed(RETURN_KEY) || key_typed(screen->pause_key))
+        {
+            switch(selection)
+            {
+                case 0:
+                    {
+                        pause = false;
+                        resume_music();
+                        break;
+                    }
+                case 1:
+                    {
+                        stop_music();
+                        this->screen->change_state(new MenuScreen, "Menu");
+                        break;
+                    }
+                default:
+                    break; 
+            }
+        }
+        
+
     }
 
     testing_input();
+}
+
+string get_gameover_text(int id)
+{
+    string text = "";
+
+    switch (id)
+    {
+        case 1:
+            text = "RETRY";
+            break;
+        case 2:
+            text = "MENU";
+            break;
+        default:
+            break;
+    }
+
+    return text;
 }
 
 void GameOverScreen::update()
@@ -778,12 +843,22 @@ void GameOverScreen::update()
     set_camera_x(0);
     set_camera_y(0);
     clear_screen(COLOR_BLACK);
+    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
 
-   if (!run_once)
+    if (!run_once)
     {
-        if (!sound_effect_playing("GameOver"))
-            play_sound_effect("GameOver"); 
         stop_music();
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_gameover_text(i + 1);
+            shared_ptr<Button> test(new SmallButton(bitmap_named("ButtonDark"), offset, i, text, 20, COLOR_WHITE, COLOR_RED));
+            offset += 60;
+            menu_buttons.push_back(test);
+        }
+
+        if (!sound_effect_playing("GameOver"))
+            play_sound_effect("GameOver");
+        
         run_once = true;
     }
 
@@ -796,39 +871,108 @@ void GameOverScreen::update()
     draw_text(game_over_text, font_color, screen_font, font_size, pt.x - text_width(game_over_text, screen_font, font_size)/2, (pt.y - text_height(game_over_text, screen_font, font_size)/2) - 300, option_to_screen());
 
     bitmap game_over = bitmap_named("GameOver");
-    fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
+    //fill_rectangle(COLOR_WHITE_SMOKE, pt.x - bitmap_width(game_over)/2 - 10, pt.y - bitmap_height(game_over)/2 - 10, bitmap_width(game_over) + 20, bitmap_height(game_over) + 20);
     draw_bitmap(game_over, pt.x - bitmap_width(game_over)/2, pt.y - bitmap_height(game_over)/2, option_to_screen());
+
+    draw_buttons(menu_buttons, selection);
+    selection = button_selection(selection, num_buttons);
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
-        this->screen->change_state(new MenuScreen, "Menu");
+        if (sound_effect_playing("GameOver"))
+            stop_sound_effect("GameOver");
+        stop_music();
+        switch(selection)
+        {
+            case 0:
+                {
+                    this->screen->change_state(new PreLevelScreen, "PreLevel");
+                    break;
+                }
+            case 1:
+                {
+                    this->screen->change_state(new MenuScreen, "Menu");
+                    break;
+                }
+            default:
+                break; 
+        }
     }
+}
+
+string get_win_text(int id)
+{
+    string text = "";
+
+    switch (id)
+    {
+        case 1:
+            text = "PLAY AGAIN";
+            break;
+        case 2:
+            text = "MENU";
+            break;
+        default:
+            break;
+    }
+
+    return text;
 }
 
 void WinScreen::update()
 {
     if (!run_once)
     {
+        stop_music();
         if (!sound_effect_playing("GameWin"))
             play_sound_effect("GameWin");    
-        stop_music();
+        
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_win_text(i + 1);
+            shared_ptr<Button> test(new SmallButton(bitmap_named("ButtonSmall"), offset, i, text, 20, COLOR_BLACK, COLOR_RED));
+            offset += 60;
+            menu_buttons.push_back(test);
+        }
         run_once = true;
     }
+
     string game_over_text = "Game Over";
     font screen_font = font_named("DefaultFont");
     int font_size = 15;
     color font_color = COLOR_WHITE_SMOKE;
 
     clear_screen(COLOR_BLACK);
+    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
     draw_text("You Won", font_color, screen_font, font_size, 800, 400, option_to_screen());
     draw_text("Good Job", font_color, screen_font, font_size, 800, 410, option_to_screen());
     draw_text("Press Enter to go to Menu", font_color, screen_font, font_size, 740, 420, option_to_screen());
-    
+
+    draw_buttons(menu_buttons, selection);
+    selection = button_selection(selection, num_buttons);
+
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
         this->screen->level_number = 1;
         this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-        this->screen->change_state(new MenuScreen, "Menu");
+        if (sound_effect_playing("GameOver"))
+            stop_sound_effect("GameOver");
+        stop_music();
+        switch(selection)
+        {
+            case 0:
+                {
+                    this->screen->change_state(new PreLevelScreen, "PreLevel");
+                    break;
+                }
+            case 1:
+                {
+                    this->screen->change_state(new MenuScreen, "Menu");
+                    break;
+                }
+            default:
+                break; 
+        }
     }
 }
 
@@ -841,6 +985,12 @@ void CreditsScreen::update()
     font screen_font = font_named("DefaultFont");
     color font_color = COLOR_WHITE;
 
+    if (!music_playing())
+    {
+        play_music("MenuMusic.mp3"); 
+        set_music_volume(0.2f);
+    }
+
     //draw_text("Credits", font_color, screen_font, 80, 600, 200, option_to_screen());
 
     int font_size = 30;
@@ -849,7 +999,7 @@ void CreditsScreen::update()
     string text3 = "Jiahao Zheng, Roy Chen";
     string text4 = "And";
     string text5 = "Lachlan Morgan";
-// more detail to be added on roles
+    // more detail to be added on roles
 
     draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
 
@@ -906,10 +1056,17 @@ void PasswordScreen::update()
         run_once = true;
     }
 
+    if (!music_playing())
+    {
+        play_music("MenuMusic.mp3"); 
+        set_music_volume(0.2f);
+    }
+
     string password = password_screen->update();
 
     if(password == "EXITEXITEXIT")
     {
+        play_sound_effect("Select");
         this->screen->change_state(new MenuScreen, "Menu");
     }
     else if(password == "ROACH")

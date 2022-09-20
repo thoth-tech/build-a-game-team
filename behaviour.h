@@ -164,7 +164,6 @@ class SnakeBehaviour : public Behaviour
                 face_player();
             
             this->snake_machine->set_facing_left(facing_left);
-
             fall_to_ground();
             this->snake_machine->update();
         };
