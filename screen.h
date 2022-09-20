@@ -263,7 +263,7 @@ class WinScreen : public ScreenState
     private:
         bool run_once = false;
         int num_buttons = 2;
-        int offset = 300;
+        int offset = 320;
         vector<shared_ptr<Button>> menu_buttons;
         int selection = 0;
 
@@ -927,6 +927,8 @@ string get_win_text(int id)
 
 void WinScreen::update()
 {
+    set_camera_x(0);
+    set_camera_y(0);
     if (!run_once)
     {
         stop_music();
@@ -943,16 +945,20 @@ void WinScreen::update()
         run_once = true;
     }
 
-    string game_over_text = "Game Over";
+    point_2d pt = screen_center();
+    string win_screen_text1 = "YOU WON";
+    string win_screen_text2 = "GOOD JOB";
     font screen_font = font_named("DefaultFont");
-    int font_size = 15;
+    int font_size = 80;
+    bitmap win_bitmap = bitmap_named("WinScreen");
     color font_color = COLOR_WHITE_SMOKE;
 
     clear_screen(COLOR_BLACK);
     draw_bitmap("MenubgDark", 0, 0, option_to_screen());
-    draw_text("You Won", font_color, screen_font, font_size, 800, 400, option_to_screen());
-    draw_text("Good Job", font_color, screen_font, font_size, 800, 410, option_to_screen());
-    draw_text("Press Enter to go to Menu", font_color, screen_font, font_size, 740, 420, option_to_screen());
+
+    draw_text(win_screen_text1, font_color, screen_font, font_size, pt.x - text_width(win_screen_text1, screen_font, font_size)/2, (pt.y - text_height(win_screen_text1, screen_font, font_size)/2) - 350, option_to_screen());
+    draw_bitmap(win_bitmap, pt.x - bitmap_width(win_bitmap)/2, 130, option_to_screen());
+    draw_text(win_screen_text2, font_color, screen_font, font_size - 20, pt.x - text_width(win_screen_text2, screen_font, font_size - 20)/2, (pt.y - text_height(win_screen_text2, screen_font, font_size - 20)/2) + 180, option_to_screen());
 
     draw_buttons(menu_buttons, selection);
     selection = button_selection(selection, num_buttons);
