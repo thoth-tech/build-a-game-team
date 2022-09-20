@@ -274,6 +274,8 @@ class Password
         string update()
         {
             clear_screen(COLOR_BLACK);
+            draw_bitmap("MenubgDark", 0, 0, option_to_screen());
+            
             for(int i = 0; i < keyboard.size(); i++)
             {
                 if(selection == i)
