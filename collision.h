@@ -200,12 +200,22 @@ void check_enemy_solid_block_collisions(vector<vector<shared_ptr<Block>>> solid_
 
                 if (collision == "Top")
                 {
+                    if(level_enemies[k]->get_ai()->get_is_flying())
+                    {
+                        level_enemies[k]->get_ai()->set_flying_up(true);
+                    }
+                    
                     level_enemies[k]->get_ai()->set_on_floor(true);
                     level_enemies[k]->get_ai()->set_y_value(solid_blocks[j][i]->get_top());
                     break;
                 }
                 else if (collision == "Bottom")
                 {
+                    if(level_enemies[k]->get_ai()->get_is_flying())
+                    {
+                        level_enemies[k]->get_ai()->set_flying_up(false);
+                    }
+
                     if (level_enemies[k]->get_ai()->is_on_floor())
                         break;
                 }

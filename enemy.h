@@ -45,7 +45,7 @@ class Enemy
             }
         };
 
-        void make_hitbox()
+        virtual void make_hitbox()
         {
             rectangle hitbox;
             hitbox.x = this->position.x;
@@ -55,7 +55,7 @@ class Enemy
             this->hitbox = hitbox;
         };
 
-        void update_hitbox()
+        virtual void update_hitbox()
         {
             point_2d current_position = sprite_position(this->enemy_sprite);
             this->hitbox.x = current_position.x;
@@ -214,4 +214,37 @@ class WaterRat : public Enemy
         };
 
         ~WaterRat(){};
+};
+
+class Fly : public Enemy
+{
+    public:
+        Fly(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players, string type) : Enemy (enemy_sprite, position, level_players)
+        {
+            std::shared_ptr<Behaviour> ai(new FlyBehaviour(enemy_sprite, type));
+            this->ai = ai;
+            point_2d pos = this->position;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~Fly(){};
+
+        void make_hitbox()
+        {
+            rectangle hitbox;
+            hitbox.x = this->position.x;
+            hitbox.y = this->position.y;
+            hitbox.height = sprite_height(this->enemy_sprite);
+            hitbox.width = sprite_width(this->enemy_sprite);
+            this->hitbox = hitbox;
+        };
+
+        void update_hitbox()
+        {
+            point_2d current_position = sprite_position(this->enemy_sprite);
+            this->hitbox.x = current_position.x;
+            this->hitbox.y = current_position.y;
+        };
 };

@@ -3,6 +3,9 @@
 #include "blobmachine.h"
 #include "bossmachine.h"
 #include "ratmachine.h"
+#include "flymachine.h"
+#include <random>
+
 #pragma once
 
 class Behaviour
@@ -10,6 +13,7 @@ class Behaviour
     protected:
         sprite enemy_sprite;
         bool facing_left = true;
+        bool flying_up = false;
         bool on_floor = true;
         bool is_flying = false;
         bool once = false;
@@ -44,6 +48,21 @@ class Behaviour
         bool is_on_floor()
         {
             return this->on_floor;
+        };
+
+        bool get_is_flying()
+        {
+            return this->is_flying;
+        };
+
+        bool get_flying_up()
+        {
+            return this->flying_up;
+        };
+
+        void set_flying_up(bool new_value)
+        {
+            this->flying_up = new_value;
         };
 
         void set_y_value(float val)
@@ -232,4 +251,72 @@ class WaterRatBehaviour : public Behaviour
             this->boss_machine->update();
         };
 
+};
+
+class FlyBehaviour : public Behaviour
+{
+    private:
+        std::shared_ptr<FlyMachine> fly_machine;
+        string type;
+
+    public:
+        FlyBehaviour(sprite enemy_sprite, string type) : Behaviour(enemy_sprite)
+        {
+            this->type = type;
+            this->is_flying = true;
+
+            if(type == "Green")
+            {
+                std::shared_ptr<FlyMachine> machine(new FlyMachine(new FlySide, enemy_sprite));
+                this->fly_machine = machine;
+            }
+            if(type == "Red")
+            {
+                std::shared_ptr<FlyMachine> machine(new FlyMachine(new FlyVertical, enemy_sprite));
+                this->fly_machine = machine;
+            }
+            if(type == "Purp")
+            {
+                std::shared_ptr<FlyMachine> machine(new FlyMachine(new FlyRandom, enemy_sprite));
+                this->fly_machine = machine;
+            }
+        };
+
+        ~FlyBehaviour()
+        {
+        };
+
+        void update() override
+        {
+            this->fly_machine->set_facing_left(facing_left);
+            this->fly_machine->set_flying_up(flying_up);
+            this->fly_machine->update();
+
+            if(type == "Purp")
+                face_random_direction();
+        };
+
+        void face_random_direction()
+        {
+            std::random_device rd;
+            std::mt19937 mt(rd());
+            std::uniform_real_distribution<double> dist(0.0, 100.0);
+            double choice1 = dist(mt);
+            double choice2 = dist(mt);
+
+            if(choice1 > 98)
+            {
+                if(facing_left)
+                    facing_left = false;
+                else
+                    facing_left = true;
+            }
+            if(choice2 > 98)
+            {
+                if(flying_up)
+                    flying_up = false;
+                else
+                    flying_up = true;
+            }
+        }
 };
