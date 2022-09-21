@@ -91,13 +91,13 @@ class Enemy
         int get_hp()
         {
             return this->hp;
-        }
+        };
 
         // Decrements enemy hp. 
         void take_damage(int decrement)
         {
             this->hp -= decrement;
-        }
+        };
 
         string test_collision(rectangle one)
         {
@@ -205,10 +205,9 @@ class WaterRat : public Enemy
     public:
         WaterRat(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
-            std::shared_ptr<Behaviour> ai(new WaterRatBehaviour(enemy_sprite));
+            std::shared_ptr<Behaviour> ai(new WaterRatBehaviour(enemy_sprite, level_players));
             this->ai = ai;
             point_2d pos = this->position;
-            pos.y = pos.y + 32;
             sprite_set_position(enemy_sprite, pos);
 
             make_hitbox();
