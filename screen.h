@@ -47,7 +47,7 @@ class Screen
         key_code input_key = F_KEY;
         key_code pause_key = H_KEY;
         int level_number = 1;
-        int max_levels = 5;
+        int max_levels = 8;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
