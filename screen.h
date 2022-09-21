@@ -862,13 +862,18 @@ void GameOverScreen::update()
             offset += 60;
             menu_buttons.push_back(test);
         }
-        play_sound_effect("Rain");
         if (!sound_effect_playing("GameOver"))
             play_sound_effect("GameOver");
         
         run_once = true;
     }
 
+    if(!sound_effect_playing("GameOver"))
+    {
+        if(!sound_effect_playing("Rain"))
+            play_sound_effect("Rain");
+    }
+        
     point_2d pt = screen_center();
     string game_over_text = "Game Over";
     font screen_font = font_named("DefaultFont");
