@@ -794,7 +794,6 @@ void LevelScreen::update()
             pause_run_once = true;
         }
         draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, 300, option_to_screen());
-        //draw_text("Pause", COLOR_WHITE, 800, 400, option_to_screen());
         draw_buttons(menu_buttons, selection);
         selection = button_selection(selection, num_buttons);
         

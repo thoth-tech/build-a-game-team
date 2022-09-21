@@ -1,5 +1,8 @@
 #include "splashkit.h"
 #include "snakemachine.h"
+#include "blobmachine.h"
+#include "bossmachine.h"
+#include "ratmachine.h"
 #pragma once
 
 class Behaviour
@@ -11,7 +14,6 @@ class Behaviour
         bool is_flying = false;
         bool once = false;
         
-
     public:
         Behaviour(sprite enemy_sprite)
         {
@@ -95,21 +97,20 @@ class RoachBehaviour : public Behaviour
 
             fall_to_ground();
         };
-
 };
 
 class BlobBehaviour : public Behaviour
 {
     private:
         vector<std::shared_ptr<Player>> level_players;
+        std::shared_ptr<BlobMachine> blob_machine;
 
     public:
-        BlobBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        BlobBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
-            if(facing_left)
-                sprite_start_animation(enemy_sprite, "LeftRun");
-            else
-                sprite_start_animation(enemy_sprite, "RightRun");
+            this->level_players = level_players;
+            std::shared_ptr<BlobMachine> machine(new BlobMachine(new BlobMove, enemy_sprite, level_players));
+            this->blob_machine = machine;
         };
         
         ~BlobBehaviour()
@@ -118,26 +119,9 @@ class BlobBehaviour : public Behaviour
 
         void update() override
         {
-            if(facing_left)
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, 3);
-            }
-            else
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, -3);
-            }
-
+            this->blob_machine->set_facing_left(facing_left);
             fall_to_ground();
+            this->blob_machine->update();
         };
 };
 
@@ -199,93 +183,53 @@ class SnakeBehaviour : public Behaviour
                 }
             }
         };
-
 };
 
 class RatBehaviour : public Behaviour
 {
     private:
         vector<std::shared_ptr<Player>> level_players;
+        std::shared_ptr<RatMachine> rat_machine;
 
     public:
         RatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
             this->level_players = level_players;
-            if(facing_left)
-                sprite_start_animation(enemy_sprite, "LeftRun");
-            else
-                sprite_start_animation(enemy_sprite, "RightRun");
-            
+            std::shared_ptr<RatMachine> machine(new RatMachine(new RatMove, enemy_sprite, level_players));
+            this->rat_machine = machine;
         };
         ~RatBehaviour()
         {
         };
         void update() override
         {
-            for(int i = 0; i < level_players.size(); i++)
-            {
-                
-            }
-            if(facing_left)
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, 3);
-            }
-            else
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, -3);
-            }
-
+            this->rat_machine->set_facing_left(facing_left);
             fall_to_ground();
+            this->rat_machine->update();
         };
-
 };
 
 class WaterRatBehaviour : public Behaviour
 {
+    private:
+        std::shared_ptr<BossMachine> boss_machine;
+        vector<std::shared_ptr<Player>> level_players;
+
     public:
-        WaterRatBehaviour(sprite enemy_sprite) : Behaviour(enemy_sprite)
+        WaterRatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
-            if(facing_left)
-                sprite_start_animation(enemy_sprite, "LeftRun");
-            else
-                sprite_start_animation(enemy_sprite, "RightRun");
-            
+            this->level_players = level_players;
+            std::shared_ptr<BossMachine> machine(new BossMachine(new BossMove, enemy_sprite, level_players));
+            this->boss_machine = machine;
         };
         ~WaterRatBehaviour()
         {
         };
         void update() override
         {
-            if(facing_left)
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, 3);
-            }
-            else
-            {
-                if(!once)
-                {
-                    update_animation("LeftRun", "RightRun");
-                    once = true;
-                }
-                sprite_set_dx(enemy_sprite, -3);
-            }
-
+            this->boss_machine->set_facing_left(facing_left);
             fall_to_ground();
+            this->boss_machine->update();
         };
 
 };
