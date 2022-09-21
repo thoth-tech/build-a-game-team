@@ -465,6 +465,44 @@ class Surf : public Level
         };
 };
 
+class Level6  : public Level
+{
+    public:
+        Level6(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 3;
+            this->files.push_back("levels/level6_1.txt");
+            this->files.push_back("levels/level6_2.txt");
+            this->files.push_back("levels/level6_3.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Jumpingworld!";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "JUMPW";
+            this->pre_level_image = bitmap_named("temp");
+        };
+};
+
+class Easy  : public Level
+{
+    public:
+        Easy(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 3;
+            this->files.push_back("levels/easy1.txt");
+            this->files.push_back("levels/easy2.txt");
+            this->files.push_back("levels/easy3.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Starting level";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "START";
+            this->pre_level_image = bitmap_named("temp");
+        };
+};
+
 class BlankLevel : public Level
 {
     public:
