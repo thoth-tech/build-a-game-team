@@ -280,6 +280,48 @@ class LevelOjectsMap
                         WaterRatBoss->get_ai()->set_facing_left(false);
                         level_enemies.push_back(WaterRatBoss);
                     }
+                    if(this->map_array[i][j] == 1411)
+                    {
+                        sprite green_fly = create_sprite("FlyGreen", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Green"));
+                        g_fly->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(g_fly);
+                    }
+                    if(this->map_array[i][j] == 1412)
+                    {
+                        sprite green_fly = create_sprite("FlyGreen", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Green"));
+                        g_fly->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(g_fly);
+                    }
+                    if(this->map_array[i][j] == 1413)
+                    {
+                        sprite green_fly = create_sprite("FlyRed", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Red"));
+                        g_fly->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(g_fly);
+                    }
+                    if(this->map_array[i][j] == 1414)
+                    {
+                        sprite green_fly = create_sprite("FlyRed", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Red"));
+                        g_fly->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(g_fly);
+                    }
+                    if(this->map_array[i][j] == 1415)
+                    {
+                        sprite green_fly = create_sprite("FlyPurp", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Purp"));
+                        g_fly->get_ai()->set_facing_left(true);
+                        level_enemies.push_back(g_fly);
+                    }
+                    if(this->map_array[i][j] == 1416)
+                    {
+                        sprite green_fly = create_sprite("FlyPurp", "FlyAnim");
+                        shared_ptr<Fly> g_fly(new Fly(green_fly, position, level_players, "Purp"));
+                        g_fly->get_ai()->set_facing_left(false);
+                        level_enemies.push_back(g_fly);
+                    }
                 }
 
             return level_enemies;
