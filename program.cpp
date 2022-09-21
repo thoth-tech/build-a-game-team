@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     create_timer("SpawnTimerP2");
     create_timer("DanceTime");
     create_timer("ScreenTimer");
+    create_timer("BackstoryTimer");
 
     vector<CellSheet> cell_sheets = make_cell_sheets(cell_sheet_names);
     std::vector<std::string> args(argv, argv + argc);
