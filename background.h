@@ -36,3 +36,12 @@ class DarkBackground : public Background
             images.push_back(bitmap_named("DarkBackground"));
         }
 };
+
+class SkyBackground : public Background
+{
+    public:
+        SkyBackground()
+        {
+            images.push_back(bitmap_named("BlueBackground"));
+        }
+};
