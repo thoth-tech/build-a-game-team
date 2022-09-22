@@ -440,6 +440,7 @@ class Level3 : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "CLIMB";
+            this->pre_level_side_text.push_back("Turn all those pipes!");
             this->pre_level_image = bitmap_named("temp");
         };
 };
@@ -460,6 +461,8 @@ class FourCorners : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "TEMPL";
+            this->pre_level_side_text.push_back("Turn the pipes...");
+            this->pre_level_side_text.push_back("...in every corner!");
             this->pre_level_image = bitmap_named("temp");
         };
 };
@@ -499,6 +502,8 @@ class Level6  : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "JUMPW";
+            this->pre_level_side_text.push_back("Jump for the pipe...");
+            this->pre_level_side_text.push_back("...But be careful");
             this->pre_level_image = bitmap_named("temp");
         };
 };
@@ -514,10 +519,12 @@ class Easy  : public Level
             this->files.push_back("levels/easy3.txt");
             make_level();
             this->level_music = music_named("LevelOne");
-            this->level_name = "Starting level";
+            this->level_name = "Easy...enough";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "EZPZ_";
+            this->pre_level_side_text.push_back("Climb to the top...");
+            this->pre_level_side_text.push_back("Watch out for snakes!");
             this->pre_level_image = bitmap_named("temp");
         };
 };
