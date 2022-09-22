@@ -547,6 +547,7 @@ class Mario  : public Level
             this->pre_level_side_text.push_back("I Get Here?..");
             this->pre_level_image = bitmap_named("temp");
             change_physics();
+            change_sprites();
         };
 
         void change_physics()
@@ -556,7 +557,28 @@ class Mario  : public Level
                 level_players[i]->max_jump_height = 200;
                 level_players[i]->jump_momentum_rate = 20;
             }
-        }
+        };
+
+        void change_sprites()
+        {
+            for(int i = 0; i < level_players.size(); i++)
+            {
+                if(i == 0)
+                {
+                    point_2d pos = level_players[i]->get_player_position();
+                    sprite player_sprite = create_sprite("redGuy", "PlayerAnim");
+                    sprite_set_position(player_sprite, pos);
+                    level_players[i]->set_player_sprite(player_sprite);
+                }
+                else
+                {
+                    point_2d pos = level_players[i]->get_player_position();
+                    sprite player_sprite = create_sprite("greenGuy", "PlayerAnim");
+                    sprite_set_position(player_sprite, pos);
+                    level_players[i]->set_player_sprite(player_sprite);
+                }
+            }
+        };
 };
 
 class BlankLevel : public Level
