@@ -292,6 +292,7 @@ class BackstoryScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        int current = 0;
 
     public:
         BackstoryScreen(){};
@@ -299,6 +300,14 @@ class BackstoryScreen : public ScreenState
         ~BackstoryScreen(){};
 
         void update() override;
+        string name()
+    {
+        if (current == 0)
+        {
+            return "MenubgDark";
+        }
+        return "backstory" + std::to_string(current) + ".png";
+    };
 };
 
 double fade_in(double alpha, double fade_length)
@@ -1041,9 +1050,18 @@ void BackstoryScreen::update()
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
-    clear_screen(COLOR_BLACK);
-    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
-    draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
+     if (screen_timer(5, "BackstoryTimer"))
+    {
+        point_2d pt = screen_center();
+        clear_screen(COLOR_BLACK);
+        current++;
+        current %= 4;
+    }
+    else
+    {
+        draw_bitmap(this->name(), 0, 0, option_to_screen());
+        draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
+    }
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
