@@ -47,7 +47,7 @@ class Screen
         key_code input_key = F_KEY;
         key_code pause_key = H_KEY;
         int level_number = 1;
-        int max_levels = 9;
+        int max_levels = 8;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -662,7 +662,11 @@ void PreLevelScreen::update()
     int font_size = 40;
     int font_size_password = 15;
     int font_size_side_text = 20;
-    string chapter_text = "Chapter " + std::to_string(this->screen->level_number);
+    string chapter_text = "";
+    if(this->screen->level_number < 40)
+        chapter_text = "Chapter " + std::to_string(this->screen->level_number);
+    else
+        chapter_text = "Chapter ???";
     
     if(!run_once)
     {
@@ -1138,6 +1142,10 @@ void PasswordScreen::update()
     }    
     else if(password == "ROACH")
     {
-        enter_level(9, screen);
+        enter_level(40, screen);
+    }
+    else if(password == "MARIO")
+    {
+        enter_level(50, screen);
     }
 }

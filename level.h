@@ -529,6 +529,36 @@ class Easy  : public Level
         };
 };
 
+class Mario  : public Level
+{
+    public:
+        Mario(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/mario1.txt");
+            this->files.push_back("levels/mario2.txt");
+            make_level();
+            this->level_music = music_named("Mario");
+            this->level_name = "M... Mario?..";
+            shared_ptr<Background> backg(new SkyBackground);
+            this->background = backg;
+            this->password = "MARIO";
+            this->pre_level_side_text.push_back("How Did");
+            this->pre_level_side_text.push_back("I Get Here?..");
+            this->pre_level_image = bitmap_named("temp");
+            change_physics();
+        };
+
+        void change_physics()
+        {
+            for(int i = 0; i < level_players.size(); i++)
+            {
+                level_players[i]->max_jump_height = 200;
+                level_players[i]->jump_momentum_rate = 20;
+            }
+        }
+};
+
 class BlankLevel : public Level
 {
     public:

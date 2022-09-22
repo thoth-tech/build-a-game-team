@@ -5,8 +5,8 @@
 #pragma once
 
 // Player Physics Variables
-#define MAX_JUMP_HEIGHT 127
-#define JUMP_MOMENTUM_RATE 8
+//#define MAX_JUMP_HEIGHT 127
+//#define JUMP_MOMENTUM_RATE 20
 #define MAX_FALL_SPEED 9
 #define FALL_RATE 0.8
 #define MAX_RUN_SPEED 5
@@ -60,6 +60,8 @@ class Player
         int id;
 
     public:
+        int max_jump_height = 127;
+        int jump_momentum_rate = 8;
         player_input input;
         int player_lives = 3;
         int player_health = 3;
@@ -602,7 +604,7 @@ void JumpRiseState::update()
         initial_y = sprite_y(player->get_player_sprite());
         sprite_set_dy(player->get_player_sprite(), -JUMP_START_SPEED);
         animation_routine(player, "LeftJump", "RightJump");
-        this->max_jump_height = MAX_JUMP_HEIGHT + abs((JUMP_MOMENTUM_RATE * sprite_dx(player->get_player_sprite())));
+        this->max_jump_height = this->player->max_jump_height + abs((this->player->jump_momentum_rate * sprite_dx(player->get_player_sprite())));
         run_once = true;
     }
 
@@ -657,9 +659,9 @@ void JumpFallState::update()
     if (player->is_on_floor())
     {
         sprite_set_dy(player->get_player_sprite(), 0);
-        if (player->is_facing_left() && key_down(LEFT_KEY) && player->is_on_floor())
+        if (player->is_facing_left() && key_down(player->input.left_key) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunLeft");
-        else if (!player->is_facing_left() && key_down(RIGHT_KEY) && player->is_on_floor())
+        else if (!player->is_facing_left() && key_down(player->input.right_key) && player->is_on_floor())
             this->player->change_state(new RunState(sprite_dx(player->get_player_sprite())), "RunRight");
         else
             this->player->change_state(new IdleState, "Idle");

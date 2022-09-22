@@ -58,11 +58,16 @@ shared_ptr<Level> get_next_level(int level, vector<CellSheet> cell_sheets, int t
                 next_level = combat;
                 break;
             }
-        
-        case 9:
+        case 40:
             {
-                shared_ptr<Level> def(new TooManyRoach(cell_sheets, tile_size, players));
-                next_level = def;
+                shared_ptr<Level> roach(new TooManyRoach(cell_sheets, tile_size, players));
+                next_level = roach;
+                break;
+            }
+        case 50:
+            {
+                shared_ptr<Level> mario(new Mario(cell_sheets, tile_size, players));
+                next_level = mario;
                 break;
             }
         default:
