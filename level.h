@@ -360,7 +360,7 @@ class Level0 : public Level
             this->level_name = "Fix those leaks!";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "Password";
+            this->password = "START";
             this->pre_level_image = bitmap_named("temp");
         };
 };
@@ -439,7 +439,7 @@ class Level3 : public Level
             this->level_name = "Turn and Climb Time";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "Password";
+            this->password = "CLIMB";
             this->pre_level_image = bitmap_named("temp");
         };
 };
@@ -517,7 +517,7 @@ class Easy  : public Level
             this->level_name = "Starting level";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "START";
+            this->password = "EZPZ";
             this->pre_level_image = bitmap_named("temp");
         };
 };
