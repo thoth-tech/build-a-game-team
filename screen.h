@@ -1052,7 +1052,6 @@ void BackstoryScreen::update()
 
      if (screen_timer(5, "BackstoryTimer"))
     {
-        point_2d pt = screen_center();
         clear_screen(COLOR_BLACK);
         current++;
         current %= 4;
