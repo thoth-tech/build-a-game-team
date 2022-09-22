@@ -2,6 +2,8 @@ ANIM, PlayerAnim, player.txt
 BITMAP,purpleGuy,PurpleGuy.png, 32, 64, 4, 8, 32 
 BITMAP,blueGuy,BlueGuy.png, 32, 64, 4, 8, 32
 BITMAP,pinkGirl,PinkGirl.png, 32, 64, 4, 8, 32
+BITMAP,redGuy,RedGuy.png, 32, 64, 4, 8, 32
+BITMAP,greenGuy,GreenGuy.png, 32, 64, 4, 8, 32
 
 SOUND, Jump, Jump.wav
 SOUND, HeadHit, HeadHit.wav

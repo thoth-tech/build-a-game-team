@@ -272,6 +272,11 @@ class Player
         {
             return this->held_pipe;
         };
+
+        void set_player_sprite(sprite new_sprite)
+        {
+            this->player_sprite = new_sprite;
+        };
 };
 
 // Idle State Class
