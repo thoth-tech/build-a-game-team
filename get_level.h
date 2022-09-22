@@ -54,6 +54,13 @@ shared_ptr<Level> get_next_level(int level, vector<CellSheet> cell_sheets, int t
             }
         case 8:
             {
+                shared_ptr<Level> combat(new CombatLevel(cell_sheets, tile_size, players));
+                next_level = combat;
+                break;
+            }
+        
+        case 9:
+            {
                 shared_ptr<Level> def(new TooManyRoach(cell_sheets, tile_size, players));
                 next_level = def;
                 break;
