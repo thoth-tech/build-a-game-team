@@ -47,7 +47,7 @@ class Screen
         key_code input_key = F_KEY;
         key_code pause_key = H_KEY;
         int level_number = 1;
-        int max_levels = 8;
+        int max_levels = 9;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -1104,20 +1104,40 @@ void PasswordScreen::update()
         play_sound_effect("Select");
         this->screen->change_state(new MenuScreen, "Menu");
     }
-    else if(password == "ROACH")
+    else if(password == "START")
+    {
+        enter_level(1, screen);
+    }
+    else if(password == "MULTI")
     {
         enter_level(2, screen);
     }
-    else if(password == "SURFN")
+    else if(password == "EZPZ_")
+    {
+        enter_level(3, screen);
+    }
+    else if(password == "CLIMB")
+    {
+        enter_level(4, screen);
+    }
+    else if(password == "JUMPW")
     {
         enter_level(5, screen);
     }
     else if(password == "TEMPL")
     {
-        enter_level(4, screen);
+        enter_level(6, screen);
     }
-    else if(password == "MULTI")
+    else if(password == "SURFN")
     {
-        enter_level(1, screen);
+        enter_level(7, screen);
+    }
+    else if(password == "FIGHT")
+    {
+        enter_level(8, screen);
+    }    
+    else if(password == "ROACH")
+    {
+        enter_level(9, screen);
     }
 }

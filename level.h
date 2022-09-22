@@ -517,7 +517,7 @@ class Easy  : public Level
             this->level_name = "Starting level";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
-            this->password = "EZPZ";
+            this->password = "EZPZ_";
             this->pre_level_image = bitmap_named("temp");
         };
 };
