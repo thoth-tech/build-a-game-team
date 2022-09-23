@@ -371,10 +371,10 @@ class MultiPipe : public Level
         MultiPipe(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
         {
             this->level_layers = 4;
-            this->files.push_back("1.txt");
-            this->files.push_back("2.txt");
-            this->files.push_back("3.txt");
-            this->files.push_back("4.txt");
+            this->files.push_back("levels/multi_1.txt");
+            this->files.push_back("levels/multi_2.txt");
+            this->files.push_back("levels/multi_3.txt");
+            this->files.push_back("levels/multi_4.txt");
             make_level();
             this->level_music = music_named("LevelOne");
             this->level_name = "Multi-Pipe Madness";

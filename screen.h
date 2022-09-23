@@ -185,6 +185,11 @@ class PasswordScreen : public ScreenState
 {
     private:
         bool run_once = false;
+        bool stage_1 = true;
+        int num_buttons = 3;
+        int offset = -100;
+        vector<shared_ptr<Button>> menu_buttons;
+        int selection = 0;
         shared_ptr<Password> password_screen;
 
     public:
@@ -1086,12 +1091,41 @@ void enter_level(int level_number, Screen* screen)
     screen->change_state(new PreLevelScreen, "Pre Level");
 }
 
+string get_password_text(int id)
+{
+    string text = "";
+
+    switch (id)
+    {
+        case 1:
+            text = "1 PLAYER";
+            break;
+        case 2:
+            text = "2 PLAYER";
+            break;
+        case 3:
+            text = "MENU";
+            break;
+        default:
+            break;
+    }
+
+    return text;
+}
+
 void PasswordScreen::update()
 {
     if(!run_once)
     {
         shared_ptr<Password> pass(new Password);
         password_screen = pass;
+        for(int i = 0; i < num_buttons; i++)
+        {
+            string text = get_password_text(i + 1);
+            shared_ptr<Button> test(new SmallButton(bitmap_named("ButtonDark"), offset, i, text, 20, COLOR_BLACK, COLOR_RED));
+            offset += 80;
+            menu_buttons.push_back(test);
+        }
         run_once = true;
     }
 
@@ -1101,51 +1135,89 @@ void PasswordScreen::update()
         set_music_volume(0.2f);
     }
 
-    string password = password_screen->update();
+    if(stage_1)
+    {
+        clear_screen(COLOR_BLACK);
+        draw_bitmap("MenubgDark", 0, 0, option_to_screen());
+        draw_buttons(menu_buttons, selection);
+        selection = button_selection(selection, num_buttons);
 
-    if(password == "EXITEXITEXIT")
-    {
-        play_sound_effect("Select");
-        this->screen->change_state(new MenuScreen, "Menu");
+        if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
+        {
+            play_sound_effect("Select");
+            switch(selection)
+            {
+                case 0:
+                    {
+                        this->screen->set_players(1);
+                        stage_1 = false;
+                        break;
+                    }
+                case 1:
+                    {
+                        this->screen->set_players(2);
+                        stage_1 = false;
+                        break;
+                    }
+                case 2:
+                    {
+                        this->screen->change_state(new MenuScreen, "Menu");
+                        break;
+                    }
+                default:
+                    break; 
+            }
+        }
+
     }
-    else if(password == "START")
+    else
     {
-        enter_level(1, screen);
-    }
-    else if(password == "MULTI")
-    {
-        enter_level(2, screen);
-    }
-    else if(password == "EZPZ_")
-    {
-        enter_level(3, screen);
-    }
-    else if(password == "CLIMB")
-    {
-        enter_level(4, screen);
-    }
-    else if(password == "JUMPW")
-    {
-        enter_level(5, screen);
-    }
-    else if(password == "TEMPL")
-    {
-        enter_level(6, screen);
-    }
-    else if(password == "SURFN")
-    {
-        enter_level(7, screen);
-    }
-    else if(password == "FIGHT")
-    {
-        enter_level(8, screen);
-    }    
-    else if(password == "ROACH")
-    {
-        enter_level(40, screen);
-    }
-    else if(password == "MARIO")
-    {
-        enter_level(50, screen);
+        string password = password_screen->update();
+
+        if(password == "EXITEXITEXIT")
+        {
+            play_sound_effect("Select");
+            this->screen->change_state(new MenuScreen, "Menu");
+        }
+        else if(password == "START")
+        {
+            enter_level(1, screen);
+        }
+        else if(password == "MULTI")
+        {
+            enter_level(2, screen);
+        }
+        else if(password == "EZPZ_")
+        {
+            enter_level(3, screen);
+        }
+        else if(password == "CLIMB")
+        {
+            enter_level(4, screen);
+        }
+        else if(password == "JUMPW")
+        {
+            enter_level(5, screen);
+        }
+        else if(password == "TEMPL")
+        {
+            enter_level(6, screen);
+        }
+        else if(password == "SURFN")
+        {
+            enter_level(7, screen);
+        }
+        else if(password == "FIGHT")
+        {
+            enter_level(8, screen);
+        }    
+        else if(password == "ROACH")
+        {
+            enter_level(40, screen);
+        }
+        else if(password == "MARIO")
+        {
+            enter_level(50, screen);
+        }
     }
 }
