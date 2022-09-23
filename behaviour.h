@@ -4,6 +4,7 @@
 #include "bossmachine.h"
 #include "ratmachine.h"
 #include "flymachine.h"
+#include "tentaclemachine.h"
 #include <random>
 
 #pragma once
@@ -319,4 +320,29 @@ class FlyBehaviour : public Behaviour
                     flying_up = true;
             }
         }
+};
+
+class TentacleBehaviour : public Behaviour
+{
+    private:
+        std::shared_ptr<TentacleMachine> tentacle_machine;
+        vector<std::shared_ptr<Player>> level_players;
+
+    public:
+        TentacleBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
+        {
+            this->level_players = level_players;
+            std::shared_ptr<TentacleMachine> machine(new TentacleMachine(new TentacleIdle, enemy_sprite, level_players));
+            this->tentacle_machine = machine;
+        };
+        ~TentacleBehaviour()
+        {
+        };
+        void update() override
+        {
+            this->tentacle_machine->set_facing_left(facing_left);
+            fall_to_ground();
+            this->tentacle_machine->update();
+        };
+
 };
