@@ -19,7 +19,7 @@
 | S Key | Crouch |
 | F Key | Attack/Interact |
 
-### **Player 1**  
+### **Player 2**  
 
 | Input | Description |     
 | --- | ----------- |   
