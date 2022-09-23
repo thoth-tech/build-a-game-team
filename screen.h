@@ -911,6 +911,8 @@ void GameOverScreen::update()
     {
         if (sound_effect_playing("GameOver"))
             stop_sound_effect("GameOver");
+        if (sound_effect_playing("Rain"))
+            stop_sound_effect("Rain");
         stop_music();
         switch(selection)
         {
