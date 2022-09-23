@@ -47,7 +47,7 @@ class Screen
         key_code input_key = F_KEY;
         key_code pause_key = H_KEY;
         int level_number = 1;
-        int max_levels = 8;
+        int max_levels = 9;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -911,6 +911,8 @@ void GameOverScreen::update()
     {
         if (sound_effect_playing("GameOver"))
             stop_sound_effect("GameOver");
+        if (sound_effect_playing("Rain"))
+            stop_sound_effect("Rain");
         stop_music();
         switch(selection)
         {
@@ -1203,13 +1205,17 @@ void PasswordScreen::update()
         {
             enter_level(6, screen);
         }
-        else if(password == "SURFN")
+        else if(password == "MOUSE")
         {
             enter_level(7, screen);
         }
-        else if(password == "FIGHT")
+        else if(password == "SURFN")
         {
             enter_level(8, screen);
+        }
+        else if(password == "FIGHT")
+        {
+            enter_level(9, screen);
         }    
         else if(password == "ROACH")
         {
