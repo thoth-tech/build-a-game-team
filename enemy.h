@@ -248,3 +248,19 @@ class Fly : public Enemy
             this->hitbox.y = current_position.y;
         };
 };
+
+class Tentacle : public Enemy
+{
+    public:
+        Tentacle(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
+        {
+            std::shared_ptr<Behaviour> ai(new TentacleBehaviour(enemy_sprite, level_players));
+            this->ai = ai;
+            point_2d pos = this->position;
+            sprite_set_position(enemy_sprite, pos);
+
+            make_hitbox();
+        };
+
+        ~Tentacle(){};
+};

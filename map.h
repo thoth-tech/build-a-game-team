@@ -322,6 +322,12 @@ class LevelOjectsMap
                         g_fly->get_ai()->set_facing_left(false);
                         level_enemies.push_back(g_fly);
                     }
+                    if(this->map_array[i][j] == 1417)
+                    {
+                        sprite tent = create_sprite("Tentacle", "TentacleAnim");
+                        shared_ptr<Tentacle> tentcle(new Tentacle(tent, position, level_players));
+                        level_enemies.push_back(tentcle);
+                    }
                 }
 
             return level_enemies;

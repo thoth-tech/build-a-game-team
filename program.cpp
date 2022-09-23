@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     load_resource_bundle("blob", "blobbundle.txt");
     load_resource_bundle("fly", "flybundle.txt");
     load_resource_bundle("waterRat", "waterRatbundle.txt");
+    load_resource_bundle("tentacle", "tentaclebundle.txt");
 
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
     
@@ -148,6 +149,7 @@ int main(int argc, char *argv[])
     free_resource_bundle("blob");
     free_resource_bundle("fly");
     free_resource_bundle("waterRat");
+    free_resource_bundle("tentacle");
     free_all_timers();
     return 0;
 }
