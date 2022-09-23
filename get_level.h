@@ -48,11 +48,17 @@ shared_ptr<Level> get_next_level(int level, vector<CellSheet> cell_sheets, int t
             }
         case 7:
             {
+                shared_ptr<Level> rats(new Rats(cell_sheets, tile_size, players));
+                next_level = rats;
+                break;
+            }
+        case 8:
+            {
                 shared_ptr<Level> surfin(new Surf(cell_sheets, tile_size, players));
                 next_level = surfin;
                 break;
             }
-        case 8:
+        case 9:
             {
                 shared_ptr<Level> combat(new CombatLevel(cell_sheets, tile_size, players));
                 next_level = combat;

@@ -361,7 +361,7 @@ class Level0 : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "START";
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level0");
         };
 };
 
@@ -467,6 +467,26 @@ class FourCorners : public Level
         };
 };
 
+class Rats : public Level
+{
+    public:
+        Rats(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/rats0.txt");
+            this->files.push_back("levels/rats1.txt");
+            make_level();
+            this->level_music = music_named("LevelOne");
+            this->level_name = "Rats'Trap";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "MOUSE";
+            this->pre_level_side_text.push_back("Thoth Tech's acolytes...");
+            this->pre_level_side_text.push_back("This is a trap!");
+            this->pre_level_image = bitmap_named("temp");
+        };
+};
+
 class Surf : public Level
 {
     public:
@@ -483,7 +503,7 @@ class Surf : public Level
             this->password = "SURFN";
             this->pre_level_side_text.push_back("Surfin' through the");
             this->pre_level_side_text.push_back("Slime");
-            this->pre_level_image = bitmap_named("SlimeSurf");
+            this->pre_level_image = bitmap_named("surf");
         };
 };
 
