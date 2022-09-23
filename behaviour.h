@@ -239,7 +239,7 @@ class WaterRatBehaviour : public Behaviour
         WaterRatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
             this->level_players = level_players;
-            std::shared_ptr<BossMachine> machine(new BossMachine(new BossMove, enemy_sprite, level_players));
+            std::shared_ptr<BossMachine> machine(new BossMachine(new BossSpotPlayer, enemy_sprite, level_players));
             this->boss_machine = machine;
         };
         ~WaterRatBehaviour()

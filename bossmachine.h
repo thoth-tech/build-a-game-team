@@ -120,3 +120,178 @@ void BossMove::update()
         set_proper_direction(boss_sprite, "RightRun");
     }
 }
+
+class BossRise : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossRise(){};
+
+        ~BossRise(){};
+
+        void update() override;
+};
+
+void BossRise::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 3);
+        set_proper_direction(boss_sprite, "LeftRise");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, -3);
+        set_proper_direction(boss_sprite, "RightRise");
+    }
+}
+
+class BossSpotPlayer : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossSpotPlayer(){};
+
+        ~BossSpotPlayer(){};
+
+        void update() override;
+};
+
+void BossSpotPlayer::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 3);
+        set_proper_direction(boss_sprite, "LeftSpotPlayer");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, -3);
+        set_proper_direction(boss_sprite, "RightSpotPlayer");
+    }
+}
+
+class BossBattleCry : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossBattleCry(){};
+
+        ~BossBattleCry(){};
+
+        void update() override;
+};
+
+void BossBattleCry::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 0);
+        set_proper_direction(boss_sprite, "LeftBattleCry");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, 0);
+        set_proper_direction(boss_sprite, "RightBattleCry");
+    }
+}
+
+
+class BossAttack : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossAttack(){};
+
+        ~BossAttack(){};
+
+        void update() override;
+};
+
+void BossAttack::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 3);
+        set_proper_direction(boss_sprite, "LeftAttack");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, -3);
+        set_proper_direction(boss_sprite, "RightAttack");
+    }
+}
+
+class BossDecend : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossDecend(){};
+
+        ~BossDecend(){};
+
+        void update() override;
+};
+
+void BossDecend::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 3);
+        set_proper_direction(boss_sprite, "LeftDecend");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, -3);
+        set_proper_direction(boss_sprite, "RightDecend");
+    }
+}
+
+class BossDying : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossDying(){};
+
+        ~BossDying(){};
+
+        void update() override;
+};
+
+void BossDying::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 0);
+        set_proper_direction(boss_sprite, "LeftDying");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, 0);
+        set_proper_direction(boss_sprite, "RightDying");
+    }
+}
