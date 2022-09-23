@@ -215,7 +215,8 @@ class RatBehaviour : public Behaviour
         RatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
             this->level_players = level_players;
-            std::shared_ptr<RatMachine> machine(new RatMachine(new RatMove, enemy_sprite, level_players));
+            //this->on_floor = false;
+            std::shared_ptr<RatMachine> machine(new RatMachine(new RatCrawl, enemy_sprite, level_players));
             this->rat_machine = machine;
         };
         ~RatBehaviour()
@@ -226,7 +227,7 @@ class RatBehaviour : public Behaviour
             this->rat_machine->set_facing_left(facing_left);
             fall_to_ground();
             this->rat_machine->update();
-        };
+        };     
 };
 
 class WaterRatBehaviour : public Behaviour
