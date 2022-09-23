@@ -665,6 +665,7 @@ void PreLevelScreen::update()
     font screen_font = font_named("DefaultFont");
     point_2d pt = screen_center();
     int font_size = 40;
+    int font_size_chapter = 30;
     int font_size_password = 15;
     int font_size_side_text = 20;
     string chapter_text = "";
@@ -691,7 +692,7 @@ void PreLevelScreen::update()
 
         vector<string> side_text = this->screen->current_level->get_pre_level_text();
 
-        shared_ptr<TextEffect> temp(new TextEffect(side_text, screen_center().x - bitmap_width(image)/2, 730, screen_font, font_size_side_text));
+        shared_ptr<TextEffect> temp(new TextEffect(side_text, screen_center().x - bitmap_width(image)/2, 740, screen_font, font_size_side_text));
         text_effect = temp;
 
         run_once = true;
@@ -702,11 +703,11 @@ void PreLevelScreen::update()
 
     clear_screen(COLOR_BLACK);
     draw_bitmap("MenubgDark", 0, 0, option_to_screen());
-    draw_text(chapter_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(chapter_text, screen_font, font_size)/2, 20);
-    draw_text(level_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(level_text, screen_font, font_size)/2, 80);
+    draw_text(chapter_text, COLOR_WHITE, screen_font, font_size_chapter, pt.x - text_width(chapter_text, screen_font, font_size)/2, 20);
+    draw_text(level_text, COLOR_WHITE, screen_font, font_size, pt.x - text_width(level_text, screen_font, font_size)/2, 100);
     draw_text(password, COLOR_WHITE, screen_font, font_size_password, pt.x - text_width(password, screen_font, font_size_password)/2, screen_height() - 30);
 
-    draw_bitmap(image, pt.x - bitmap_width(image)/2, pt.y - bitmap_height(image)/2 - 30, option_to_screen());
+    draw_bitmap(image, pt.x - bitmap_width(image)/2, pt.y - bitmap_height(image)/2 + 10, option_to_screen());
 
     text_effect->update();
 
