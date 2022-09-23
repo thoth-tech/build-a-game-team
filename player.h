@@ -727,12 +727,18 @@ void AttackState::update()
     if (!run_once)
     {
         sprite_set_dx(player_sprite, 0);
-        sprite_set_dy(player_sprite, 0);
+        if (player->is_on_floor())
+            sprite_set_dy(player_sprite, 0);
         animation_routine(player, "LeftAttack", "RightAttack");
         run_once = true;
     }
     player_draw_pipe(player);
     draw_sprite(player_sprite);
+    if (player->is_on_floor())
+        sprite_set_dy(player->get_player_sprite(), 0);
+    else
+        sprite_fall(player->get_player_sprite());
+
     if (sprite_animation_has_ended(player_sprite))
         this->player->change_state(new IdleState, "Idle");
     update_sprite(player_sprite);
