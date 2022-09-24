@@ -50,5 +50,12 @@ BITMAP, WinScreen, winscreen.png
 
 BITMAP, temp, temp540.png
 BITMAP, SlimeSurf, slimesurfin.png
-BITMAP, level0, level0.png
-BITMAP, surf, surf.png
+BITMAP, level1, level1.png
+BITMAP, level2, level2.png
+BITMAP, level3, level3.png
+BITMAP, level4, level4.png
+BITMAP, level5, level5.png
+BITMAP, level6, level6.png
+BITMAP, level7, level7.png
+BITMAP, level8, level8.png
+BITMAP, level9, level9.png
