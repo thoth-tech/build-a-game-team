@@ -361,7 +361,7 @@ class Level0 : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "START";
-            this->pre_level_image = bitmap_named("level0");
+            this->pre_level_image = bitmap_named("level1");
         };
 };
 
@@ -384,7 +384,7 @@ class MultiPipe : public Level
             this->pre_level_side_text.push_back("Into The Sewers..");
             this->pre_level_side_text.push_back("Hoping To Find..");
             this->pre_level_side_text.push_back("The Answers..");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level2");
         };
 };
 
@@ -403,7 +403,7 @@ class CombatLevel : public Level
             this->background = backg;
             this->password = "FIGHT";
             this->pre_level_side_text.push_back("Fight your way out!");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level9");
         };
 };
 
@@ -441,7 +441,7 @@ class Level3 : public Level
             this->background = backg;
             this->password = "CLIMB";
             this->pre_level_side_text.push_back("Turn all those pipes!");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level4");
         };
 };
 
@@ -463,7 +463,7 @@ class FourCorners : public Level
             this->password = "TEMPL";
             this->pre_level_side_text.push_back("Turn the pipes...");
             this->pre_level_side_text.push_back("...in every corner!");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level6");
         };
 };
 
@@ -483,7 +483,7 @@ class Rats : public Level
             this->password = "MOUSE";
             this->pre_level_side_text.push_back("Thoth Tech's acolytes...");
             this->pre_level_side_text.push_back("This is a trap!");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level7");
         };
 };
 
@@ -503,7 +503,7 @@ class Surf : public Level
             this->password = "SURFN";
             this->pre_level_side_text.push_back("Surfin' through the");
             this->pre_level_side_text.push_back("Slime");
-            this->pre_level_image = bitmap_named("surf");
+            this->pre_level_image = bitmap_named("level8");
         };
 };
 
@@ -524,7 +524,7 @@ class Level6  : public Level
             this->password = "JUMPW";
             this->pre_level_side_text.push_back("Jump for the pipe...");
             this->pre_level_side_text.push_back("...But be careful");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level5");
         };
 };
 
@@ -545,7 +545,7 @@ class Easy  : public Level
             this->password = "EZPZ_";
             this->pre_level_side_text.push_back("Climb to the top...");
             this->pre_level_side_text.push_back("Watch out for snakes!");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("level3");
         };
 };
 
