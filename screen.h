@@ -1062,7 +1062,7 @@ void BackstoryScreen::update()
     int font_size = 80;
     color font_color = COLOR_WHITE_SMOKE;
 
-     if (screen_timer(5, "BackstoryTimer"))
+     if (screen_timer(8, "BackstoryTimer"))
     {
         clear_screen(COLOR_BLACK);
         current++;
