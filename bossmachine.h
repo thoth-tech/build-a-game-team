@@ -235,6 +235,8 @@ void BossIdle::update()
 
     for(int i = 0; i < players.size(); i++)
     {
+        if (!sound_effect_playing("BossIdle"))
+            play_sound_effect("BossIdle");
         point_2d player_pos = to_screen(sprite_position(players[i]->get_player_sprite()));
         point_2d boss_pos = to_screen(sprite_position(boss_sprite));
 
@@ -352,6 +354,8 @@ void BossMoveBackwards::update()
 
 void BossRise::update()
 {
+    if (!sound_effect_playing("BossRise"))
+            play_sound_effect("BossRise");
     sprite boss_sprite = this->boss->get_sprite();
     sprite_set_dx(boss_sprite, 0);
 
@@ -371,6 +375,8 @@ void BossRise::update()
 
 void BossSpotPlayer::update()
 {
+    if (!sound_effect_playing("BossSpot"))
+            play_sound_effect("BossSpot");
     sprite boss_sprite = this->boss->get_sprite();
     vector<std::shared_ptr<Player>> players = this->boss->get_level_players();
 
@@ -385,6 +391,8 @@ void BossSpotPlayer::update()
 
 void BossBattleCry::update()
 {
+    if (!sound_effect_playing("BossCry"))
+            play_sound_effect("BossCry");
     sprite boss_sprite = this->boss->get_sprite();
 
     if(this->boss->get_facing_left())
@@ -407,6 +415,8 @@ void BossBattleCry::update()
 
 void BossAttack::update()
 {
+    if (!sound_effect_playing("BossAttack"))
+        play_sound_effect("BossAttack");
     sprite boss_sprite = this->boss->get_sprite();
     vector<std::shared_ptr<Player>> players = this->boss->get_level_players(); 
 
