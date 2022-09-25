@@ -43,7 +43,6 @@ class Enemy
                         sprite_replay_animation(enemy_sprite);
                     update_sprite(enemy_sprite);
                     update_hitbox();
-                    draw_rectangle(COLOR_GREEN, hitbox);
                 }
             }
         };
@@ -272,7 +271,6 @@ class WaterRat : public Enemy
                 sprite_replay_animation(enemy_sprite);
             update_sprite(enemy_sprite);
             update_hitbox();
-            draw_rectangle(COLOR_GREEN, hitbox);
         };
 
         void check_health()
