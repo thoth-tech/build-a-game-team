@@ -420,7 +420,7 @@ class TooManyRoach : public Level
             this->background = backg;
             this->password = "ROACH";
             this->pre_level_side_text.push_back("Never Too Many");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("roachpl");
         };
 };
 
