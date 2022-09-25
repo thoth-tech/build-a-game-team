@@ -538,7 +538,7 @@ class Easy  : public Level
             this->files.push_back("levels/easy2.txt");
             this->files.push_back("levels/easy3.txt");
             make_level();
-            this->level_music = music_named("LevelOne");
+            this->level_music = music_named("MenuMusic.mp3");//menu
             this->level_name = "Easy...enough";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
