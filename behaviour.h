@@ -234,10 +234,35 @@ class RatBehaviour : public Behaviour
         };
         void update() override
         {
+            random_actions();
             this->rat_machine->set_facing_left(facing_left);
             fall_to_ground();
             this->rat_machine->update();
-        };     
+        };
+
+        void random_actions()
+        {
+            if(this->rat_machine->get_state_type() == "Crawl")
+            {
+                std::random_device rd;
+                std::mt19937 mt(rd());
+                std::uniform_real_distribution<double> dist(0.0, 1000.0);
+                double choice1 = dist(mt);
+                double choice2 = dist(mt);
+
+                if(choice1 > 990)
+                {
+                    this->rat_machine->change_state(new RatIdle, "Idle");
+                }
+                if(choice2 > 980)
+                {
+                    if(this->facing_left)
+                        this->facing_left = false;
+                    else
+                        this->facing_left = true;
+                }
+            }
+        }
 };
 
 class WaterRatBehaviour : public Behaviour
