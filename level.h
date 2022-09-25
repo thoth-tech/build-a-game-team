@@ -193,6 +193,21 @@ class Level
             {
                 if (rect_on_screen(level_enemies[i]->get_enemy_hitbox()))
                     level_enemies[i]->update();
+                
+                if(level_enemies[i]->get_is_boss())
+                {
+                    if(level_enemies[i]->get_dead())
+                    {
+                        player1_complete = true;
+                        player2_complete = true;
+
+                        for(int i = 0; i < level_players.size(); i++)
+                        {
+                            if(level_players[i]->get_state_type() != "Dance")
+                                level_players[i]->change_state(new DanceState, "Dance");
+                        }
+                    }
+                }
             }
 
             draw_layers(level_layers, 1);

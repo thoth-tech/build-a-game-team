@@ -11,7 +11,9 @@ class Enemy
         point_2d position;
         rectangle hitbox;
         bool is_dead;
-        int hp; // Can set HP on any enemy if you choose to. Only set value at child class.
+        int hp;
+        bool is_vulnerable = true;
+        bool is_boss = false;
         std::shared_ptr<Behaviour> ai;
         vector<std::shared_ptr<Player>> level_players;
 
@@ -41,6 +43,7 @@ class Enemy
                         sprite_replay_animation(enemy_sprite);
                     update_sprite(enemy_sprite);
                     update_hitbox();
+                    draw_rectangle(COLOR_GREEN, hitbox);
                 }
             }
         };
@@ -87,6 +90,21 @@ class Enemy
             return this->is_dead;
         };
 
+        void set_vulnerable(bool new_value)
+        {
+            this->is_vulnerable = new_value;
+        };
+
+        bool get_vulnerable()
+        {
+            return this->is_vulnerable;
+        };
+
+        bool get_is_boss()
+        {
+            return this->is_boss;
+        };
+
         // Returns current enemy hp.
         int get_hp()
         {
@@ -97,6 +115,11 @@ class Enemy
         void take_damage(int decrement)
         {
             this->hp -= decrement;
+        };
+
+        string get_state_type()
+        {
+            return this->ai->get_state_type();
         };
 
         string test_collision(rectangle one)
@@ -202,11 +225,17 @@ class Rat : public Enemy
 
 class WaterRat : public Enemy
 {
+    private:
+        bool is_dying = false;
+
     public:
         WaterRat(sprite enemy_sprite, point_2d position, vector<std::shared_ptr<Player>> level_players) : Enemy (enemy_sprite, position, level_players)
         {
             std::shared_ptr<Behaviour> ai(new WaterRatBehaviour(enemy_sprite, level_players));
             this->ai = ai;
+            this->hp = 3;
+            this->is_boss = true;
+            this->is_vulnerable = false;
             point_2d pos = this->position;
             sprite_set_position(enemy_sprite, pos);
 
@@ -214,6 +243,53 @@ class WaterRat : public Enemy
         };
 
         ~WaterRat(){};
+
+        void update_hitbox()
+        {
+            point_2d current_position = sprite_position(this->enemy_sprite);
+            this->hitbox.x = current_position.x;
+            this->hitbox.y = current_position.y;
+
+            if(this->ai->get_state_type() == "Move" || this->ai->get_state_type() == "MoveBackwards" || this->ai->get_state_type() == "Idle" || this->ai->get_state_type() == "Dying")
+            {
+                this->is_vulnerable = true;
+                this->hitbox.height = sprite_height(enemy_sprite)/2 + 3;
+                this->hitbox.y += sprite_height(enemy_sprite)/2 - 3;
+            }
+            else
+            {
+                this->is_vulnerable = false;
+                this->hitbox.height = sprite_height(this->enemy_sprite);
+            }
+            check_health();
+        };
+
+        void update()
+        {
+            ai->update();
+            draw_sprite(enemy_sprite);
+            if(sprite_animation_has_ended(enemy_sprite))
+                sprite_replay_animation(enemy_sprite);
+            update_sprite(enemy_sprite);
+            update_hitbox();
+            draw_rectangle(COLOR_GREEN, hitbox);
+        };
+
+        void check_health()
+        {
+            if(hp < 1)
+            {
+                is_dying = true;
+                hp = 99;
+            }
+
+            if(is_dying)
+            {
+                this->ai->set_state(0);
+                is_dying = false;
+                is_dead = true;
+            }
+        };
 };
 
 class Fly : public Enemy

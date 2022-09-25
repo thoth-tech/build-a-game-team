@@ -26,6 +26,9 @@ f:[118-120], [18-20], 7,
 f:121, 21, 5, 122
 f:122, 22, 5,
 
+//Right Idle
+f:123, 0, 6, 
+
 //Right Animation Identifiers
 i:RightRun, 100
 i:RightRise, 103
@@ -34,6 +37,7 @@ i:RightBattleCry, 109
 i:RightAttack, 112
 i:RightDescend, 118
 i:RightDying, 121
+i:RightIdle, 123
 
 //-----Left Movements-----
 
@@ -60,6 +64,9 @@ f:[215-217], [38-40], 7,
 f:218, 21, 5, 219
 f:219, 22, 5,
 
+//Left Idle
+f:230, 23, 6, 
+
 //Left Animation Identifiers
 i:LeftRun, 200
 i:LeftRise, 203
@@ -68,3 +75,4 @@ i:LeftBattleCry, 209
 i:LeftAttack, 212
 i:LeftDescend, 215
 i:LeftDying, 218
+i:LeftIdle, 230
