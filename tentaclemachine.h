@@ -157,8 +157,8 @@ void TentacleIdle::update()
         point_2d tent_pos = to_screen(sprite_position(tentacle_sprite));
 
         double x_dist = tent_pos.x - player_pos.x; 
-        double y_dist = tent_pos.y - player_pos.y;
-        if(abs(x_dist) < 200 && abs(y_dist) < 17)
+        //double y_dist = tent_pos.y - player_pos.y;
+        if(abs(x_dist) < 200)
         {
             this->tentacle->change_state(new TentaclePopUp, "PopUp");
             break;
