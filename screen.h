@@ -298,6 +298,7 @@ class BackstoryScreen : public ScreenState
     private:
         bool run_once = false;
         int current = 0;
+        int max_screens = 5;
 
     public:
         BackstoryScreen(){};
@@ -306,13 +307,13 @@ class BackstoryScreen : public ScreenState
 
         void update() override;
         string name()
-    {
-        if (current == 0)
         {
-            return "MenubgDark";
-        }
-        return "backstory" + std::to_string(current) + ".png";
-    };
+            if (current == 0)
+            {
+                return "MenubgDark";
+            }
+            return "backstory" + std::to_string(current) + ".png";
+        };
 };
 
 double fade_in(double alpha, double fade_length)
@@ -958,7 +959,9 @@ void WinScreen::update()
     set_camera_y(0);
     if (!run_once)
     {
-        stop_music();          
+        stop_music();
+        if (!sound_effect_playing("GameWin"))
+            play_sound_effect("GameWin");
         for(int i = 0; i < num_buttons; i++)
         {
             string text = get_win_text(i + 1);
@@ -968,9 +971,6 @@ void WinScreen::update()
         }
         run_once = true;
     }
-
-    if (!sound_effect_playing("GameWin"))
-            play_sound_effect("GameWin");
 
     point_2d pt = screen_center();
     string win_screen_text1 = "YOU WON";
@@ -994,8 +994,8 @@ void WinScreen::update()
     {
         this->screen->level_number = 1;
         this->screen->current_level = get_next_level(this->screen->level_number,this->screen->get_cell_sheets(),this->screen->get_tile_size(),this->screen->get_players());
-        if (sound_effect_playing("GameOver"))
-            stop_sound_effect("GameOver");
+        if (!sound_effect_playing("GameWin"))
+            stop_sound_effect("GameWin");
         stop_music();
         switch(selection)
         {
@@ -1058,25 +1058,39 @@ void CreditsScreen::update()
 
 void BackstoryScreen::update()
 {
-    //font screen_font = font_named("DefaultFont");
-    //int font_size = 80;
-    //color font_color = COLOR_WHITE_SMOKE;
+    font screen_font = font_named("DefaultFont");
+    int font_size = 80;
+    color font_color = COLOR_WHITE_SMOKE;
 
-     if (screen_timer(8, "BackstoryTimer"))
+    if (!music_playing())
+    {
+        play_music("MenuMusic.mp3"); 
+        set_music_volume(0.2f);
+    }
+
+    if (screen_timer(8, "BackstoryTimer"))
     {
         clear_screen(COLOR_BLACK);
         current++;
-        current %= 5;
+        //current %= 5;
     }
-    else
+    
+    if(current == 0)
     {
+        point_2d pt = screen_center();
         draw_bitmap(this->name(), 0, 0, option_to_screen());
-        //draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
+        draw_text("Backstory", font_color, screen_font, font_size, pt.x- text_width("Backstory", screen_font, font_size)/2, (pt.y - text_height("Backstory", screen_font, font_size)/2) - 200, option_to_screen());
     }
+    else if (current > max_screens - 1)
+        this->screen->change_state(new MenuScreen, "Menu");
+    else
+        draw_bitmap(this->name(), 0, 0, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
     {
-        this->screen->change_state(new MenuScreen, "Menu");
+        current++;
+        if(current > max_screens - 1)
+            this->screen->change_state(new MenuScreen, "Menu");
     }
 }
 
@@ -1220,7 +1234,7 @@ void PasswordScreen::update()
         }
         else if(password == "BOSS_")
         {
-            enter_level(9, screen);
+            enter_level(10, screen);
         }     
         else if(password == "ROACH")
         {

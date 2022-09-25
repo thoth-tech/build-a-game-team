@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     open_window("Below The Surface", SCREEN_WIDTH, SCREEN_HEIGHT);
     
     bool test_screen = false;
-    bool window_border = true;
+    bool window_border = false;
     int refresh_rate = 60;
 
     vector<string> cell_sheet_names;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
             }
             if (args[i] == "-b")
             {
-                window_border = false;
+                window_border = true;
             }
             if(args[i] == "-r")
             {
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        shared_ptr<Screen> normal_screen(new Screen(new MenuScreen, TILE_SIZE, cell_sheets, files));
+        shared_ptr<Screen> normal_screen(new Screen(new CompanyIntroScreen, TILE_SIZE, cell_sheets, files));
         screen = normal_screen;
     }
 
