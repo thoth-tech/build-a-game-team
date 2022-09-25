@@ -958,10 +958,7 @@ void WinScreen::update()
     set_camera_y(0);
     if (!run_once)
     {
-        stop_music();
-        if (!sound_effect_playing("GameWin"))
-            play_sound_effect("GameWin");    
-        
+        stop_music();          
         for(int i = 0; i < num_buttons; i++)
         {
             string text = get_win_text(i + 1);
@@ -971,6 +968,9 @@ void WinScreen::update()
         }
         run_once = true;
     }
+
+    if (!sound_effect_playing("GameWin"))
+            play_sound_effect("GameWin");
 
     point_2d pt = screen_center();
     string win_screen_text1 = "YOU WON";

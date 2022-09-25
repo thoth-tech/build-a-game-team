@@ -38,14 +38,14 @@ SOUND, GameWin, Victory.wav
 MUSIC, LevelOne, LevelOneTheme1.mp3
 MUSIC, Mario, mario.mp3
 
-BITMAP,GreyBackground,Background4.png
+BITMAP, GreyBackground,Background4.png
 BITMAP, DarkBackground, Background3.png
 BITMAP, BlueBackground, blue_background.png
 BITMAP, TeamLogo, teamlogo.png
 BITMAP, Company2, companylogo1.png
 BITMAP, Company1, companylogo2.png
 
-BITMAP,GameOver,gameover.png
+BITMAP, GameOver,gameover.png
 BITMAP, WinScreen, winscreen.png
 
 BITMAP, temp, temp540.png
