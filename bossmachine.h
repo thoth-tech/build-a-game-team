@@ -3,6 +3,7 @@
 #include "machinehelper.h"
 #include <memory>
 #include <vector>
+#include <random>
 
 class BossMachine;
 
@@ -38,7 +39,6 @@ class BossMachine
         bool facing_left;
         vector<std::shared_ptr<Player>> level_players;
         
-
     public:
         BossMachine(BossMachineState *state, sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : state(nullptr)
         {
@@ -92,6 +92,34 @@ class BossMachine
         };
 };
 
+class BossIdle : public BossMachineState
+{
+    private:
+        bool run_once = false;
+
+    public:
+        BossIdle(){};
+
+        ~BossIdle(){};
+
+        void update() override;
+};
+
+class BossMoveBackwards : public BossMachineState
+{
+    private:
+        bool run_once = false;
+        double timer = 0;
+        double timer_length = 0;
+
+    public:
+        BossMoveBackwards(){};
+
+        ~BossMoveBackwards(){};
+
+        void update() override;
+};
+
 class BossMove : public BossMachineState
 {
     private:
@@ -109,9 +137,13 @@ class BossRise : public BossMachineState
 {
     private:
         bool run_once = false;
+        int rise_type;
 
     public:
-        BossRise(){};
+        BossRise(int rise_type)
+        {
+            this->rise_type = rise_type;
+        };
 
         ~BossRise(){};
 
@@ -135,9 +167,13 @@ class BossBattleCry : public BossMachineState
 {
     private:
         bool run_once = false;
+        int battle_cry_type;
 
     public:
-        BossBattleCry(){};
+        BossBattleCry(int battle_cry_type)
+        {
+            this->battle_cry_type = battle_cry_type;
+        };
 
         ~BossBattleCry(){};
 
@@ -161,9 +197,13 @@ class BossDescend : public BossMachineState
 {
     private:
         bool run_once = false;
+        int lower_type;
 
     public:
-        BossDescend(){};
+        BossDescend(int lower_type)
+        {
+            this->lower_type = lower_type;
+        };
 
         ~BossDescend(){};
 
@@ -183,41 +223,149 @@ class BossDying : public BossMachineState
         void update() override;
 };
 
+void BossIdle::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+    vector<std::shared_ptr<Player>> players = this->boss->get_level_players();
+
+    if(this->boss->get_facing_left())
+        set_proper_direction(boss_sprite, "LeftIdle");
+    else
+        set_proper_direction(boss_sprite, "RightIdle");
+
+    for(int i = 0; i < players.size(); i++)
+    {
+        point_2d player_pos = to_screen(sprite_position(players[i]->get_player_sprite()));
+        point_2d boss_pos = to_screen(sprite_position(boss_sprite));
+
+        double x_dist = boss_pos.x - player_pos.x; 
+        //double y_dist = boss_pos.y - player_pos.y;
+        if(abs(x_dist) < 300)
+        {
+            this->boss->change_state(new BossRise(0), "Rise");
+            break;
+        }
+    }
+}
+
 void BossMove::update()
 {
     sprite boss_sprite = this->boss->get_sprite();
-
+    vector<std::shared_ptr<Player>> players = this->boss->get_level_players();
 
     if(this->boss->get_facing_left())
     {
-        sprite_set_dx(boss_sprite, 3);
+        sprite_set_dx(boss_sprite, 4);
         set_proper_direction(boss_sprite, "LeftRun");
-        //if hit by player change to dead else change to bossrise state
     }
     else
     {
-        sprite_set_dx(boss_sprite, -3);
+        sprite_set_dx(boss_sprite, -4);
         set_proper_direction(boss_sprite, "RightRun");
+    }
+
+    for(int i = 0; i < players.size(); i++)
+    {
+        point_2d player_pos = to_screen(sprite_position(players[i]->get_player_sprite()));
+        point_2d boss_pos = to_screen(sprite_position(boss_sprite));
+
+        double x_dist = boss_pos.x - player_pos.x; 
+        //double y_dist = boss_pos.y - player_pos.y;
+        if(abs(x_dist) < 50)
+        {
+            std::random_device rd;
+            std::mt19937 mt(rd());
+            std::uniform_real_distribution<double> dist(0.0, 100.0);
+
+            double choice = dist(mt);
+            if(choice < 80)
+            {
+                sprite_set_dx(boss_sprite, 0);
+                this->boss->change_state(new BossRise(1), "RiseAttack");
+                break;
+            }
+            else
+            {
+                this->boss->change_state(new BossMoveBackwards, "MoveBackwards");
+            }
+        }
+    }
+}
+
+void BossMoveBackwards::update()
+{
+    sprite boss_sprite = this->boss->get_sprite();
+
+    if(!run_once)
+    {
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_real_distribution<double> dist(0.3, 1.3);
+        run_once = true;
+
+        timer_length = dist(mt);
+
+        write_line(timer_length);
+    }
+
+    if(this->boss->get_facing_left())
+        this->boss->set_facing_left(false);
+    else
+        this->boss->set_facing_left(true);
+
+    if(!this->boss->get_facing_left())
+    {
+        sprite_set_dx(boss_sprite, 1.3);
+        set_proper_direction(boss_sprite, "RightRun");
+    }
+    else
+    {
+        sprite_set_dx(boss_sprite, -1.3);
+        set_proper_direction(boss_sprite, "LeftRun");
+    }
+
+    this->timer += 0.01;
+
+    if(timer > timer_length)
+    {
+        sprite_set_dx(boss_sprite, 0);
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_real_distribution<double> dist(0.0, 100.0);
+
+        double choice = dist(mt);
+
+        if(choice < 30)
+        {
+            this->boss->change_state(new BossRise(0), "Rise");
+        }
+        else if(choice > 33 && choice < 66)
+        {
+            this->boss->change_state(new BossSpotPlayer, "Spot");
+        }
+        else
+        {
+            this->boss->change_state(new BossMove, "Move");
+        }
     }
 }
 
 void BossRise::update()
 {
     sprite boss_sprite = this->boss->get_sprite();
+    sprite_set_dx(boss_sprite, 0);
 
     if(this->boss->get_facing_left())
-    {
-        sprite_set_dx(boss_sprite, 3);
         set_proper_direction(boss_sprite, "LeftRise");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossSpotPlayer, "LeftSpotPlayer");
-    }
     else
-    {
-        sprite_set_dx(boss_sprite, -3);
         set_proper_direction(boss_sprite, "RightRise");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossSpotPlayer, "RightSpotPlayer");
+
+    if(sprite_animation_has_ended(boss_sprite))
+    {
+        if(rise_type == 0)
+            this->boss->change_state(new BossBattleCry(3), "BattleCry");
+        if(rise_type == 1)
+            this->boss->change_state(new BossAttack, "Attack");
     }
 }
 
@@ -227,51 +375,12 @@ void BossSpotPlayer::update()
     vector<std::shared_ptr<Player>> players = this->boss->get_level_players();
 
     if(this->boss->get_facing_left())
-    {
-        sprite_set_dx(boss_sprite, 3);
         set_proper_direction(boss_sprite, "LeftSpotPlayer");
-        if(sprite_animation_has_ended(boss_sprite)) //and close to player 
-        for(int i = 0; i < players.size(); i++)
-        {
-            point_2d player_pos = to_screen(sprite_position(players[i]->get_player_sprite()));
-            point_2d boss_pos = to_screen(sprite_position(boss_sprite));
-
-            double x_dist = boss_pos.x - player_pos.x; 
-            double y_dist = boss_pos.y - player_pos.y;
-            if(abs(x_dist) < 200 && abs(y_dist) < 17)
-            {
-                this->boss->change_state(new BossAttack, "LeftAttack");
-                break;
-            }
-            else
-            {
-                this->boss->change_state(new BossBattleCry, "LeftBattleCry");
-            }
-        }
-    }
     else
-    {
-        sprite_set_dx(boss_sprite, -3);
         set_proper_direction(boss_sprite, "RightSpotPlayer");
-        if(sprite_animation_has_ended(boss_sprite)) //and close to player 
-        for(int i = 0; i < players.size(); i++)
-        {
-            point_2d player_pos = to_screen(sprite_position(players[i]->get_player_sprite()));
-            point_2d boss_pos = to_screen(sprite_position(boss_sprite));
 
-            double x_dist = boss_pos.x - player_pos.x; 
-            double y_dist = boss_pos.y - player_pos.y;
-            if(abs(x_dist) < 200 && abs(y_dist) < 17)
-            {
-                this->boss->change_state(new BossAttack, "RightAttack");
-                break;
-            }
-            else
-            {
-                this->boss->change_state(new BossBattleCry, "RightBattleCry");
-            }
-        }
-    }
+    if(sprite_animation_has_ended(boss_sprite))
+            this->boss->change_state(new BossDescend(0), "Descend");
 }
 
 void BossBattleCry::update()
@@ -279,40 +388,56 @@ void BossBattleCry::update()
     sprite boss_sprite = this->boss->get_sprite();
 
     if(this->boss->get_facing_left())
-    {
-        sprite_set_dx(boss_sprite, 0);
         set_proper_direction(boss_sprite, "LeftBattleCry");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossSpotPlayer, "LeftSpotPlayer");
-
-    }
     else
-    {
-        sprite_set_dx(boss_sprite, 0);
         set_proper_direction(boss_sprite, "RightBattleCry");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossSpotPlayer, "RightSpotPlayer");
+
+    if(sprite_animation_has_ended(boss_sprite))
+    {
+        if(battle_cry_type == 0)
+            this->boss->change_state(new BossSpotPlayer, "SpotPlayer");
+        if(battle_cry_type == 1)
+            this->boss->change_state(new BossAttack, "Attack");
+        if(battle_cry_type == 2)
+            this->boss->change_state(new BossDescend(1), "Descend");
+        if(battle_cry_type == 3)
+            this->boss->change_state(new BossDescend(0), "Descend");
     }
 }
 
 void BossAttack::update()
 {
     sprite boss_sprite = this->boss->get_sprite();
-    //vector<std::shared_ptr<Player>> players = this->boss->get_level_players(); 
+    vector<std::shared_ptr<Player>> players = this->boss->get_level_players(); 
 
     if(this->boss->get_facing_left())
-    {
-        sprite_set_dx(boss_sprite, 3);
         set_proper_direction(boss_sprite, "LeftAttack");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossDescend, "LeftDescend");
-    }
     else
-    {
-        sprite_set_dx(boss_sprite, -3);
         set_proper_direction(boss_sprite, "RightAttack");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossDescend, "RightDescend");
+
+    if(sprite_animation_has_ended(boss_sprite))
+    {
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_real_distribution<double> dist(0.0, 100.0);
+
+        double choice = dist(mt);
+        if(choice < 30)
+        {
+            this->boss->change_state(new BossDescend(1), "Descend");
+        }
+        else if(choice > 30 && choice < 50)
+        {
+            this->boss->change_state(new BossDescend(0), "Descend");
+        }
+        else if(choice > 50 && choice < 90)
+        {
+            this->boss->change_state(new BossAttack, "Attack");
+        }
+        else
+        {
+            this->boss->change_state(new BossBattleCry(2), "BattleCry");
+        }
     }
 }
 
@@ -321,19 +446,18 @@ void BossDescend::update()
     sprite boss_sprite = this->boss->get_sprite();
 
     if(this->boss->get_facing_left())
-    {
-        sprite_set_dx(boss_sprite, 3);
         set_proper_direction(boss_sprite, "LeftDescend");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossMove, "LeftMove");
-    }
     else
-    {
-        sprite_set_dx(boss_sprite, -3);
         set_proper_direction(boss_sprite, "RightDescend");
-        if(sprite_animation_has_ended(boss_sprite))
-            this->boss->change_state(new BossMove, "RightMove");
+
+    if(sprite_animation_has_ended(boss_sprite))
+    {
+        if(lower_type == 0)
+            this->boss->change_state(new BossMove, "Move");
+        if(lower_type == 1)
+            this->boss->change_state(new BossMoveBackwards, "MoveBackwards");
     }
+        
 }
 
 void BossDying::update()

@@ -78,6 +78,16 @@ class Behaviour
             else
                 sprite_set_dy(enemy_sprite, 8);
         };
+
+        virtual string get_state_type()
+        {
+            return "";
+        };
+
+        virtual void set_state(int state)
+        {
+
+        };
 };
 
 class RoachBehaviour : public Behaviour
@@ -235,12 +245,13 @@ class WaterRatBehaviour : public Behaviour
     private:
         std::shared_ptr<BossMachine> boss_machine;
         vector<std::shared_ptr<Player>> level_players;
+        bool backwards_once = true;
 
     public:
         WaterRatBehaviour(sprite enemy_sprite, vector<std::shared_ptr<Player>> level_players) : Behaviour(enemy_sprite)
         {
             this->level_players = level_players;
-            std::shared_ptr<BossMachine> machine(new BossMachine(new BossSpotPlayer, enemy_sprite, level_players));
+            std::shared_ptr<BossMachine> machine(new BossMachine(new BossIdle, enemy_sprite, level_players));
             this->boss_machine = machine;
         };
         ~WaterRatBehaviour()
@@ -248,11 +259,56 @@ class WaterRatBehaviour : public Behaviour
         };
         void update() override
         {
+            backwards_behaviour();
             this->boss_machine->set_facing_left(facing_left);
             fall_to_ground();
             this->boss_machine->update();
         };
 
+        void backwards_behaviour()
+        {
+            if(this->boss_machine->get_state_type() == "MoveBackwards")
+            {
+                if(backwards_once)
+                {
+                    if(this->facing_left)
+                        this->facing_left = false;
+                    else
+                        this->facing_left = true;
+
+                    backwards_once = false;
+                }
+            }
+            else
+            {
+                face_player();
+                backwards_once = true;
+            }
+        };
+
+        void face_player()
+        {
+            point_2d player_center = to_screen(center_point(level_players[0]->get_player_sprite()));
+            point_2d enemy_center = to_screen(center_point(enemy_sprite));
+
+            if(enemy_center.x < player_center.x)
+                facing_left = true;
+            else
+                facing_left = false;
+        };
+
+        string get_state_type()
+        {
+            return this->boss_machine->get_state_type();
+        };
+
+        void set_state(int state)
+        {
+            if(state == 0)
+            {
+                this->boss_machine->change_state(new BossDying, "Dying");
+            }
+        }
 };
 
 class FlyBehaviour : public Behaviour
