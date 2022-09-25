@@ -388,24 +388,7 @@ class MultiPipe : public Level
         };
 };
 
-class CombatLevel : public Level
-{
-    public:
-        CombatLevel(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
-        {
-            this->level_layers = 2;
-            this->files.push_back("levels/combat_level0.txt");
-            this->files.push_back("levels/combat_level1.txt");
-            make_level();
-            this->level_music = music_named("BossMusic.mp3");
-            this->level_name = "Combat Level";
-            shared_ptr<Background> backg(new GreyBackground);
-            this->background = backg;
-            this->password = "FIGHT";
-            this->pre_level_side_text.push_back("Fight your way out!");
-            this->pre_level_image = bitmap_named("level9");
-        };
-};
+
 
 class TooManyRoach : public Level
 {
@@ -546,6 +529,45 @@ class Easy  : public Level
             this->pre_level_side_text.push_back("Climb to the top...");
             this->pre_level_side_text.push_back("Watch out for snakes!");
             this->pre_level_image = bitmap_named("level3");
+        };
+};
+
+class CombatLevel : public Level
+{
+    public:
+        CombatLevel(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/combat_level0.txt");
+            this->files.push_back("levels/combat_level1.txt");
+            make_level();
+            this->level_music = music_named("BossMusic.mp3");
+            this->level_name = "Combat Level";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "FIGHT";
+            this->pre_level_side_text.push_back("Fight your way out!");
+            this->pre_level_image = bitmap_named("level9");
+        };
+};
+
+class BossLevel : public Level
+{
+    public:
+        BossLevel(vector<CellSheet> cell_sheets, int tile_size, int players) : Level(cell_sheets, tile_size, players)
+        {
+            this->level_layers = 2;
+            this->files.push_back("levels/boss1.txt");
+            this->files.push_back("levels/boss2.txt");
+            make_level();
+            this->level_music = music_named("BossMusic.mp3");
+            this->level_name = "Combat Level";
+            shared_ptr<Background> backg(new GreyBackground);
+            this->background = backg;
+            this->password = "BOSS_";
+            this->pre_level_side_text.push_back("Water Rat is angry!");
+            this->pre_level_side_text.push_back("Water Rat is angry!");
+            this->pre_level_image = bitmap_named("level9");
         };
 };
 

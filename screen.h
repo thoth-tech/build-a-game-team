@@ -47,7 +47,7 @@ class Screen
         key_code input_key = F_KEY;
         key_code pause_key = H_KEY;
         int level_number = 1;
-        int max_levels = 9;
+        int max_levels = 10;
         shared_ptr<Level> current_level;
 
         Screen(ScreenState *state, int tile_size, vector<CellSheet> cell_sheets, vector<string> files) : state(nullptr)
@@ -1217,7 +1217,11 @@ void PasswordScreen::update()
         else if(password == "FIGHT")
         {
             enter_level(9, screen);
-        }    
+        }
+        else if(password == "BOSS_")
+        {
+            enter_level(9, screen);
+        }     
         else if(password == "ROACH")
         {
             enter_level(40, screen);
