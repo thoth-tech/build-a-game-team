@@ -542,7 +542,7 @@ class CombatLevel : public Level
             this->files.push_back("levels/combat_level1.txt");
             make_level();
             this->level_music = music_named("BossMusic.mp3");
-            this->level_name = "Combat Level";
+            this->level_name = "Combat Level - part 1";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "FIGHT";
@@ -561,7 +561,7 @@ class BossLevel : public Level
             this->files.push_back("levels/boss2.txt");
             make_level();
             this->level_music = music_named("BossMusic.mp3");
-            this->level_name = "Combat Level";
+            this->level_name = "Combat Level - part 2";
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "BOSS_";

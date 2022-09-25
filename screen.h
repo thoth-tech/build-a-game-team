@@ -1058,9 +1058,9 @@ void CreditsScreen::update()
 
 void BackstoryScreen::update()
 {
-    font screen_font = font_named("DefaultFont");
-    int font_size = 80;
-    color font_color = COLOR_WHITE_SMOKE;
+    //font screen_font = font_named("DefaultFont");
+    //int font_size = 80;
+    //color font_color = COLOR_WHITE_SMOKE;
 
      if (screen_timer(8, "BackstoryTimer"))
     {
@@ -1071,7 +1071,7 @@ void BackstoryScreen::update()
     else
     {
         draw_bitmap(this->name(), 0, 0, option_to_screen());
-        draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
+        //draw_text("Backstory", font_color, screen_font, font_size, 450, 80, option_to_screen());
     }
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
