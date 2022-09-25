@@ -566,7 +566,7 @@ class BossLevel : public Level
             this->background = backg;
             this->password = "BOSS_";
             this->pre_level_side_text.push_back("Water Rat is angry!");
-            this->pre_level_side_text.push_back("Water Rat is angry!");
+            this->pre_level_side_text.push_back("...watch out!");
             this->pre_level_image = bitmap_named("level9");
         };
 };
