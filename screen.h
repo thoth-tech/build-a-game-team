@@ -1066,7 +1066,7 @@ void BackstoryScreen::update()
     {
         clear_screen(COLOR_BLACK);
         current++;
-        current %= 4;
+        current %= 5;
     }
     else
     {
