@@ -59,3 +59,4 @@ BITMAP, level6, level6.png
 BITMAP, level7, level7.png
 BITMAP, level8, level8.png
 BITMAP, level9, level9.png
+BITMAP, mariopl, mario_pl.png

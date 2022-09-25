@@ -603,7 +603,7 @@ class Mario  : public Level
             this->password = "MARIO";
             this->pre_level_side_text.push_back("How Did");
             this->pre_level_side_text.push_back("I Get Here?..");
-            this->pre_level_image = bitmap_named("temp");
+            this->pre_level_image = bitmap_named("mariopl");
             change_physics();
             change_sprites();
         };
