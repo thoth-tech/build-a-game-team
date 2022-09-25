@@ -726,6 +726,8 @@ void AttackState::update()
     sprite player_sprite = this->player->get_player_sprite();
     if (!run_once)
     {
+        if (!sound_effect_playing("Attack"))
+            play_sound_effect("Attack");
         sprite_set_dx(player_sprite, 0);
         if (player->is_on_floor())
             sprite_set_dy(player_sprite, 0);
