@@ -1019,10 +1019,13 @@ void CreditsScreen::update()
 {
     point_2d pt = screen_center();
     clear_screen(COLOR_BLACK);
+    draw_bitmap("MenubgDark", 0, 0, option_to_screen());
 
     bitmap logo = bitmap_named("TeamLogo");
     font screen_font = font_named("DefaultFont");
     color font_color = COLOR_WHITE;
+    int font_size = 25;
+    vector<string> credits;
 
     if (!music_playing())
     {
@@ -1030,30 +1033,27 @@ void CreditsScreen::update()
         set_music_volume(0.2f);
     }
 
-    //draw_text("Credits", font_color, screen_font, 80, 600, 200, option_to_screen());
+    credits.push_back("Technical Lead: Lachlan Morgan");
+    credits.push_back("Delivery Lead: Morgaine Barter");
+    credits.push_back("Game Design: Daniel Agbay, Morgaine Barter");
+    credits.push_back("Lead Developer: Lachlan Morgan");
+    credits.push_back("Developers: Lily Lan, Daniel Agbay, Morgaine Barter");
+    credits.push_back("            Robert Osborne, Jiahao Zheng, Roy Chen");
+    credits.push_back("Game Artwork: Lily Lan, Morgaine Barter, Daniel Agbay");
+    credits.push_back("Game Music: Robert Osborne");
+    credits.push_back("Sound Design: Lily Lan");
+    credits.push_back("Additional Artwork: Lachlan Morgan");
 
-    int font_size = 30;
-    string text = "Morgaine Barter";
-    string text2 = "Daniel Agbay, Lily Lan, Robert Osborne";
-    string text3 = "Jiahao Zheng, Roy Chen";
-    string text4 = "And";
-    string text5 = "Lachlan Morgan";
-    // more detail to be added on roles
+    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 200, option_to_screen());
+    draw_text("CREDITS", font_color, screen_font, 80, pt.x- text_width("CREDITS", screen_font, 80)/2, (pt.y - text_height("CREDITS", screen_font, 80)/2) - 350, option_to_screen());
 
-    draw_bitmap(logo, pt.x - bitmap_width(logo)/2, pt.y - bitmap_height(logo)/2 - 150, option_to_screen());
+    int height = (text_height(credits[0], screen_font, font_size) * 2) + 13;
 
-    draw_text(text, font_color, screen_font, font_size, pt.x- text_width(text, screen_font, font_size)/2, (pt.y - text_height(text, screen_font, font_size)/2) + 150, option_to_screen());
-    draw_text(text2, font_color, screen_font, font_size, pt.x- text_width(text2, screen_font, font_size)/2, (pt.y - text_height(text2, screen_font, font_size)/2) + 150 + text_height(text2, screen_font, font_size) * 1, option_to_screen());
-    draw_text(text3, font_color, screen_font, font_size, pt.x- text_width(text3, screen_font, font_size)/2, (pt.y - text_height(text3, screen_font, font_size)/2) + 150 + text_height(text3, screen_font, font_size) * 2, option_to_screen());
-    draw_text(text4, font_color, screen_font, font_size, pt.x- text_width(text4, screen_font, font_size)/2, (pt.y - text_height(text4, screen_font, font_size)/2) + 150 + text_height(text4, screen_font, font_size) * 3, option_to_screen());
-    draw_text(text5, font_color, screen_font, font_size, pt.x- text_width(text5, screen_font, font_size)/2, (pt.y - text_height(text5, screen_font, font_size)/2) + 150 + text_height(text5, screen_font, font_size) * 4, option_to_screen());
-    //draw_text(text6, font_color, screen_font, font_size, pt.x- text_width(text6, screen_font, font_size)/2, (pt.y - text_height(text6, screen_font, font_size)/2) + 150 + text_height(text6, screen_font, font_size) * 6, option_to_screen());
+    for(int i = 0; i < credits.size(); i++)
+        draw_text(credits[i], font_color, screen_font, font_size, 150, (pt.y + (i * height/2)) + 30, option_to_screen());
 
     if(key_typed(RETURN_KEY) || key_typed(screen->input_key))
-    {
         this->screen->change_state(new MenuScreen, "Menu");
-    }
-
 }
 
 void BackstoryScreen::update()
