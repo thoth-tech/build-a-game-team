@@ -459,8 +459,9 @@ class FourCorners : public Level
             shared_ptr<Background> backg(new GreyBackground);
             this->background = backg;
             this->password = "TEMPL";
-            this->pre_level_side_text.push_back("Turn the pipes...");
-            this->pre_level_side_text.push_back("...in every corner!");
+            this->pre_level_side_text.push_back("Turn The Pipe");
+            this->pre_level_side_text.push_back("In Each Corner");
+            this->pre_level_side_text.push_back("To Defeat The Trials");
             this->pre_level_image = bitmap_named("level6");
         };
 };
