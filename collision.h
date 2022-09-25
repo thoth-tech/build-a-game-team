@@ -449,15 +449,14 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
                     continue;
 
                 if (collision != "None")
-                {
-                    if (!sound_effect_playing("Pickup"))
-                            play_sound_effect("Pickup");
-                            
+                {                            
                     // Pink and purple can interact with these pipes
                     if (pipes[j][i]->get_cell() < 6)
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
+                            if (!sound_effect_playing("Pickup"))
+                            play_sound_effect("Pickup");
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
@@ -468,6 +467,8 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
+                            if (!sound_effect_playing("Pickup"))
+                            play_sound_effect("Pickup");
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
