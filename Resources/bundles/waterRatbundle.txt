@@ -7,3 +7,4 @@ SOUND, BossRise, BossRise.wav
 SOUND, BossAttack, BossAttack.wav
 SOUND, BossCry, BossCry.wav
 SOUND, BossSpot, BossSpot.wav
+SOUND, BossDeath, BossDeath.wav

@@ -18,6 +18,5 @@ SOUND, PickHeart, PickHeart.wav
 SOUND, Jumpfall, Jumpfall.wav
 SOUND, Attack, Attack.wav
 
-SOUND, BossDeath, BossDeath.wav
 
 

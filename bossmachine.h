@@ -472,6 +472,8 @@ void BossDescend::update()
 
 void BossDying::update()
 {
+    if (!sound_effect_playing("BossDeath"))
+            play_sound_effect("BossDeath");
     sprite boss_sprite = this->boss->get_sprite();
 
     if(this->boss->get_facing_left())

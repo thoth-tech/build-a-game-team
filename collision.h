@@ -334,8 +334,6 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 }
                 else 
                 {
-                    if (!sound_effect_playing("BossDeath"))
-                        play_sound_effect("BossDeath");
                     if(level_enemies[i]->get_vulnerable())
                         level_enemies[i]->take_damage(1); // By 1 hp.
                 }
