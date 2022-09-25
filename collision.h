@@ -334,6 +334,8 @@ void check_enemy_player_collisions(vector<shared_ptr<Enemy>> level_enemies, vect
                 }
                 else 
                 {
+                    if (!sound_effect_playing("BossDeath"))
+                        play_sound_effect("BossDeath");
                     if(level_enemies[i]->get_vulnerable())
                         level_enemies[i]->take_damage(1); // By 1 hp.
                 }
@@ -456,7 +458,7 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
                             if (!sound_effect_playing("Pickup"))
-                            play_sound_effect("Pickup");
+                                play_sound_effect("Pickup");
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
@@ -468,7 +470,7 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
                             if (!sound_effect_playing("Pickup"))
-                            play_sound_effect("Pickup");
+                                play_sound_effect("Pickup");
                             pipes[j][i]->set_picked_up(true);
                             level_players[k]->pick_pipe(pipes[j][i]);
                             break;
@@ -477,6 +479,8 @@ void check_holdable_pipe_block_collisions(vector<vector<shared_ptr<HoldablePipeB
                     // Everyone can interact with these pipes
                     else
                     {
+                        if (!sound_effect_playing("Pickup"))
+                            play_sound_effect("Pickup");
                         pipes[j][i]->set_picked_up(true);
                         level_players[k]->pick_pipe(pipes[j][i]);
                         break;
@@ -506,8 +510,8 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                            if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                             //write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
@@ -518,8 +522,8 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
-                            if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                            if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                             //write_line("Turned");
                             pipes[j][i]->set_turnable(false);
                             break;
@@ -528,8 +532,8 @@ void check_turnable_pipe_block_collisions(vector<vector<shared_ptr<TurnablePipeB
                     // Everyone can interact with these pipes
                     else
                     {
-                        if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                        if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                         //write_line("Turned");
                         pipes[j][i]->set_turnable(false);
                         break;
@@ -558,8 +562,8 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 2)
                         {
-                            if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                            if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                             if (pipes[j][i]->get_turnable())
                                 pipes[j][i]->set_turnable(false);
                             else
@@ -573,8 +577,8 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                     {
                         if (level_players[k]->get_player_id() == 3 || level_players[k]->get_player_id() == 1)
                         {
-                            if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                            if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                             if (pipes[j][i]->get_turnable())
                                 pipes[j][i]->set_turnable(false);
                             else
@@ -586,8 +590,8 @@ void check_multi_turnable_pipe_block_collisions(vector<vector<shared_ptr<MultiTu
                     // Everyone can interact with these pipes
                     else
                     {
-                        if (!sound_effect_playing("Attack"))
-                                play_sound_effect("Attack");
+                        if (!sound_effect_playing("TurnPipe"))
+                                play_sound_effect("TurnPipe");
                         if (pipes[j][i]->get_turnable())
                             pipes[j][i]->set_turnable(false);
                         else
