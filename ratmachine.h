@@ -3,6 +3,7 @@
 #include "machinehelper.h"
 #include <memory>
 #include <vector>
+#include <random>
 
 class RatMachine;
 
@@ -105,6 +106,21 @@ class RatMove : public RatMachineState
         void update() override;
 };
 
+class RatIdle : public RatMachineState
+{
+    private:
+        bool run_once = false;
+        double timer = 0;
+        double timer_length;
+
+    public:
+        RatIdle(){};
+
+        ~RatIdle(){};
+
+        void update() override;
+};
+
 class RatBite : public RatMachineState
 {
     private:
@@ -131,6 +147,20 @@ class RatCrawl : public RatMachineState
         void update() override;
 };
 
+class RatCrawlAway : public RatMachineState
+{
+    private:
+        bool run_once = false;
+        double timer = 0;
+
+    public:
+        RatCrawlAway(){};
+
+        ~RatCrawlAway(){};
+
+        void update() override;
+};
+
 void RatMove::update()
 {
     sprite rat_sprite = this->rat->get_sprite();
@@ -153,7 +183,12 @@ void RatMove::update()
         point_2d rat_pos = to_screen(sprite_position(rat_sprite));
 
         double x_dist = rat_pos.x - player_pos.x; 
-        if(abs(x_dist) > 500)
+        if(abs(x_dist) < 30)
+        {
+            this->rat->change_state(new RatBite, "Bite");
+            break;
+        }
+        if(abs(x_dist) > 300)
         {
             this->rat->change_state(new RatCrawl, "Crawl");
             break;
@@ -161,17 +196,26 @@ void RatMove::update()
     }
 }
 
-void RatBite::update()
+void RatIdle::update()
 {
     sprite rat_sprite = this->rat->get_sprite();
     vector<std::shared_ptr<Player>> players = this->rat->get_level_players();
 
+    if(!run_once)
+    {
+        std::random_device rd;
+        std::mt19937 mt(rd());
+        std::uniform_real_distribution<double> dist(0.1, 0.6);
+        timer_length = dist(mt);
+        run_once = true;
+    }
+
     sprite_set_dx(rat_sprite, 0);
 
     if(this->rat->get_facing_left())
-        set_proper_direction(rat_sprite, "LeftBite");
+        set_proper_direction(rat_sprite, "LeftIdle");
     else
-        set_proper_direction(rat_sprite, "RightBite");
+        set_proper_direction(rat_sprite, "RightIdle");
 
     for(int i = 0; i < players.size(); i++)
     {
@@ -179,12 +223,33 @@ void RatBite::update()
         point_2d rat_pos = to_screen(sprite_position(rat_sprite));
 
         double x_dist = rat_pos.x - player_pos.x; 
-        double y_dist = rat_pos.y - player_pos.y;
-        if(abs(x_dist) > 18 && abs(y_dist) >17 )
+        if(abs(x_dist) < 450)
         {
-            this->rat->change_state(new RatMove, "Run");
+            this->rat->change_state(new RatMove, "Move");
             break;
         }
+    }
+
+    timer += 0.01;
+
+    if(timer > timer_length)
+        this->rat->change_state(new RatCrawl, "Crawl");
+}
+
+void RatBite::update()
+{
+    sprite rat_sprite = this->rat->get_sprite();
+
+    sprite_set_dx(rat_sprite, 0);
+
+    if(sprite_animation_has_ended(rat_sprite))
+        this->rat->change_state(new RatCrawlAway, "CrawlAway");
+    else
+    {
+        if(this->rat->get_facing_left())
+            set_proper_direction(rat_sprite, "LeftBite");
+        else
+            set_proper_direction(rat_sprite, "RightBite");
     }
 }
 
@@ -211,10 +276,31 @@ void RatCrawl::update()
 
         double x_dist = rat_pos.x - player_pos.x; 
         
-        if(abs(x_dist) < 20)
+        if(abs(x_dist) < 300)
         {
-            this->rat->change_state(new RatBite, "Bite");
+            this->rat->change_state(new RatMove, "Move");
             break;
         }
     }
+}
+
+void RatCrawlAway::update()
+{
+    sprite rat_sprite = this->rat->get_sprite();
+
+    if(this->rat->get_facing_left())
+    {
+        sprite_set_dx(rat_sprite, 4);
+        set_proper_direction(rat_sprite, "LeftCrawl");
+    }
+    else
+    {
+        sprite_set_dx(rat_sprite, -4);
+        set_proper_direction(rat_sprite, "RightCrawl");
+    }
+
+    timer += 0.01;
+
+    if(timer > 1)
+        this->rat->change_state(new RatCrawl, "Crawl");
 }

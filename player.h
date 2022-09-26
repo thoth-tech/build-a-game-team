@@ -530,7 +530,7 @@ void IdleState::get_input()
         this->player->set_facing_left(false);
         this->player->change_state(new RunState(0), "RunRight");
     }
-    if (key_typed(player->input.jump_key) && player->is_on_floor())
+    if ((key_typed(player->input.jump_key) || key_typed(player->input.jump_key2)) && player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -594,7 +594,7 @@ void RunState::get_input()
     {
         this->player->change_state(new IdleState, "Idle");
     }
-    if (key_typed(player->input.jump_key) && player->is_on_floor())
+    if ((key_typed(player->input.jump_key) || key_typed(player->input.jump_key2)) && player->is_on_floor())
     {
         this->player->change_state(new JumpRiseState, "JumpRise");
     }
@@ -850,7 +850,7 @@ void ClimbState::get_input()
         }
         sprite_set_dx(player->get_player_sprite(), CLIMB_SPEED);
     }
-    else if (key_down(player->input.jump_key))
+    else if (key_down(player->input.jump_key) || key_down(player->input.jump_key2))
     {
         if (!is_moving)
         {
@@ -873,7 +873,7 @@ void ClimbState::get_input()
             this->player->change_state(new IdleState, "Idle");
         }
     }
-    if (key_released(player->input.jump_key) || key_released(player->input.crouch_key))
+    if (key_released(player->input.jump_key) || key_released(player->input.jump_key2) || key_released(player->input.crouch_key))
     {
         is_moving = false;
         sprite_start_animation(this->player->get_player_sprite(), "ClimbIdle");
